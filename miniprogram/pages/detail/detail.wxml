@@ -1,0 +1,16 @@
+<!--detail.wxml-->
+<view class="container">
+  <view class="detail-header">
+    <text class="detail-title">{{detailInfo.title}}</text>
+    <text class="detail-time">{{detailInfo.time}}</text>
+  </view>
+
+  <view class="detail-content">
+    <rich-text nodes="{{detailInfo.content}}"></rich-text>
+  </view>
+
+  <view class="detail-footer">
+    <button class="btn-action" bindtap="handleShare">分享</button>
+    <button class="btn-action" bindtap="handleCollect">收藏</button>
+  </view>
+</view>

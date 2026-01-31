@@ -1,0 +1,28 @@
+# 依赖
+node_modules
+dist
+build
+
+# 配置文件
+.prettierrc.js
+.eslintrc.js
+
+# 环境文件
+.env
+.env.*
+
+# 日志
+*.log
+logs
+
+# 临时文件
+*.tmp
+*.temp
+.cache
+
+# 测试
+coverage
+.nyc_output
+
+# 文档
+docs

@@ -1,0 +1,82 @@
+/**index.wxss**/
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 30rpx;
+  box-sizing: border-box;
+}
+
+.header {
+  text-align: center;
+  margin: 40rpx 0 60rpx;
+}
+
+.title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #999;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  margin-bottom: 40rpx;
+}
+
+.feature-card {
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.feature-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.feature-title {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+  font-weight: 500;
+}
+
+.feature-desc {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+}
+
+.actions {
+  margin-top: auto;
+  padding: 20rpx 0;
+}
+
+.btn-primary {
+  background-color: #409EFF;
+  color: #fff;
+  border-radius: 8rpx;
+  padding: 24rpx 0;
+  font-size: 32rpx;
+  width: 100%;
+  border: none;
+}
+
+.btn-primary:active {
+  background-color: #3a8ee6;
+}

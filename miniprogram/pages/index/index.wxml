@@ -1,0 +1,19 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="header">
+    <text class="title">Medagil AI平台</text>
+    <text class="subtitle">智能助手，为您服务</text>
+  </view>
+
+  <view class="features">
+    <view class="feature-card" wx:for="{{features}}" wx:key="id">
+      <image class="feature-icon" src="{{item.icon}}" mode="aspectFit"></image>
+      <text class="feature-title">{{item.title}}</text>
+      <text class="feature-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <view class="actions">
+    <button class="btn-primary" bindtap="startUse">开始使用</button>
+  </view>
+</view>
