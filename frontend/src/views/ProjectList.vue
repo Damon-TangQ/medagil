@@ -75,8 +75,8 @@
               </template>
             </el-image>
             <div class="project-status">
-              <el-tag :type="project.status === 1 ? 'success' : 'info'" size="small">
-                {{ project.status === 1 ? '已发布' : '草稿' }}
+              <el-tag :type="project.status === PROJECT_STATUS.PUBLISHED ? 'success' : 'info'" size="small">
+                {{ project.status === PROJECT_STATUS.PUBLISHED ? '已发布' : '草稿' }}
               </el-tag>
             </div>
           </div>
@@ -135,6 +135,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Search, Plus, Picture, View, Star, Clock } from '@element-plus/icons-vue'
+import { PROJECT_STATUS, PROJECT_STATUS_NAMES } from '@/shared/constants'
 
 const router = useRouter()
 
@@ -222,7 +223,7 @@ const formatDate = (dateString: string) => {
 // 生成模拟数据
 const generateMockProjects = (count: number): Project[] => {
   const categories = ['1', '2', '3', '4'] // AI助手, 数据分析, NLP, 计算机视觉
-  const statuses = [0, 1] // 草稿, 已发布
+  const statuses = [PROJECT_STATUS.DRAFT, PROJECT_STATUS.PUBLISHED] // 草稿, 已发布
   const tagsList = [
     'Vue3,TypeScript',
     'Python,机器学习',

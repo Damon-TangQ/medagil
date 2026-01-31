@@ -14,13 +14,17 @@ export interface User {
   wechatOpenId?: string;
   wechatUnionId?: string;
   subscriptionLevel: number;
-  subscriptionExpireTime?: string;
+  subscriptionExpireTime?: string; // ISO 8601 格式字符串
+  points: number;
   status: number;
-  lastLoginTime?: string;
+  lastLoginTime?: string; // ISO 8601 格式字符串
   lastLoginIp?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; // ISO 8601 格式字符串
+  updatedAt: string; // ISO 8601 格式字符串
 }
+
+// 用户信息（不包含密码）
+export interface UserInfo extends Omit<User, 'password'> {}
 
 export interface RegisterData {
   username: string;
@@ -59,11 +63,12 @@ export interface Project {
   description?: string;
   coverImage?: string;
   tags?: string;
+  config?: Record<string, any>;
   status: number;
   viewCount: number;
   likeCount: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; // ISO 8601 格式字符串
+  updatedAt: string; // ISO 8601 格式字符串
 }
 
 export interface CreateProjectData {
@@ -123,11 +128,14 @@ export interface Task {
   title: string;
   description?: string;
   taskType: string;
+  steps?: Record<string, any>;
+  inputContent?: string;
+  aiResponse?: string;
   conversationHistory?: any;
   result?: string;
   status: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; // ISO 8601 格式字符串
+  updatedAt: string; // ISO 8601 格式字符串
 }
 
 export interface CreateTaskData {
@@ -165,12 +173,17 @@ export interface SubscriptionRecord {
   id: string;
   userId: string;
   subscriptionId: string;
-  startTime: string;
-  endTime: string;
+  orderNo: string;
+  startTime: string; // ISO 8601 格式字符串
+  endTime: string; // ISO 8601 格式字符串
   amount: number;
+  discountAmount: number;
+  finalAmount: number;
   paymentMethod?: string;
   paymentStatus: number;
-  createdAt: string;
+  transactionId?: string;
+  paidAt?: string; // ISO 8601 格式字符串
+  createdAt: string; // ISO 8601 格式字符串
 }
 
 // ==================== API响应 ====================
@@ -185,6 +198,9 @@ export interface PaginationParams {
   page: number;
   pageSize: number;
 }
+
+// PageParams接口别名，用于保持与数据库命名一致
+export type PageParams = PaginationParams;
 
 export interface PaginationResponse<T> {
   items: T[];

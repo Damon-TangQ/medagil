@@ -18,6 +18,9 @@ export interface Task {
   title: string;
   description?: string;
   taskType: 'chat' | 'analysis' | 'report';
+  steps?: Record<string, any>;
+  inputContent?: string;
+  aiResponse?: string;
   conversationHistory: ConversationMessage[];
   result?: string;
   status: number; // 0-进行中, 1-已完成, 2-失败
@@ -32,12 +35,18 @@ export interface CreateTaskData {
   title: string;
   description?: string;
   taskType?: 'chat' | 'analysis' | 'report';
+  steps?: Record<string, any>;
+  inputContent?: string;
+  aiResponse?: string;
 }
 
 // 更新任务接口
 export interface UpdateTaskData {
   title?: string;
   description?: string;
+  steps?: Record<string, any>;
+  inputContent?: string;
+  aiResponse?: string;
   result?: string;
   status?: number;
 }
@@ -218,6 +227,9 @@ class MockTaskService {
       title: data.title,
       description: data.description,
       taskType: data.taskType || 'chat',
+      steps: data.steps,
+      inputContent: data.inputContent,
+      aiResponse: data.aiResponse,
       conversationHistory: [],
       status: 0, // 默认为进行中状态
       createdAt: new Date(),

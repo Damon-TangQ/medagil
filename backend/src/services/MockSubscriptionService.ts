@@ -29,11 +29,16 @@ export interface SubscriptionRecord {
   id: string;
   userId: string;
   subscriptionId: string;
+  orderNo: string;
   startTime: Date;
   endTime: Date;
   amount: number;
+  discountAmount: number;
+  finalAmount: number;
   paymentMethod: 'wechat' | 'alipay';
   paymentStatus: number; // 0-待支付, 1-已支付, 2-已取消
+  transactionId?: string;
+  paidAt?: Date;
   createdAt: Date;
 }
 
@@ -146,22 +151,32 @@ class MockSubscriptionService {
         id: 'record_001',
         userId: 'user_002',
         subscriptionId: 'subscription_002',
+        orderNo: 'ORD20230801001',
         startTime: new Date('2023-08-01'),
         endTime: new Date('2023-08-31'),
         amount: 9.90,
+        discountAmount: 0,
+        finalAmount: 9.90,
         paymentMethod: 'wechat',
         paymentStatus: 1,
+        transactionId: 'WX2023080112345678901234567890',
+        paidAt: new Date('2023-08-01T10:30:00'),
         createdAt: new Date('2023-08-01')
       },
       {
         id: 'record_002',
         userId: 'user_004',
         subscriptionId: 'subscription_002',
+        orderNo: 'ORD20230815001',
         startTime: new Date('2023-08-15'),
         endTime: new Date('2023-09-14'),
         amount: 9.90,
+        discountAmount: 1.00,
+        finalAmount: 8.90,
         paymentMethod: 'alipay',
         paymentStatus: 1,
+        transactionId: 'ALI2023081512345678901234567890',
+        paidAt: new Date('2023-08-15T14:20:00'),
         createdAt: new Date('2023-08-15')
       }
     ];
@@ -210,6 +225,7 @@ class MockSubscriptionService {
     userId: string;
     subscriptionId: string;
     paymentMethod: 'wechat' | 'alipay';
+    discountAmount?: number;
   }): Promise<{ success: boolean; message: string; record?: SubscriptionRecord }> {
     const subscription = this.subscriptions.get(data.subscriptionId);
     if (!subscription) {
@@ -219,13 +235,19 @@ class MockSubscriptionService {
       };
     }
 
+    const discountAmount = data.discountAmount || 0;
+    const orderNo = `ORD${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}${String(this.recordIdCounter).padStart(3, '0')}`;
+
     const newRecord: SubscriptionRecord = {
       id: `record_${this.recordIdCounter++}`,
       userId: data.userId,
       subscriptionId: data.subscriptionId,
+      orderNo,
       startTime: new Date(),
       endTime: new Date(Date.now() + subscription.duration * 24 * 60 * 60 * 1000),
       amount: subscription.price,
+      discountAmount,
+      finalAmount: subscription.price - discountAmount,
       paymentMethod: data.paymentMethod,
       paymentStatus: 0, // 默认为待支付状态
       createdAt: new Date()
@@ -302,7 +324,7 @@ class MockSubscriptionService {
   /**
    * 更新订阅记录支付状态
    */
-  async updatePaymentStatus(recordId: string, status: number): Promise<{ success: boolean; message: string; record?: SubscriptionRecord }> {
+  async updatePaymentStatus(recordId: string, status: number, transactionId?: string): Promise<{ success: boolean; message: string; record?: SubscriptionRecord }> {
     const record = this.subscriptionRecords.get(recordId);
     if (!record) {
       return {
@@ -314,7 +336,9 @@ class MockSubscriptionService {
     // 更新支付状态
     const updatedRecord = {
       ...record,
-      paymentStatus: status
+      paymentStatus: status,
+      ...(transactionId && { transactionId }),
+      ...(status === 1 && !record.paidAt && { paidAt: new Date() })
     };
 
     this.subscriptionRecords.set(recordId, updatedRecord);

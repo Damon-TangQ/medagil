@@ -25,6 +25,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import ProjectForm from '@/components/ProjectForm.vue'
+import { PROJECT_STATUS } from '@/shared/constants'
 
 const route = useRoute()
 const router = useRouter()
@@ -46,9 +47,9 @@ const fetchProjectDetail = async () => {
     projectData.value = {
       id: route.params.id,
       name: 'AI智能对话助手',
-      category: ['1', '3'],
-      tags: ['AI', '对话', '智能助手'],
-      status: 1,
+      categoryId: '1',
+      tags: 'AI,对话,智能助手',
+      status: PROJECT_STATUS.PUBLISHED,
       summary: '基于大语言模型的智能对话助手',
       description: '<p>基于大语言模型的智能对话助手，能够回答各种问题，提供专业建议。</p>',
       coverImage: '/images/project_cover_1.jpg',

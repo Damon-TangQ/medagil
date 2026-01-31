@@ -5,68 +5,49 @@
 
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { USER_STATUS, SUBSCRIPTION_LEVEL } from '@/shared/constants';
+import type { User, RegisterData, LoginData, WechatLoginData, JwtPayload } from '@/shared/types/common';
 
-// 用户接口定义
-export interface User {
-  id: string;
-  username: string;
+// 内部用户接口（包含密码字段）
+interface InternalUser extends User {
   password: string;
-  phone?: string;
-  email?: string;
-  nickname?: string;
-  avatar?: string;
-  wechatOpenId?: string;
-  wechatUnionId?: string;
-  subscriptionLevel: number;
-  subscriptionExpireTime?: Date;
-  status: number;
-  lastLoginTime?: Date;
-  lastLoginIp?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// 注册接口
-export interface RegisterData {
-  username: string;
-  password: string;
-  phone?: string;
-  email?: string;
-  nickname?: string;
-}
-
-// 登录接口
-export interface LoginData {
-  username?: string;
-  phone?: string;
-  email?: string;
-  password: string;
-}
-
-// 微信登录接口
-export interface WechatLoginData {
-  openid: string;
-  unionid?: string;
-  nickname?: string;
-  avatar?: string;
-}
-
-// JWT载荷接口
-export interface JwtPayload {
-  userId: string;
-  username: string;
-  subscriptionLevel: number;
 }
 
 class MockUserService {
-  // 内存中存储的用户数据
-  private users: Map<string, User> = new Map();
+  // 内存中存储的用户数据（使用内部类型）
+  private users: Map<string, InternalUser> = new Map();
+
+  // 用户索引
+  private usernameIndex: Map<string, string> = new Map(); // username -> userId
+  private phoneIndex: Map<string, string> = new Map(); // phone -> userId
+  private emailIndex: Map<string, string> = new Map(); // email -> userId
 
   // JWT密钥
-  private readonly jwtSecret: string = process.env.JWT_SECRET || 'medagil_jwt_secret_key';
+  private readonly jwtSecret: string = (() => {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('JWT_SECRET environment variable is required');
+    }
+    if (secret.length < 32) {
+      throw new Error('JWT_SECRET must be at least 32 characters long');
+    }
+    return secret;
+  })();
 
   // JWT过期时间
   private readonly jwtExpire: string = process.env.JWT_EXPIRE || '7d';
+
+  // 登录失败记录（用于防暴力破解）
+  private loginAttempts: Map<string, { count: number; lastAttempt: number }> = new Map();
+  private readonly MAX_LOGIN_ATTEMPTS = 5;
+  private readonly LOGIN_ATTEMPT_WINDOW = 15 * 60 * 1000; // 15分钟
+
+  /**
+   * 格式化日期为 ISO 8601 字符串
+   */
+  private formatDate(date: Date): string {
+    return date.toISOString();
+  }
 
   constructor() {
     // 初始化5个测试用户数据
@@ -77,7 +58,7 @@ class MockUserService {
    * 初始化测试用户数据
    */
   private initMockUsers(): void {
-    const testUsers: User[] = [
+    const testUsers: InternalUser[] = [
       {
         id: 'user_001',
         username: 'admin',
@@ -85,10 +66,11 @@ class MockUserService {
         phone: '13800138001',
         email: 'admin@medagil.com',
         nickname: '管理员',
-        subscriptionLevel: 2,
-        status: 1,
-        createdAt: new Date('2023-01-01'),
-        updatedAt: new Date('2023-01-01')
+        subscriptionLevel: SUBSCRIPTION_LEVEL.PREMIUM,
+        points: 1000,
+        status: USER_STATUS.NORMAL,
+        createdAt: this.formatDate(new Date('2023-01-01')),
+        updatedAt: this.formatDate(new Date('2023-01-01'))
       },
       {
         id: 'user_002',
@@ -97,11 +79,12 @@ class MockUserService {
         phone: '13800138002',
         email: 'user1@medagil.com',
         nickname: '测试用户1',
-        subscriptionLevel: 1,
-        subscriptionExpireTime: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        status: 1,
-        createdAt: new Date('2023-02-01'),
-        updatedAt: new Date('2023-02-01')
+        subscriptionLevel: SUBSCRIPTION_LEVEL.BASIC,
+        subscriptionExpireTime: this.formatDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)),
+        points: 500,
+        status: USER_STATUS.NORMAL,
+        createdAt: this.formatDate(new Date('2023-02-01')),
+        updatedAt: this.formatDate(new Date('2023-02-01'))
       },
       {
         id: 'user_003',
@@ -110,10 +93,11 @@ class MockUserService {
         phone: '13800138003',
         email: 'user2@medagil.com',
         nickname: '测试用户2',
-        subscriptionLevel: 0,
-        status: 1,
-        createdAt: new Date('2023-03-01'),
-        updatedAt: new Date('2023-03-01')
+        subscriptionLevel: SUBSCRIPTION_LEVEL.FREE,
+        points: 100,
+        status: USER_STATUS.NORMAL,
+        createdAt: this.formatDate(new Date('2023-03-01')),
+        updatedAt: this.formatDate(new Date('2023-03-01'))
       },
       {
         id: 'user_004',
@@ -122,11 +106,12 @@ class MockUserService {
         phone: '13800138004',
         email: 'user3@medagil.com',
         nickname: '测试用户3',
-        subscriptionLevel: 1,
-        subscriptionExpireTime: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
-        status: 1,
-        createdAt: new Date('2023-04-01'),
-        updatedAt: new Date('2023-04-01')
+        subscriptionLevel: SUBSCRIPTION_LEVEL.BASIC,
+        subscriptionExpireTime: this.formatDate(new Date(Date.now() + 15 * 24 * 60 * 60 * 1000)),
+        points: 200,
+        status: USER_STATUS.NORMAL,
+        createdAt: this.formatDate(new Date('2023-04-01')),
+        updatedAt: this.formatDate(new Date('2023-04-01'))
       },
       {
         id: 'user_005',
@@ -135,24 +120,33 @@ class MockUserService {
         phone: '13800138005',
         email: 'user4@medagil.com',
         nickname: '测试用户4',
-        subscriptionLevel: 0,
-        status: 0, // 禁用状态
-        createdAt: new Date('2023-05-01'),
-        updatedAt: new Date('2023-05-01')
+        subscriptionLevel: SUBSCRIPTION_LEVEL.FREE,
+        points: 50,
+        status: USER_STATUS.DISABLED, // 禁用状态
+        createdAt: this.formatDate(new Date('2023-05-01')),
+        updatedAt: this.formatDate(new Date('2023-05-01'))
       }
     ];
 
     // 将测试用户添加到内存存储
     testUsers.forEach(user => {
       this.users.set(user.id, user);
+      // 建立索引
+      this.usernameIndex.set(user.username, user.id);
+      if (user.phone) {
+        this.phoneIndex.set(user.phone, user.id);
+      }
+      if (user.email) {
+        this.emailIndex.set(user.email, user.id);
+      }
     });
   }
 
   /**
-   * 密码加密
+   * 密码加密（使用随机盐值）
    */
   private hashPassword(password: string): string {
-    return bcrypt.hashSync(password, 10);
+    return bcrypt.hashSync(password, 12); // 增加盐值轮次以提高安全性
   }
 
   /**
@@ -166,7 +160,11 @@ class MockUserService {
    * 生成JWT token
    */
   generateToken(payload: JwtPayload): string {
-    return jwt.sign(payload, this.jwtSecret, { expiresIn: this.jwtExpire });
+    return jwt.sign(
+      payload,
+      this.jwtSecret as jwt.Secret,
+      { expiresIn: this.jwtExpire as string | number }
+    );
   }
 
   /**
@@ -232,10 +230,11 @@ class MockUserService {
       phone: data.phone,
       email: data.email,
       nickname: data.nickname || data.username,
-      subscriptionLevel: 0,
-      status: 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      subscriptionLevel: SUBSCRIPTION_LEVEL.FREE,
+      points: 0,
+      status: USER_STATUS.NORMAL,
+      createdAt: this.formatDate(new Date()),
+      updatedAt: this.formatDate(new Date())
     };
 
     // 保存用户
@@ -264,16 +263,28 @@ class MockUserService {
    */
   async login(data: LoginData, ip?: string): Promise<{ success: boolean; message: string; user?: User; token?: string }> {
     // 查找用户
-    let user: User | undefined;
+    let userId: string | undefined;
+    let loginKey: string | undefined;
 
     if (data.username) {
-      user = Array.from(this.users.values()).find(u => u.username === data.username);
+      userId = this.usernameIndex.get(data.username);
+      loginKey = `username:${data.username}`;
     } else if (data.phone) {
-      user = Array.from(this.users.values()).find(u => u.phone === data.phone);
+      userId = this.phoneIndex.get(data.phone);
+      loginKey = `phone:${data.phone}`;
     } else if (data.email) {
-      user = Array.from(this.users.values()).find(u => u.email === data.email);
+      userId = this.emailIndex.get(data.email);
+      loginKey = `email:${data.email}`;
     }
 
+    if (!userId || !loginKey) {
+      return {
+        success: false,
+        message: '用户不存在'
+      };
+    }
+
+    const user = this.users.get(userId);
     if (!user) {
       return {
         success: false,
@@ -281,8 +292,19 @@ class MockUserService {
       };
     }
 
+    // 检查登录尝试次数
+    const attempts = this.loginAttempts.get(loginKey);
+    if (attempts && 
+        attempts.count >= this.MAX_LOGIN_ATTEMPTS && 
+        Date.now() - attempts.lastAttempt < this.LOGIN_ATTEMPT_WINDOW) {
+      return {
+        success: false,
+        message: '登录失败次数过多，请15分钟后再试'
+      };
+    }
+
     // 检查用户状态
-    if (user.status !== 1) {
+    if (user.status !== USER_STATUS.NORMAL) {
       return {
         success: false,
         message: '账户已被禁用'
@@ -291,16 +313,29 @@ class MockUserService {
 
     // 验证密码
     if (!this.verifyPassword(data.password, user.password)) {
+      // 记录失败尝试
+      const currentAttempts = this.loginAttempts.get(loginKey) || { count: 0, lastAttempt: 0 };
+      this.loginAttempts.set(loginKey, {
+        count: currentAttempts.count + 1,
+        lastAttempt: Date.now()
+      });
+
+      // 延迟响应以防止暴力破解
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
       return {
         success: false,
         message: '密码错误'
       };
     }
 
+    // 登录成功，清除失败记录
+    this.loginAttempts.delete(loginKey);
+
     // 更新登录信息
-    user.lastLoginTime = new Date();
+    user.lastLoginTime = this.formatDate(new Date());
     user.lastLoginIp = ip;
-    user.updatedAt = new Date();
+    user.updatedAt = this.formatDate(new Date());
     this.users.set(user.id, user);
 
     // 生成token
@@ -341,7 +376,7 @@ class MockUserService {
       if (data.avatar) {
         user.avatar = data.avatar;
       }
-      user.updatedAt = new Date();
+      user.updatedAt = this.formatDate(new Date());
       this.users.set(user.id, user);
 
       // 生成token
@@ -372,10 +407,11 @@ class MockUserService {
       wechatUnionId: data.unionid,
       nickname: data.nickname || '微信用户',
       avatar: data.avatar,
-      subscriptionLevel: 0,
-      status: 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      subscriptionLevel: SUBSCRIPTION_LEVEL.FREE,
+      points: 0,
+      status: USER_STATUS.NORMAL,
+      createdAt: this.formatDate(new Date()),
+      updatedAt: this.formatDate(new Date())
     };
 
     // 保存用户
@@ -459,7 +495,7 @@ class MockUserService {
       ...user,
       ...data,
       id: userId, // 确保ID不被修改
-      updatedAt: new Date()
+      updatedAt: this.formatDate(new Date())
     };
 
     this.users.set(userId, updatedUser);
@@ -504,6 +540,97 @@ class MockUserService {
     }
 
     return false;
+  }
+
+  /**
+   * 增加用户积分
+   * @param userId 用户ID
+   * @param points 要增加的积分
+   * @returns 操作结果
+   */
+  async addPoints(userId: string, points: number): Promise<{ success: boolean; message: string; user?: User; newPoints?: number }> {
+    const user = this.users.get(userId);
+    if (!user) {
+      return {
+        success: false,
+        message: '用户不存在'
+      };
+    }
+
+    // 更新积分
+    user.points += points;
+    user.updatedAt = this.formatDate(new Date());
+    this.users.set(userId, user);
+
+    // 返回用户信息（不包含密码）
+    const { password, ...userWithoutPassword } = user;
+
+    return {
+      success: true,
+      message: '积分更新成功',
+      user: userWithoutPassword as User,
+      newPoints: user.points
+    };
+  }
+
+  /**
+   * 减少用户积分
+   * @param userId 用户ID
+   * @param points 要减少的积分
+   * @returns 操作结果
+   */
+  async deductPoints(userId: string, points: number): Promise<{ success: boolean; message: string; user?: User; newPoints?: number }> {
+    const user = this.users.get(userId);
+    if (!user) {
+      return {
+        success: false,
+        message: '用户不存在'
+      };
+    }
+
+    // 检查积分是否足够
+    if (user.points < points) {
+      return {
+        success: false,
+        message: '积分不足'
+      };
+    }
+
+    // 更新积分
+    user.points -= points;
+    user.updatedAt = this.formatDate(new Date());
+    this.users.set(userId, user);
+
+    // 返回用户信息（不包含密码）
+    const { password, ...userWithoutPassword } = user;
+
+    return {
+      success: true,
+      message: '积分更新成功',
+      user: userWithoutPassword as User,
+      newPoints: user.points
+    };
+  }
+
+  /**
+   * 获取用户积分
+   * @param userId 用户ID
+   * @returns 用户积分
+   */
+  async getPoints(userId: string): Promise<{ success: boolean; message: string; points?: number }> {
+    const user = this.users.get(userId);
+    if (!user) {
+      return {
+        success: false,
+        message: '用户不存在'
+      };
+    }
+
+    return {
+      success: true,
+      message: '获取成功',
+      points: user.points
+    };
   }
 
   /**

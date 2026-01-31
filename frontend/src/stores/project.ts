@@ -4,6 +4,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import axios from 'axios'
+import { PROJECT_STATUS } from '@/shared/constants'
 
 // 项目接口
 export interface Project {
@@ -115,6 +116,12 @@ export const useProjectStore = defineStore('project', () => {
 
   // 按状态筛选项目
   const filterByStatus = async (status: number | undefined, page: number = 1) => {
+    // 验证状态值
+    if (status !== undefined && 
+        status !== PROJECT_STATUS.DRAFT && 
+        status !== PROJECT_STATUS.PUBLISHED) {
+      throw new Error('Invalid status value')
+    }
     selectedStatus.value = status
     currentPage.value = page
     return fetchProjects(page)

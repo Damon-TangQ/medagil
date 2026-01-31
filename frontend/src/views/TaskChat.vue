@@ -70,8 +70,8 @@
                   :key="stepIndex"
                   :title="step.title"
                   :description="step.description"
-                  :status="step.status === 'completed' ? 'success' : 
-                          step.status === 'in_progress' ? 'process' : 'wait'"
+                  :status="step.status === TASK_STATUS.COMPLETED ? 'success' : 
+                          step.status === TASK_STATUS.IN_PROGRESS ? 'process' : 'wait'"
                 />
               </el-steps>
             </div>
@@ -162,6 +162,7 @@ import {
   Document,
   Promotion
 } from '@element-plus/icons-vue'
+import { TASK_STATUS } from '@/shared/constants'
 
 // 路由相关
 const route = useRoute()
@@ -180,7 +181,7 @@ const messages = ref<Array<{
     step: number
     title: string
     description: string
-    status: 'pending' | 'in_progress' | 'completed'
+    status: number
     progress: number
   }>
   thoughts?: Array<{
@@ -207,10 +208,10 @@ const aiAvatar = ref('https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f
 
 // 获取当前激活的步骤
 const getActiveStep = (steps: any[]) => {
-  const inProgressIndex = steps.findIndex(step => step.status === 'in_progress')
+  const inProgressIndex = steps.findIndex(step => step.status === TASK_STATUS.IN_PROGRESS)
   if (inProgressIndex !== -1) return inProgressIndex
 
-  const completedCount = steps.filter(step => step.status === 'completed').length
+  const completedCount = steps.filter(step => step.status === TASK_STATUS.COMPLETED).length
   return completedCount
 }
 
@@ -256,10 +257,10 @@ const sendMessage = async () => {
     content: '',
     timestamp: Date.now(),
     steps: [
-      { step: 1, title: '分析需求', description: '分析用户需求和上下文', status: 'completed' as const, progress: 100 },
-      { step: 2, title: '信息检索', description: '检索相关信息和数据', status: 'in_progress' as const, progress: 50 },
-      { step: 3, title: '生成回复', description: '生成智能回复内容', status: 'pending' as const, progress: 0 },
-      { step: 4, title: '质量检查', description: '检查回复质量和准确性', status: 'pending' as const, progress: 0 }
+      { step: 1, title: '分析需求', description: '分析用户需求和上下文', status: TASK_STATUS.COMPLETED, progress: 100 },
+      { step: 2, title: '信息检索', description: '检索相关信息和数据', status: TASK_STATUS.IN_PROGRESS, progress: 50 },
+      { step: 3, title: '生成回复', description: '生成智能回复内容', status: TASK_STATUS.IN_PROGRESS, progress: 0 },
+      { step: 4, title: '质量检查', description: '检查回复质量和准确性', status: TASK_STATUS.IN_PROGRESS, progress: 0 }
     ],
     thoughts: [
       { id: '1', content: '正在分析用户需求...', timestamp: Date.now() },
@@ -301,11 +302,11 @@ const sendMessage = async () => {
       isTyping.value = false
 
       // 更新步骤状态
-      aiMessage.steps[1].status = 'completed'
+      aiMessage.steps[1].status = TASK_STATUS.COMPLETED
       aiMessage.steps[1].progress = 100
-      aiMessage.steps[2].status = 'completed'
+      aiMessage.steps[2].status = TASK_STATUS.COMPLETED
       aiMessage.steps[2].progress = 100
-      aiMessage.steps[3].status = 'completed'
+      aiMessage.steps[3].status = TASK_STATUS.COMPLETED
       aiMessage.steps[3].progress = 100
       aiMessage.thoughts.push({
         id: '3',

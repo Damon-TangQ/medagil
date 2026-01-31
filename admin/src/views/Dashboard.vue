@@ -64,9 +64,12 @@
         <el-col :xs="24" :md="8">
           <el-card class="chart-card" shadow="hover">
             <template #header>
-              <span class="card-title">用户分布</span>
+              <div class="card-header">
+                <span class="card-title">任务类型分布</span>
+                <el-button type="primary" link @click="exportTaskDistribution">导出</el-button>
+              </div>
             </template>
-            <div ref="userChartRef" class="chart-container"></div>
+            <div ref="taskChartRef" class="chart-container"></div>
           </el-card>
         </el-col>
       </el-row>
@@ -158,11 +161,11 @@ const trendPeriod = ref('week')
 
 // 图表引用
 const trendChartRef = ref<HTMLElement>()
-const userChartRef = ref<HTMLElement>()
+const taskChartRef = ref<HTMLElement>()
 
 // 图表实例
 let trendChartInstance: echarts.ECharts | null = null
-let userChartInstance: echarts.ECharts | null = null
+let taskChartInstance: echarts.ECharts | null = null
 
 // 关键指标
 const metrics = ref([
@@ -337,23 +340,25 @@ const initTrendChart = () => {
   trendChartInstance.setOption(option)
 }
 
-// 初始化用户分布图表
-const initUserChart = () => {
-  if (!userChartRef.value) return
+// 初始化任务类型分布图表
+const initTaskChart = () => {
+  if (!taskChartRef.value) return
 
-  userChartInstance = echarts.init(userChartRef.value)
+  taskChartInstance = echarts.init(taskChartRef.value)
 
   const option = {
     tooltip: {
-      trigger: 'item'
+      trigger: 'item',
+      formatter: '{a} <br/>{b}: {c} ({d}%)'
     },
     legend: {
-      top: '5%',
-      left: 'center'
+      orient: 'vertical',
+      left: 'left',
+      top: 'middle'
     },
     series: [
       {
-        name: '用户分布',
+        name: '任务类型',
         type: 'pie',
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
@@ -363,30 +368,37 @@ const initUserChart = () => {
           borderWidth: 2
         },
         label: {
-          show: false,
-          position: 'center'
+          show: true,
+          formatter: '{b}: {d}%'
         },
         emphasis: {
           label: {
             show: true,
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: 'bold'
           }
         },
-        labelLine: {
-          show: false
-        },
         data: [
-          { value: 1048, name: '免费用户' },
-          { value: 735, name: '基础版' },
-          { value: 580, name: '高级版' },
-          { value: 484, name: '企业版' }
+          { value: 1048, name: '市场分析' },
+          { value: 735, name: '竞品研究' },
+          { value: 580, name: '用户研究' },
+          { value: 484, name: '产品规划' },
+          { value: 300, name: '营销方案' },
+          { value: 200, name: '内容生成' },
+          { value: 100, name: '数据分析' },
+          { value: 80, name: '策略顾问' },
+          { value: 50, name: '项目管理' }
         ]
       }
     ]
   }
 
-  userChartInstance.setOption(option)
+  taskChartInstance.setOption(option)
+}
+
+// 导出任务分布
+const exportTaskDistribution = () => {
+  ElMessage.success('任务分布数据已导出')
 }
 
 // 刷新数据
@@ -413,6 +425,23 @@ const refreshData = () => {
       ]
     })
   }
+
+  if (taskChartInstance) {
+    const newTaskData = [
+      { value: Math.floor(Math.random() * 1000) + 500, name: '市场分析' },
+      { value: Math.floor(Math.random() * 800) + 300, name: '竞品研究' },
+      { value: Math.floor(Math.random() * 600) + 200, name: '用户研究' },
+      { value: Math.floor(Math.random() * 500) + 200, name: '产品规划' },
+      { value: Math.floor(Math.random() * 400) + 100, name: '营销方案' },
+      { value: Math.floor(Math.random() * 300) + 100, name: '内容生成' },
+      { value: Math.floor(Math.random() * 200) + 50, name: '数据分析' },
+      { value: Math.floor(Math.random() * 150) + 30, name: '策略顾问' },
+      { value: Math.floor(Math.random() * 100) + 20, name: '项目管理' }
+    ]
+    taskChartInstance.setOption({
+      series: [{ data: newTaskData }]
+    })
+  }
 }
 
 // 日期范围变化
@@ -430,7 +459,7 @@ const viewAllActivities = () => {
 // 监听窗口大小变化
 const handleResize = () => {
   trendChartInstance?.resize()
-  userChartInstance?.resize()
+  taskChartInstance?.resize()
 }
 
 // 监听趋势周期变化
@@ -441,7 +470,7 @@ watch(trendPeriod, () => {
 // 组件挂载
 onMounted(() => {
   initTrendChart()
-  initUserChart()
+  initTaskChart()
 
   window.addEventListener('resize', handleResize)
 })
@@ -449,7 +478,7 @@ onMounted(() => {
 // 组件卸载
 onBeforeUnmount(() => {
   trendChartInstance?.dispose()
-  userChartInstance?.dispose()
+  taskChartInstance?.dispose()
 
   window.removeEventListener('resize', handleResize)
 })

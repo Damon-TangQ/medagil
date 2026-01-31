@@ -3,6 +3,8 @@
  * 用于开发和测试阶段的项目数据操作
  */
 
+import { PROJECT_STATUS } from '@/shared/constants';
+
 // 项目接口定义
 export interface Project {
   id: string;
@@ -12,11 +14,12 @@ export interface Project {
   description?: string;
   coverImage?: string;
   tags?: string;
+  config?: Record<string, any>;
   status: number;
   viewCount: number;
   likeCount: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string; // ISO 8601 格式字符串
+  updatedAt: string; // ISO 8601 格式字符串
 }
 
 // 创建项目接口
@@ -27,6 +30,7 @@ export interface CreateProjectData {
   description?: string;
   coverImage?: string;
   tags?: string;
+  config?: Record<string, any>;
 }
 
 // 更新项目接口
@@ -36,6 +40,7 @@ export interface UpdateProjectData {
   description?: string;
   coverImage?: string;
   tags?: string;
+  config?: Record<string, any>;
   status?: number;
 }
 
@@ -62,7 +67,7 @@ class MockProjectService {
         description: '基于大语言模型的智能对话助手，能够回答各种问题，提供专业建议',
         coverImage: '/images/project_cover_1.jpg',
         tags: 'AI,对话,智能助手',
-        status: 1,
+        status: PROJECT_STATUS.PUBLISHED,
         viewCount: 1250,
         likeCount: 86,
         createdAt: new Date('2023-06-01'),
@@ -76,7 +81,7 @@ class MockProjectService {
         description: '对销售数据进行多维度分析，生成可视化报表',
         coverImage: '/images/project_cover_2.jpg',
         tags: '数据分析,销售,可视化',
-        status: 1,
+        status: PROJECT_STATUS.PUBLISHED,
         viewCount: 980,
         likeCount: 65,
         createdAt: new Date('2023-06-10'),
@@ -90,7 +95,7 @@ class MockProjectService {
         description: '基于AI的智能客服系统，能够自动回答客户问题',
         coverImage: '/images/project_cover_3.jpg',
         tags: 'AI,客服,自动化',
-        status: 1,
+        status: PROJECT_STATUS.PUBLISHED,
         viewCount: 756,
         likeCount: 42,
         createdAt: new Date('2023-07-01'),
@@ -104,7 +109,7 @@ class MockProjectService {
         description: '分析文本的情感倾向，支持中英文',
         coverImage: '/images/project_cover_4.jpg',
         tags: 'NLP,情感分析,文本处理',
-        status: 1,
+        status: PROJECT_STATUS.PUBLISHED,
         viewCount: 632,
         likeCount: 38,
         createdAt: new Date('2023-07-15'),
@@ -118,7 +123,7 @@ class MockProjectService {
         description: '基于深度学习的图像识别系统，支持多种物体识别',
         coverImage: '/images/project_cover_5.jpg',
         tags: 'CV,图像识别,深度学习',
-        status: 0, // 草稿状态
+        status: PROJECT_STATUS.DRAFT, // 草稿状态
         viewCount: 0,
         likeCount: 0,
         createdAt: new Date('2023-08-01'),
@@ -149,7 +154,8 @@ class MockProjectService {
       description: data.description,
       coverImage: data.coverImage,
       tags: data.tags,
-      status: 0, // 默认为草稿状态
+      config: data.config,
+      status: PROJECT_STATUS.DRAFT, // 默认为草稿状态
       viewCount: 0,
       likeCount: 0,
       createdAt: new Date(),
@@ -396,10 +402,33 @@ class MockProjectService {
     status?: number;
     page?: number;
     pageSize?: number;
+    keyword?: string;
+    categoryId?: string;
+    userId?: string;
   }): Promise<{ projects: Project[]; total: number; page: number; pageSize: number; totalPages: number }> {
-    const { status, page = 1, pageSize = 10 } = options || {};
+    const { status, page = 1, pageSize = 10, keyword, categoryId, userId } = options || {};
 
     let projects = Array.from(this.projects.values());
+
+    // 根据用户ID筛选
+    if (userId) {
+      projects = projects.filter(project => project.userId === userId);
+    }
+
+    // 根据分类ID筛选
+    if (categoryId) {
+      projects = projects.filter(project => project.categoryId === categoryId);
+    }
+
+    // 根据关键词搜索
+    if (keyword) {
+      const lowerKeyword = keyword.toLowerCase();
+      projects = projects.filter(project => 
+        project.name.toLowerCase().includes(lowerKeyword) ||
+        (project.description && project.description.toLowerCase().includes(lowerKeyword)) ||
+        (project.tags && project.tags.toLowerCase().includes(lowerKeyword))
+      );
+    }
 
     // 根据状态筛选
     if (status !== undefined) {
