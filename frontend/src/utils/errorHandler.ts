@@ -6,39 +6,11 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 import router from '@/router'
 import { storage } from '@/shared'
+import type { ErrorType, AppError, ERROR_MESSAGES } from '@/shared/types/common'
 
-// ==================== 错误类型定义 ====================
-
-export enum ErrorType {
-  NETWORK = 'NETWORK_ERROR',
-  TIMEOUT = 'TIMEOUT_ERROR',
-  AUTH = 'AUTH_ERROR',
-  PERMISSION = 'PERMISSION_ERROR',
-  VALIDATION = 'VALIDATION_ERROR',
-  BUSINESS = 'BUSINESS_ERROR',
-  SYSTEM = 'SYSTEM_ERROR'
-}
-
-export interface AppError extends Error {
-  type: ErrorType
-  code?: number
-  details?: any
-}
-
-// ==================== 错误消息映射 ====================
-
-const ERROR_MESSAGES: Record<number, string> = {
-  400: '请求参数错误',
-  401: '未授权，请重新登录',
-  403: '没有权限访问',
-  404: '请求的资源不存在',
-  405: '请求方法不允许',
-  408: '请求超时',
-  500: '服务器错误',
-  502: '网关错误',
-  503: '服务不可用',
-  504: '网关超时'
-}
+// 重新导出共享类型
+export { ErrorType, AppError }
+export { ERROR_MESSAGES } from '@/shared/types/common
 
 // ==================== 错误处理类 ====================
 

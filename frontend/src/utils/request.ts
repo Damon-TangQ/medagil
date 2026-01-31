@@ -7,6 +7,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } f
 import { ElMessage, ElMessageBox } from 'element-plus'
 import router from '@/router'
 import { storage } from '@/shared'
+import type { ApiResponse } from '@/shared/types/common'
 
 // ==================== 类型定义 ====================
 export interface RequestConfig extends AxiosRequestConfig {
@@ -14,14 +15,13 @@ export interface RequestConfig extends AxiosRequestConfig {
   skipErrorHandler?: boolean
   showMessage?: boolean
   showLoading?: boolean
+  // 文件上传相关配置
+  maxFileSize?: number // 最大文件大小（字节）
+  allowedTypes?: string[] // 允许的文件类型（扩展名）
 }
 
-export interface ResponseData<T = any> {
-  success: boolean
-  message: string
-  data?: T
-  code?: number
-}
+// 使用共享的ApiResponse类型
+export type ResponseData<T = any> = ApiResponse<T>
 
 // ==================== 创建axios实例 ====================
 const service: AxiosInstance = axios.create({
@@ -226,6 +226,34 @@ export const upload = <T = any>(
   onProgress?: (progressEvent: any) => void,
   config?: RequestConfig
 ): Promise<ResponseData<T>> => {
+  // 验证文件
+  if (!file) {
+    return Promise.reject({
+      success: false,
+      message: '请选择要上传的文件'
+    })
+  }
+
+  // 验证文件大小（默认限制10MB）
+  const maxSize = config?.maxFileSize || 10 * 1024 * 1024
+  if (file.size > maxSize) {
+    return Promise.reject({
+      success: false,
+      message: `文件大小不能超过${maxSize / 1024 / 1024}MB`
+    })
+  }
+
+  // 验证文件类型（如果配置了允许的类型）
+  if (config?.allowedTypes && config.allowedTypes.length > 0) {
+    const fileExt = file.name.split('.').pop()?.toLowerCase()
+    if (!config.allowedTypes.includes(fileExt || '')) {
+      return Promise.reject({
+        success: false,
+        message: `不支持的文件类型，仅支持：${config.allowedTypes.join(', ')}`
+      })
+    }
+  }
+
   const formData = new FormData()
   formData.append('file', file)
 
@@ -250,6 +278,9 @@ export const download = (
     ...config,
     responseType: 'blob'
   }).then(response => {
+    if (!response.data) {
+      throw new Error('下载失败：未获取到文件数据')
+    }
     const blob = new Blob([response.data])
     const link = document.createElement('a')
     link.href = URL.createObjectURL(blob)
@@ -258,6 +289,10 @@ export const download = (
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(link.href)
+  }).catch(error => {
+    console.error('文件下载失败:', error)
+    ElMessage.error('文件下载失败，请稍后重试')
+    throw error
   })
 }
 

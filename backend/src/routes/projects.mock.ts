@@ -5,29 +5,39 @@
 
 import { Router, Request, Response } from 'express';
 import MockProjectService from '../services/MockProjectService';
+import { authenticate } from '../middleware/auth';
+import { validate, rules } from '../middleware/validation';
+import type { ApiResponse } from '@/shared/types/common';
 
 const router = Router();
-const projectService = new MockProjectService();
-
-// 统一响应格式接口
-interface ApiResponse<T = any> {
-  success: boolean;
-  message: string;
-  data?: T;
-  code?: number;
-}
+const projectService = MockProjectService;
 
 /**
  * 获取项目列表
  * GET /projects
  */
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', 
+  validate({
+    query: {
+      page: rules.optionalNumber(1, 100),
+      pageSize: rules.optionalNumber(1, 100),
+      keyword: rules.optionalString(),
+      categoryId: rules.optionalString(),
+      status: rules.optionalNumber(),
+      userId: rules.optionalString()
+    }
+  }),
+  async (req: Request, res: Response) => {
   try {
     const { page = 1, pageSize = 12, keyword, categoryId, status, userId } = req.query;
 
-    const result = await projectService.getProjects({
-      page: Number(page),
-      pageSize: Number(pageSize),
+    // 验证分页参数
+    const pageNum = Math.max(1, Number(page));
+    const pageSizeNum = Math.min(Math.max(1, Number(pageSize)), 100); // 限制最大每页100条
+
+    const result = await projectService.getAllProjects({
+      page: pageNum,
+      pageSize: pageSizeNum,
       keyword: keyword as string,
       categoryId: categoryId as string,
       status: status ? Number(status) : undefined,
@@ -42,7 +52,7 @@ router.get('/', async (req: Request, res: Response) => {
         total: result.total,
         page: result.page,
         pageSize: result.pageSize,
-        totalPages: Math.ceil(result.total / result.pageSize)
+        totalPages: Math.ceil(result.total / result.pageSize) || 0
       }
     };
     return res.status(200).json(response);
@@ -65,19 +75,19 @@ router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const result = await projectService.getProjectById(id);
+    const project = await projectService.getProjectById(id);
 
-    if (result.success) {
+    if (project) {
       const response: ApiResponse = {
         success: true,
         message: '获取项目详情成功',
-        data: result.project
+        data: project
       };
       return res.status(200).json(response);
     } else {
       const response: ApiResponse = {
         success: false,
-        message: result.message || '项目不存在',
+        message: '项目不存在',
         code: 404
       };
       return res.status(404).json(response);
@@ -97,19 +107,22 @@ router.get('/:id', async (req: Request, res: Response) => {
  * 创建项目
  * POST /projects
  */
-router.post('/', async (req: Request, res: Response) => {
-  try {
-    const { userId, categoryId, name, description, coverImage, tags } = req.body;
-
-    // 参数验证
-    if (!userId || !name) {
-      const response: ApiResponse = {
-        success: false,
-        message: '缺少必要参数: userId 或 name',
-        code: 400
-      };
-      return res.status(400).json(response);
+router.post('/', 
+  authenticate,
+  validate({
+    body: {
+      userId: rules.requiredString(),
+      categoryId: rules.requiredString(),
+      name: rules.requiredString(2, 100),
+      description: rules.requiredString(10, 500),
+      coverImage: rules.optionalString(),
+      tags: rules.optionalArray(),
+      config: rules.requiredObject()
     }
+  }),
+  async (req: Request, res: Response) => {
+  try {
+    const { userId, categoryId, name, description, coverImage, tags, config } = req.body;
 
     const createData = {
       userId,
@@ -117,7 +130,8 @@ router.post('/', async (req: Request, res: Response) => {
       name,
       description,
       coverImage,
-      tags
+      tags,
+      config
     };
 
     const result = await projectService.createProject(createData);
@@ -152,10 +166,20 @@ router.post('/', async (req: Request, res: Response) => {
  * 更新项目
  * PUT /projects/:id
  */
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/:id', authenticate, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { categoryId, name, description, coverImage, tags, status } = req.body;
+    const { categoryId, name, description, coverImage, tags, config, status } = req.body;
+
+    // 验证必要参数
+    if (!id || typeof id !== 'string') {
+      const response: ApiResponse = {
+        success: false,
+        message: '项目ID无效',
+        code: 400
+      };
+      return res.status(400).json(response);
+    }
 
     const updateData = {
       categoryId,
@@ -163,6 +187,7 @@ router.put('/:id', async (req: Request, res: Response) => {
       description,
       coverImage,
       tags,
+      config,
       status
     };
 
@@ -198,7 +223,7 @@ router.put('/:id', async (req: Request, res: Response) => {
  * 删除项目
  * DELETE /projects/:id
  */
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', authenticate, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -237,14 +262,14 @@ router.post('/:id/like', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const result = await projectService.likeProject(id);
+    const result = await projectService.incrementLikeCount(id);
 
     if (result.success) {
       const response: ApiResponse = {
         success: true,
         message: '点赞成功',
         data: {
-          likeCount: result.likeCount
+          likeCount: result.project?.likeCount || 0
         }
       };
       return res.status(200).json(response);
@@ -282,7 +307,7 @@ router.post('/:id/view', async (req: Request, res: Response) => {
         success: true,
         message: '浏览量更新成功',
         data: {
-          viewCount: result.viewCount
+          viewCount: result.project?.viewCount || 0
         }
       };
       return res.status(200).json(response);

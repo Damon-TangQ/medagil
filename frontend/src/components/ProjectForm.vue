@@ -230,6 +230,7 @@ import {
   RefreshLeft,
   RefreshRight
 } from '@element-plus/icons-vue'
+import { PROJECT_STATUS } from '@/shared/constants'
 
 // Props
 interface ProjectFormData {
@@ -271,7 +272,7 @@ const formData = reactive({
   coverImage: '',
   category: [],
   tags: [],
-  status: 0,
+  status: PROJECT_STATUS.DRAFT,
   summary: '',
   description: '',
   visibility: 'public',

@@ -45,8 +45,8 @@
             <el-tag v-if="project?.category" class="meta-tag">
               {{ getCategoryName(project.category) }}
             </el-tag>
-            <el-tag :type="project?.status === 1 ? 'success' : 'info'" class="meta-tag">
-              {{ project?.status === 1 ? '已发布' : '草稿' }}
+            <el-tag :type="PROJECT_STATUS_TYPES[project?.status]" class="meta-tag">
+              {{ PROJECT_STATUS_NAMES[project?.status] }}
             </el-tag>
             <span class="meta-item">
               <el-icon><View /></el-icon>
@@ -105,6 +105,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Picture, Edit, Share, View, Star, Clock, ChatDotRound } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
+import { PROJECT_STATUS, PROJECT_STATUS_NAMES } from '@/shared/constants'
 
 const route = useRoute()
 const router = useRouter()
@@ -140,7 +141,7 @@ const fetchProjectDetail = async () => {
       description: '<p>基于大语言模型的智能对话助手，能够回答各种问题，提供专业建议。</p><p>主要功能包括：</p><ul><li>智能问答</li><li>专业建议</li><li>多轮对话</li></ul>',
       coverImage: '/images/project_cover_1.jpg',
       tags: 'AI,对话,智能助手',
-      status: 1,
+      status: PROJECT_STATUS.PUBLISHED,
       viewCount: 1250,
       likeCount: 86,
       createdAt: new Date().toISOString()

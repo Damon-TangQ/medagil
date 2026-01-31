@@ -4,35 +4,41 @@
  */
 
 import { Router, Request, Response } from 'express';
+import { body, validationResult } from 'express-validator';
 import MockUserService, { WechatLoginData, LoginData } from '../services/MockUserService';
+import VerificationCodeService from '../services/VerificationCodeService';
+import type { ApiResponse } from '@/shared/types/common';
 
 const router = Router();
 
-// 统一响应格式接口
-interface ApiResponse<T = any> {
-  success: boolean;
-  message: string;
-  data?: T;
-  code?: number;
-}
+// 验证结果处理中间件
+const handleValidationErrors = (req: Request, res: Response, next: any) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: '参数验证失败',
+      errors: errors.array()
+    });
+  }
+  next();
+};
 
 /**
  * 微信登录接口
  * POST /auth/wechat
  */
-router.post('/wechat', async (req: Request, res: Response) => {
+router.post('/wechat',
+  [
+    body('openid').notEmpty().withMessage('openid 不能为空'),
+    body('unionid').optional().isString(),
+    body('nickname').optional().isLength({ min: 1, max: 50 }).withMessage('昵称长度必须在1-50之间'),
+    body('avatar').optional().isURL().withMessage('头像必须是有效的URL')
+  ],
+  handleValidationErrors,
+  async (req: Request, res: Response) => {
   try {
     const { openid, unionid, nickname, avatar } = req.body;
-
-    // 参数验证
-    if (!openid) {
-      const response: ApiResponse = {
-        success: false,
-        message: '缺少必要参数: openid',
-        code: 400
-      };
-      return res.status(400).json(response);
-    }
 
     // 微信登录
     const wechatLoginData: WechatLoginData = {
@@ -78,24 +84,33 @@ router.post('/wechat', async (req: Request, res: Response) => {
  * 手机号登录接口
  * POST /auth/phone
  */
-router.post('/phone', async (req: Request, res: Response) => {
+router.post('/phone',
+  [
+    body('phone').notEmpty().withMessage('手机号不能为空')
+      .matches(/^1[3-9]\d{9}$/).withMessage('手机号格式不正确'),
+    body('password').notEmpty().withMessage('密码不能为空')
+      .isLength({ min: 8 }).withMessage('密码长度至少8位'),
+    body('code').optional().isLength({ min: 4, max: 6 }).withMessage('验证码长度必须在4-6位之间')
+  ],
+  handleValidationErrors,
+  async (req: Request, res: Response) => {
   try {
     const { phone, password, code } = req.body;
 
-    // 参数验证
-    if (!phone || !password) {
-      const response: ApiResponse = {
-        success: false,
-        message: '缺少必要参数: phone 或 password',
-        code: 400
-      };
-      return res.status(400).json(response);
-    }
-
-    // 验证验证码（实际开发中需要实现验证码验证逻辑）
+    // 验证验证码
     if (code) {
-      // 这里可以添加验证码验证逻辑
-      // 例如：验证验证码是否正确、是否过期等
+      const verifyResult = await VerificationCodeService.verifyCode(phone, 'phone', code);
+      if (!verifyResult.success) {
+        const response: ApiResponse = {
+          success: false,
+          message: verifyResult.message,
+          code: 400
+        };
+        return res.status(400).json(response);
+      }
+
+      // 验证成功后删除该手机号的所有验证码
+      await VerificationCodeService.deleteCode(phone, 'phone');
     }
 
     // 手机号登录
@@ -136,22 +151,64 @@ router.post('/phone', async (req: Request, res: Response) => {
 });
 
 /**
+ * 发送手机验证码接口
+ * POST /auth/send-code
+ */
+router.post('/send-code',
+  [
+    body('phone').notEmpty().withMessage('手机号不能为空')
+      .matches(/^1[3-9]\d{9}$/).withMessage('手机号格式不正确')
+  ],
+  handleValidationErrors,
+  async (req: Request, res: Response) => {
+    try {
+      const { phone } = req.body;
+
+      // 发送验证码
+      const result = await VerificationCodeService.sendCode(phone, 'phone');
+
+      if (result.success) {
+        const response: ApiResponse = {
+          success: true,
+          message: result.message
+        };
+        return res.status(200).json(response);
+      } else {
+        const response: ApiResponse = {
+          success: false,
+          message: result.message,
+          code: 400
+        };
+        return res.status(400).json(response);
+      }
+    } catch (error) {
+      console.error('发送验证码错误:', error);
+      const response: ApiResponse = {
+        success: false,
+        message: '发送验证码失败',
+        code: 500
+      };
+      return res.status(500).json(response);
+    }
+  }
+);
+
+/**
  * 用户名/邮箱登录接口
  * POST /auth/login
  */
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login',
+  [
+    body('username').optional().isLength({ min: 4, max: 20 }).withMessage('用户名长度必须在4-20之间')
+      .matches(/^[a-zA-Z0-9_]+$/).withMessage('用户名只能包含字母、数字和下划线'),
+    body('email').optional().isEmail().withMessage('邮箱格式不正确'),
+    body('password').notEmpty().withMessage('密码不能为空')
+      .isLength({ min: 8 }).withMessage('密码长度至少8位')
+  ],
+  handleValidationErrors,
+  async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
-
-    // 参数验证
-    if ((!username && !email) || !password) {
-      const response: ApiResponse = {
-        success: false,
-        message: '缺少必要参数: username/email 或 password',
-        code: 400
-      };
-      return res.status(400).json(response);
-    }
 
     // 用户名/邮箱登录
     const loginData: LoginData = {
@@ -195,19 +252,22 @@ router.post('/login', async (req: Request, res: Response) => {
  * 用户注册接口
  * POST /auth/register
  */
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register',
+  [
+    body('username').notEmpty().withMessage('用户名不能为空')
+      .isLength({ min: 4, max: 20 }).withMessage('用户名长度必须在4-20之间')
+      .matches(/^[a-zA-Z0-9_]+$/).withMessage('用户名只能包含字母、数字和下划线'),
+    body('password').notEmpty().withMessage('密码不能为空')
+      .isLength({ min: 8 }).withMessage('密码长度至少8位')
+      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('密码必须包含大小写字母和数字'),
+    body('phone').optional().matches(/^1[3-9]\d{9}$/).withMessage('手机号格式不正确'),
+    body('email').optional().isEmail().withMessage('邮箱格式不正确'),
+    body('nickname').optional().isLength({ min: 1, max: 50 }).withMessage('昵称长度必须在1-50之间')
+  ],
+  handleValidationErrors,
+  async (req: Request, res: Response) => {
   try {
     const { username, password, phone, email, nickname } = req.body;
-
-    // 参数验证
-    if (!username || !password) {
-      const response: ApiResponse = {
-        success: false,
-        message: '缺少必要参数: username 或 password',
-        code: 400
-      };
-      return res.status(400).json(response);
-    }
 
     // 用户注册
     const registerData = {

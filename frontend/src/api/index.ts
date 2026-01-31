@@ -20,7 +20,7 @@ import type {
   SubscriptionRecord,
   ApiResponse,
   ProjectListResponse
-} from '@/shared'
+} from '@/shared/types/common'
 
 // ==================== 认证相关API ====================
 
