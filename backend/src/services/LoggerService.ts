@@ -58,9 +58,6 @@ class LoggerService {
   // 缓冲区刷新间隔（毫秒）
   private readonly FLUSH_INTERVAL = 5000;
 
-  // 单个日志文件最大大小（10MB）
-  private readonly MAX_LOG_SIZE = 10 * 1024 * 1024;
-
   constructor() {
     // 初始化缓冲区
     for (const level of Object.values(LogLevel)) {
@@ -73,7 +70,7 @@ class LoggerService {
     }
 
     // 定期刷新缓冲区
-    setInterval(() => this.flushAllBuffers(), this.FUSH_INTERVAL);
+    setInterval(() => this.flushAllBuffers(), this.FLUSH_INTERVAL);
   }
 
   /**
@@ -91,29 +88,6 @@ class LoggerService {
   private formatEntry(entry: LogEntry): string {
     const context = entry.context ? JSON.stringify(entry.context) : '';
     return `[${entry.timestamp}] [${entry.level}] ${entry.message} ${context}\n`;
-  }
-
-  /**
-   * 写入日志到文件
-   */
-  private writeToFile(level: LogLevel, entry: LogEntry): void {
-    if (!this.ENABLE_FILE_LOG) return;
-
-    const logFile = this.LOG_FILES[level];
-    const formattedEntry = this.formatEntry(entry);
-
-    // 检查文件大小，如果超过限制则轮转
-    if (fs.existsSync(logFile)) {
-      const stats = fs.statSync(logFile);
-      if (stats.size >= this.MAX_LOG_SIZE) {
-        const timestamp = format(new Date(), 'yyyyMMdd_HHmmss');
-        const rotatedFile = logFile.replace('.log', `.${timestamp}.log`);
-        fs.renameSync(logFile, rotatedFile);
-      }
-    }
-
-    // 追加到文件
-    fs.appendFileSync(logFile, formattedEntry);
   }
 
   /**

@@ -87,7 +87,7 @@ const router = createRouter({
 })
 
 // 全局路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   // 设置页面标题
   if (to.meta.title) {
     document.title = `${to.meta.title} - Medagil AI平台`

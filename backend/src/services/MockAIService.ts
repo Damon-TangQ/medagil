@@ -219,7 +219,7 @@ export class MockAIService extends EventEmitter {
    * @param taskType 任务类型
    * @param input 输入数据
    */
-  async executeTask(taskType: TaskType, input?: any): Promise<void> {
+  async executeTask(taskType: TaskType, _input?: any): Promise<void> {
     if (this.isProcessing) {
       throw new Error('已有任务正在执行中');
     }
@@ -270,7 +270,7 @@ export class MockAIService extends EventEmitter {
    */
   private async simulateSteps(steps: TaskStep[]): Promise<void> {
     for (let i = 0; i < steps.length; i++) {
-      const step = { ...steps[i], status: 'in_progress' as const };
+      const step: TaskStep = { ...steps[i], status: 'in_progress' };
       this.emit('step', { type: 'step', data: step });
 
       // 模拟步骤执行时间

@@ -4,13 +4,13 @@
  * 测试认证、错误处理、日志等中间件
  */
 
-import { Request, Response, NextFunction } from 'express';
-import { authenticate, optionalAuthenticate, requireSubscriptionLevel, requireAdmin } from '../src/middleware/auth';
-import { errorHandler, notFoundHandler, ValidationError, AuthError, BusinessError } from '../src/middleware/errorHandler';
-import { validate, rules } from '../src/middleware/validation';
+import { Request, Response } from 'express';
+import { authenticate, optionalAuthenticate, requireSubscriptionLevel, requireAdmin } from '../../src/middleware/auth';
+import { errorHandler, notFoundHandler, ValidationError, AuthError, BusinessError } from '../../src/middleware/errorHandler';
+import { validate, rules } from '../../src/middleware/validation';
 
 // Mock MockUserService
-jest.mock('../src/services/MockUserService', () => ({
+jest.mock('../../src/services/MockUserService', () => ({
   verifyToken: jest.fn().mockReturnValue({ userId: 'test', username: 'test', subscriptionLevel: 1 }),
   login: jest.fn().mockReturnValue({ token: 'test-token', user: { id: 'test', username: 'test' } })
 }));

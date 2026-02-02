@@ -32,9 +32,9 @@ export class BusinessError extends Error {
  */
 export const errorHandler = (
   error: Error,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   console.error('Error:', error);
 
@@ -80,7 +80,7 @@ export const errorHandler = (
  * 404处理中间件
  */
 export const notFoundHandler = (
-  req: Request,
+  _req: Request,
   res: Response
 ): void => {
   res.status(404).json({

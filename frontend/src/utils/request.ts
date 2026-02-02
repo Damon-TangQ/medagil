@@ -3,10 +3,10 @@
  * 统一处理请求和响应
  */
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import router from '@/router'
-import { storage } from '@/shared'
+import { storage } from '@/shared/utils'
 
 // ==================== 类型定义 ====================
 export interface RequestConfig extends AxiosRequestConfig {
@@ -34,7 +34,7 @@ const service: AxiosInstance = axios.create({
 
 // ==================== 请求拦截器 ====================
 service.interceptors.request.use(
-  (config: RequestConfig) => {
+  (config: any) => {
     // 显示加载状态
     if (config.showLoading) {
       // TODO: 添加全局加载状态
@@ -44,7 +44,9 @@ service.interceptors.request.use(
     if (!config.skipAuth) {
       const token = storage.get<string>('token')
       if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+        if (config.headers) {
+          config.headers.Authorization = `Bearer ${token}`
+        }
       }
     }
 
@@ -66,7 +68,7 @@ service.interceptors.request.use(
 
 // ==================== 响应拦截器 ====================
 service.interceptors.response.use(
-  (response: AxiosResponse<ResponseData>) => {
+  (response: any) => {
     const { data, config } = response
 
     // 关闭加载状态

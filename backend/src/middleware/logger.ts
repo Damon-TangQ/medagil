@@ -7,6 +7,19 @@ import { Request, Response, NextFunction } from 'express';
 import LoggerService from '../services/LoggerService';
 import PerformanceMonitor from '../services/PerformanceMonitor';
 
+// 扩展Request接口以包含用户信息
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        username: string;
+        subscriptionLevel: number;
+      };
+    }
+  }
+}
+
 /**
  * HTTP请求日志中间件
  */
@@ -58,8 +71,8 @@ export const requestLogger = (
 export const errorLogger = (
   error: Error,
   req: Request,
-  res: Response,
-  next: NextFunction
+  _res: Response,
+  _next: NextFunction
 ): void => {
   LoggerService.logError(error, {
     method: req.method,
@@ -70,5 +83,5 @@ export const errorLogger = (
     ip: req.ip
   });
 
-  next(error);
+  _next(error);
 };

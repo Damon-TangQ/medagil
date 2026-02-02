@@ -70,7 +70,7 @@ const handleBack = () => {
 }
 
 // 提交表单
-const handleSubmit = async (formData: any) => {
+const handleSubmit = async (_formData: any) => {
   try {
     // TODO: 调用更新项目API
     // await axios.put(`/api/projects/${route.params.id}`, formData)

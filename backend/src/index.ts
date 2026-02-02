@@ -1,10 +1,9 @@
 
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import routes from './routes';
 import LoggerService from './services/LoggerService';
-import PerformanceMonitor from './services/PerformanceMonitor';
 import DatabaseService from './services/DatabaseService';
 import { requestLogger, errorLogger } from './middleware/logger';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
@@ -23,7 +22,12 @@ async function initializeServices() {
     LoggerService.info('所有服务初始化完成');
   } catch (error) {
     LoggerService.error('服务初始化失败', {
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? {
+        message: error.message,
+        stack: error.stack
+      } : {
+        message: 'Unknown error'
+      }
     });
     process.exit(1);
   }
@@ -41,7 +45,7 @@ app.use(requestLogger);
 app.use('/api', routes);
 
 // 健康检查路由
-app.get('/health', async (req: Request, res: Response) => {
+app.get('/health', async (_req: Request, res: Response) => {
   try {
     // 检查数据库连接
     const isDbReady = DatabaseService.isReady();
@@ -55,7 +59,12 @@ app.get('/health', async (req: Request, res: Response) => {
     });
   } catch (error) {
     LoggerService.error('健康检查失败', {
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? {
+        message: error.message,
+        stack: error.stack
+      } : {
+        message: 'Unknown error'
+      }
     });
     res.status(500).json({
       status: 'error',
@@ -66,7 +75,7 @@ app.get('/health', async (req: Request, res: Response) => {
 });
 
 // API根路由
-app.get('/api', (req: Request, res: Response) => {
+app.get('/api', (_req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     message: '欢迎使用Medagil AI平台API',
@@ -112,7 +121,12 @@ process.on('SIGINT', async () => {
 // 启动服务器
 startServer().catch(error => {
   LoggerService.error('服务器启动失败', {
-    error: error instanceof Error ? error.message : 'Unknown error'
+    error: error instanceof Error ? {
+      message: error.message,
+      stack: error.stack
+    } : {
+      message: 'Unknown error'
+    }
   });
   process.exit(1);
 });

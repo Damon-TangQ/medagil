@@ -330,5 +330,9 @@ Authorization: Bearer <your-token>
   }
 }
 
+// 导出类
+export { ApiDocsService };
+
 // 导出单例
-export default new ApiDocsService();
+export const apiDocsService = new ApiDocsService();
+export default apiDocsService;

@@ -180,8 +180,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Check, WechatPay, Alipay } from '@/icons-vue'
-import { getCurrentUser, getSubscriptionList, getUserSubscriptionRecords, createSubscriptionOrder } from '@/api'
+import { Check } from '@/icons-vue'
+import { getCurrentUser, getUserSubscriptionRecords, createSubscriptionOrder } from '@/api'
 import { formatDate, storage } from '@/shared'
 import { SUBSCRIPTION_LEVEL, SUBSCRIPTION_LEVEL_NAMES, PAYMENT_STATUS, PAYMENT_STATUS_NAMES } from '@/shared/constants'
 
@@ -340,7 +340,7 @@ const getSubscriptionType = (level?: number) => {
 
 // 获取订阅名称
 const getSubscriptionName = (level?: number) => {
-  return level !== undefined ? SUBSCRIPTION_LEVEL_NAMES[level] : '未知'
+  return level !== undefined ? SUBSCRIPTION_LEVEL_NAMES[level as keyof typeof SUBSCRIPTION_LEVEL_NAMES] : '未知'
 }
 
 // 获取支付状态类型
@@ -350,7 +350,7 @@ const getPaymentStatusType = (status: number) => {
 
 // 获取支付状态名称
 const getPaymentStatusName = (status: number) => {
-  return PAYMENT_STATUS_NAMES[status] || '未知'
+  return PAYMENT_STATUS_NAMES[status as keyof typeof PAYMENT_STATUS_NAMES] || '未知'
 }
 
 // 计算使用进度

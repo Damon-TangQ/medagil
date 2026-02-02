@@ -5,7 +5,7 @@
 
 import { ElMessage, ElMessageBox } from 'element-plus'
 import router from '@/router'
-import { storage } from '@/shared'
+import { storage } from '@/shared/utils'
 
 // ==================== 错误类型定义 ====================
 
@@ -110,7 +110,7 @@ class ErrorHandler {
   /**
    * 处理认证错误
    */
-  private async handleAuthError(error: any): void {
+  private async handleAuthError(_error: any): Promise<void> {
     try {
       await ElMessageBox.confirm(
         '登录状态已过期，您可以继续留在该页面，或者重新登录',
@@ -174,14 +174,7 @@ class ErrorHandler {
     return error
   }
 
-  /**
-   * 报告错误
-   */
-  private reportError(error: any): void {
-    // TODO: 实现错误上报逻辑
-    // 例如：发送到Sentry或其他监控系统
-    console.log('上报错误:', error)
-  }
+
 }
 
 // ==================== 导出单例 ====================
@@ -208,28 +201,28 @@ export const handlePromiseError = async <T>(
 /**
  * 创建错误提示
  */
-export const showError = (message: string, duration: number = 3000): void => {
+export const showError = (message: string, _duration: number = 3000): void => {
   ElMessage.error(message)
 }
 
 /**
  * 创建成功提示
  */
-export const showSuccess = (message: string, duration: number = 3000): void => {
+export const showSuccess = (message: string, _duration: number = 3000): void => {
   ElMessage.success(message)
 }
 
 /**
  * 创建警告提示
  */
-export const showWarning = (message: string, duration: number = 3000): void => {
+export const showWarning = (message: string, _duration: number = 3000): void => {
   ElMessage.warning(message)
 }
 
 /**
  * 创建信息提示
  */
-export const showInfo = (message: string, duration: number = 3000): void => {
+export const showInfo = (message: string, _duration: number = 3000): void => {
   ElMessage.info(message)
 }
 

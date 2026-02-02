@@ -3,7 +3,7 @@
  * 封装表单管理逻辑
  */
 
-import { ref, Ref, reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import type { DeepPartial } from '@/types'
 
@@ -15,7 +15,7 @@ export function useForm<T extends Record<string, any>>(
   rules?: FormRules
 ) {
   const formRef = ref<FormInstance>()
-  const formData = reactive<DeepPartial<T>>({ ...initialValues })
+  const formData = reactive({ ...initialValues }) as DeepPartial<T>
   const loading = ref(false)
 
   // 重置表单
@@ -51,12 +51,12 @@ export function useForm<T extends Record<string, any>>(
 
   // 设置字段值
   const setFieldValue = <K extends keyof T>(field: K, value: T[K]): void => {
-    formData[field] = value
+    (formData as any)[field] = value
   }
 
   // 获取字段值
   const getFieldValue = <K extends keyof T>(field: K): T[K] => {
-    return formData[field]
+    return (formData as any)[field]
   }
 
   // 提交表单

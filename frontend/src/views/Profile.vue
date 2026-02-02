@@ -200,7 +200,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Plus, Folder, List, Star, Lock, Bell } from '@element-plus/icons-vue'
-import { getCurrentUser, updateUserInfo, changePassword, uploadAvatar } from '@/api'
+import { getCurrentUser, updateUserInfo, changePassword } from '@/api'
 import { formatDate, storage } from '@/shared'
 import { SUBSCRIPTION_LEVEL, SUBSCRIPTION_LEVEL_NAMES } from '@/shared/constants'
 import { useForm } from '@/composables'
@@ -273,7 +273,7 @@ const { formRef: passwordFormRef, formData: passwordForm, rules: passwordRules, 
     confirmPassword: [
       { required: true, message: '请再次输入新密码', trigger: 'blur' },
       {
-        validator: (rule: any, value: any, callback: any) => {
+        validator: (_rule: any, value: any, callback: any) => {
           if (value !== passwordForm.newPassword) {
             callback(new Error('两次输入的密码不一致'))
           } else {
@@ -310,7 +310,7 @@ const handleEditProfile = () => {
 
 // 保存资料
 const handleSaveProfile = async () => {
-  const success = await submitEditForm(async () => {
+  await submitEditForm(async () => {
     editLoading.value = true
     try {
       const response = await updateUserInfo({
@@ -365,12 +365,12 @@ const handleChangePassword = () => {
 
 // 提交修改密码
 const handleChangePasswordSubmit = async () => {
-  const success = await submitPasswordForm(async () => {
+  await submitPasswordForm(async () => {
     passwordLoading.value = true
     try {
       const response = await changePassword({
-        oldPassword: passwordForm.oldPassword,
-        newPassword: passwordForm.newPassword
+        oldPassword: passwordForm.oldPassword || '',
+        newPassword: passwordForm.newPassword || ''
       })
 
       if (response.success) {
@@ -418,7 +418,7 @@ const getSubscriptionType = (level: number) => {
 
 // 获取订阅名称
 const getSubscriptionName = (level: number) => {
-  return SUBSCRIPTION_LEVEL_NAMES[level] || '免费版'
+  return SUBSCRIPTION_LEVEL_NAMES[level as keyof typeof SUBSCRIPTION_LEVEL_NAMES] || '免费版'
 }
 
 onMounted(() => {

@@ -65,7 +65,12 @@ class DatabaseService {
     } catch (error) {
       this.isConnected = false;
       LoggerService.error('数据库连接失败', {
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? {
+          message: error.message,
+          stack: error.stack
+        } : {
+          message: 'Unknown error'
+        }
       });
       throw error;
     }
@@ -165,7 +170,12 @@ class DatabaseService {
       LoggerService.info('数据库表初始化成功');
     } catch (error) {
       LoggerService.error('数据库表初始化失败', {
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? {
+          message: error.message,
+          stack: error.stack
+        } : {
+          message: 'Unknown error'
+        }
       });
       throw error;
     } finally {

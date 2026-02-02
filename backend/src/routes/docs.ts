@@ -11,7 +11,7 @@ const router = Router();
 /**
  * 获取OpenAPI规范文档
  */
-router.get('/openapi.json', (req: Request, res: Response) => {
+router.get('/openapi.json', (_req: Request, res: Response) => {
   const spec = ApiDocsService.generateOpenApiSpec();
   res.json(spec);
 });
@@ -19,7 +19,7 @@ router.get('/openapi.json', (req: Request, res: Response) => {
 /**
  * 获取Markdown文档
  */
-router.get('/markdown', (req: Request, res: Response) => {
+router.get('/markdown', (_req: Request, res: Response) => {
   const markdown = ApiDocsService.generateMarkdown();
   res.type('text/markdown').send(markdown);
 });
@@ -27,7 +27,7 @@ router.get('/markdown', (req: Request, res: Response) => {
 /**
  * 获取所有端点
  */
-router.get('/endpoints', (req: Request, res: Response) => {
+router.get('/endpoints', (_req: Request, res: Response) => {
   const endpoints = ApiDocsService.getEndpoints();
   res.json({
     success: true,

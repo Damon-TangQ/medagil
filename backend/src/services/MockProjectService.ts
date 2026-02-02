@@ -276,6 +276,35 @@ class MockProjectService {
   }
 
   /**
+   * 点赞项目
+   */
+  async likeProject(projectId: string): Promise<{ success: boolean; message: string; likeCount: number }> {
+    const project = this.projects.get(projectId);
+    if (!project) {
+      return {
+        success: false,
+        message: '项目不存在',
+        likeCount: 0
+      };
+    }
+
+    // 增加点赞数
+    const updatedProject = {
+      ...project,
+      likeCount: project.likeCount + 1,
+      updatedAt: new Date()
+    };
+
+    this.projects.set(projectId, updatedProject);
+
+    return {
+      success: true,
+      message: '点赞成功',
+      likeCount: updatedProject.likeCount
+    };
+  }
+
+  /**
    * 删除项目
    */
   async deleteProject(projectId: string): Promise<{ success: boolean; message: string }> {
@@ -425,5 +454,9 @@ class MockProjectService {
   }
 }
 
+// 导出类
+export { MockProjectService };
+
 // 导出单例
-export default new MockProjectService();
+export const mockProjectService = new MockProjectService();
+export default mockProjectService;

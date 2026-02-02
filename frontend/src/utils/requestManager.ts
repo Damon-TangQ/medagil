@@ -3,8 +3,7 @@
  * 处理请求重试、取消、节流等功能
  */
 
-import axios, { CancelTokenSource, Canceler } from 'axios'
-import { ElMessage } from 'element-plus'
+import axios, { CancelTokenSource } from 'axios'
 
 // ==================== 类型定义 ====================
 
@@ -133,7 +132,7 @@ class RequestCancel {
    * 取消所有请求
    */
   cancelAll(): void {
-    this.pendingRequests.forEach((source, key) => {
+    this.pendingRequests.forEach((source) => {
       source.cancel('请求被取消')
     })
     this.pendingRequests.clear()

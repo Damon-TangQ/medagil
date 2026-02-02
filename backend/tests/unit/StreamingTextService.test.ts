@@ -4,7 +4,7 @@
  * 测试流式文本生成和传输功能
  */
 
-import StreamingTextService from '../src/services/StreamingTextService';
+import { StreamingTextService } from '../../src/services/StreamingTextService';
 
 let service: any;
 
@@ -57,7 +57,7 @@ describe('StreamingTextService', () => {
 
   describe('读取流式文本', () => {
     test('应该成功读取完整文本', () => {
-      const stream = service.createStream('test_stream');
+      service.createStream('test_stream');
       service.writeChunk('test_stream', 'Hello');
       service.writeChunk('test_stream', ' World');
 
@@ -66,7 +66,7 @@ describe('StreamingTextService', () => {
     });
 
     test('应该支持读取部分文本', () => {
-      const stream = service.createStream('test_stream');
+      service.createStream('test_stream');
       service.writeChunk('test_stream', 'Hello World');
 
       const result = service.readPartialText('test_stream', 0, 5);
@@ -133,7 +133,7 @@ describe('StreamingTextService', () => {
 
   describe('流式文本统计', () => {
     test('应该正确统计字符数', () => {
-      const stream = service.createStream('test_stream');
+      service.createStream('test_stream');
       service.writeChunk('test_stream', 'Hello');
       service.writeChunk('test_stream', ' World');
 
@@ -142,7 +142,7 @@ describe('StreamingTextService', () => {
     });
 
     test('应该正确统计字节数', () => {
-      const stream = service.createStream('test_stream');
+      service.createStream('test_stream');
       const text = 'Hello World';
       service.writeChunk('test_stream', text);
 
@@ -151,7 +151,7 @@ describe('StreamingTextService', () => {
     });
 
     test('应该正确统计片段数', () => {
-      const stream = service.createStream('test_stream');
+      service.createStream('test_stream');
       service.writeChunk('test_stream', 'Hello');
       service.writeChunk('test_stream', ' ');
       service.writeChunk('test_stream', 'World');
@@ -182,9 +182,9 @@ describe('StreamingTextService', () => {
 
   describe('流式文本事件', () => {
     test('应该触发写入事件', (done) => {
-      const stream = service.createStream('test_stream');
+      service.createStream('test_stream');
 
-      stream.on('chunk', (chunk) => {
+      service.on('test_stream', 'chunk', (chunk: any) => {
         expect(chunk).toBe('test');
         done();
       });
@@ -193,9 +193,9 @@ describe('StreamingTextService', () => {
     });
 
     test('应该触发完成事件', (done) => {
-      const stream = service.createStream('test_stream');
+      service.createStream('test_stream');
 
-      stream.on('complete', () => {
+      service.on('test_stream', 'complete', () => {
         done();
       });
 
@@ -203,14 +203,16 @@ describe('StreamingTextService', () => {
     });
 
     test('应该触发错误事件', (done) => {
-      const stream = service.createStream('test_stream');
+      service.createStream('test_stream');
 
-      stream.on('error', (error) => {
+      service.on('test_stream', 'error', (error: any) => {
         expect(error).toBeDefined();
         done();
       });
 
-      service.writeChunk('nonexistent', 'test');
+      // 尝试向已完成的流写入数据，应该触发错误事件
+      service.completeStream('test_stream');
+      service.writeChunk('test_stream', 'test');
     });
   });
 });

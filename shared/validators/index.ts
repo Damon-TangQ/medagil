@@ -19,7 +19,7 @@ export const required = (message: string = '此项为必填项'): FormRule => ({
  * 邮箱验证
  */
 export const email = (message: string = '请输入正确的邮箱地址'): FormRule => ({
-  type: 'email',
+  pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   message,
   trigger: 'blur'
 });
@@ -73,7 +73,7 @@ export const password = (message: string = '密码必须包含大小写字母和
  * 确认密码验证
  */
 export const confirmPassword = (passwordField: string = 'password', message: string = '两次输入的密码不一致'): FormRule => ({
-  validator: (rule: any, value: any, callback: any) => {
+  validator: (_rule: any, value: any, callback: any) => {
     if (value === '') {
       callback(new Error('请再次输入密码'));
     } else if (value !== passwordField) {
@@ -220,19 +220,7 @@ export const profileRules = {
 
 // ==================== 数据验证函数 ====================
 
-/**
- * 验证邮箱
- */
-export const isValidEmail = (value: string): boolean => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-};
-
-/**
- * 验证手机号
- */
-export const isValidPhone = (value: string): boolean => {
-  return /^1[3-9]\d{9}$/.test(value);
-};
+// 验证函数已从utils模块导出，避免重复导出
 
 /**
  * 验证密码强度

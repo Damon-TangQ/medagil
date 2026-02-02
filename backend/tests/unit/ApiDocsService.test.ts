@@ -4,7 +4,7 @@
  * 测试API文档生成和管理功能
  */
 
-import ApiDocsService from '../src/services/ApiDocsService';
+import ApiDocsService from '../../src/services/ApiDocsService';
 
 describe('ApiDocsService', () => {
   beforeEach(() => {
@@ -134,7 +134,7 @@ describe('ApiDocsService', () => {
       };
 
       ApiDocsService.register(endpoint);
-      const spec = ApiDocsService.generateOpenApiSpec();
+      const spec = ApiDocsService.generateOpenApiSpec() as any;
 
       expect(spec.paths['/api/test']).toBeDefined();
       expect(spec.paths['/api/test'].get).toBeDefined();
@@ -151,7 +151,7 @@ describe('ApiDocsService', () => {
       };
 
       ApiDocsService.register(endpoint);
-      const spec = ApiDocsService.generateOpenApiSpec();
+      const spec = ApiDocsService.generateOpenApiSpec() as any;
 
       expect(spec.components.securitySchemes).toBeDefined();
       expect(spec.components.securitySchemes.bearerAuth).toBeDefined();

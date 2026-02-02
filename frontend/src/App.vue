@@ -9,23 +9,5 @@
 </script>
 
 <style>
-#app {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body, html {
-  height: 100%;
-}
+/* 全局样式已在 styles/index.scss 中定义 */
 </style>

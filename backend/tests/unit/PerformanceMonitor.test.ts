@@ -4,7 +4,7 @@
  * 测试性能指标收集和统计功能
  */
 
-import PerformanceMonitor from '../src/services/PerformanceMonitor';
+import PerformanceMonitor from '../../src/services/PerformanceMonitor';
 
 describe('PerformanceMonitor', () => {
   beforeEach(() => {

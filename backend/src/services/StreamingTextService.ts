@@ -82,6 +82,12 @@ class StreamingTextService {
     }
 
     if (stream.status !== 'active') {
+      const error = new Error('流未激活');
+      // 触发错误事件
+      const emitter = this.emitters.get(streamId);
+      if (emitter) {
+        emitter.emit('error', error);
+      }
       return { success: false, message: '流未激活' };
     }
 
@@ -312,13 +318,11 @@ class StreamingTextService {
     }
   }
 
-  /**
-   * 获取流式文本事件发射器
-   */
-  private getEmitter(streamId: string): EventEmitter | null {
-    return this.emitters.get(streamId) || null;
-  }
+
 }
 
+// 导出类
+export { StreamingTextService };
+
 // 导出单例
-export default new StreamingTextService();
+export const streamingTextService = new StreamingTextService();

@@ -5,4 +5,3 @@
 
 export * from './request'
 export * from './errorHandler'
-export * from './requestManager'

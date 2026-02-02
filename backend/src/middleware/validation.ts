@@ -4,7 +4,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { validationResult, ValidationError } from 'express-validator';
+import { validationResult } from 'express-validator';
 
 /**
  * 验证规则
@@ -129,7 +129,7 @@ export const rules = {
  * 验证中间件
  */
 export const validate = (
-  schema: {
+  _schema: {
     body?: Record<string, any>;
     query?: Record<string, any>;
     params?: Record<string, any>;

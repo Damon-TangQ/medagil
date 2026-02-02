@@ -1,0 +1,110 @@
+// Medagil Platform Main Styles
+// Based on Manus Design Style
+
+@import './variables.scss';
+@import './global.scss';
+@import './layout.scss';
+@import './components.scss';
+
+// Element Plus Theme Customization
+:root {
+  --el-color-primary: #3B82F6;
+  --el-color-primary-light-3: #60A5FA;
+  --el-color-primary-light-5: #93C5FD;
+  --el-color-primary-light-7: #BFDBFE;
+  --el-color-primary-light-8: #DBEAFE;
+  --el-color-primary-light-9: #EFF6FF;
+  --el-color-primary-dark-2: #1E40AF;
+
+  --el-border-radius-base: 8px;
+  --el-border-radius-small: 4px;
+  --el-border-radius-round: 9999px;
+  --el-border-radius-circle: 50%;
+
+  --el-font-size-base: 16px;
+  --el-font-size-small: 14px;
+  --el-font-size-extra-small: 12px;
+  --el-font-size-large: 18px;
+  --el-font-size-extra-large: 20px;
+
+  --el-transition-duration: 0.2s;
+  --el-transition-duration-fast: 0.15s;
+
+  --el-box-shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --el-box-shadow-lighter: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  --el-box-shadow-dark: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+// Element Plus Component Overrides
+.el-button {
+  border-radius: var(--el-border-radius-base);
+  font-weight: 500;
+  transition: all var(--el-transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.el-input {
+  .el-input__wrapper {
+    border-radius: var(--el-border-radius-base);
+    transition: all var(--el-transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.is-focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  }
+}
+
+.el-card {
+  border-radius: var(--el-border-radius-base);
+  border: 1px solid var(--el-border-color-lighter);
+  box-shadow: var(--el-box-shadow-light);
+}
+
+.el-table {
+  border-radius: var(--el-border-radius-base);
+  overflow: hidden;
+}
+
+.el-dialog {
+  border-radius: var(--el-border-radius-large);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.el-message-box {
+  border-radius: var(--el-border-radius-large);
+}
+
+.el-notification {
+  border-radius: var(--el-border-radius-base);
+  box-shadow: var(--el-box-shadow-dark);
+}
+
+.el-dropdown-menu {
+  border-radius: var(--el-border-radius-base);
+  box-shadow: var(--el-box-shadow-light);
+}
+
+.el-menu {
+  border-right: 1px solid var(--el-border-color-lighter);
+
+  .el-menu-item {
+    border-radius: var(--el-border-radius-base);
+    margin: 4px 8px;
+
+    &.is-active {
+      background-color: var(--el-color-primary);
+      color: white;
+    }
+  }
+}
+
+.el-pagination {
+  .el-pager li {
+    border-radius: var(--el-border-radius-base);
+    margin: 0 2px;
+
+    &.is-active {
+      background-color: var(--el-color-primary);
+      color: white;
+    }
+  }
+}

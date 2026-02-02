@@ -4,7 +4,7 @@
  * 测试验证码生成、发送、验证等功能
  */
 
-import VerificationCodeService from '../src/services/VerificationCodeService';
+import VerificationCodeService from '../../src/services/VerificationCodeService';
 
 let service: any;
 

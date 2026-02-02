@@ -3,6 +3,11 @@
  * 扩展共享类型定义，添加前端特有类型
  */
 
+import type { Ref, ComputedRef } from 'vue'
+import type { RouteMeta, RouteRecordRaw } from 'vue-router'
+import type { VNode } from 'vue'
+import type { FormRules } from 'element-plus'
+
 // ==================== 导入共享类型 ====================
 export * from '@/shared/types'
 
@@ -17,7 +22,7 @@ export interface RouteMetaCustom extends RouteMeta {
   affix?: boolean
 }
 
-export interface AppRouteRecordRaw extends RouteRecordRaw {
+export type AppRouteRecordRaw = RouteRecordRaw & {
   meta?: RouteMetaCustom
   children?: AppRouteRecordRaw[]
 }
@@ -79,7 +84,7 @@ export interface FormItem {
   type?: 'input' | 'select' | 'date' | 'number' | 'textarea' | 'switch' | 'checkbox' | 'radio'
   placeholder?: string
   options?: Array<{ label: string; value: any }>
-  rules?: FormRule[]
+  rules?: FormRules
   span?: number
   disabled?: boolean
   readonly?: boolean
@@ -416,9 +421,13 @@ export interface UseTableResult<T> {
   total: Ref<number>
   currentPage: Ref<number>
   pageSize: Ref<number>
+  totalPages: ComputedRef<number>
+  hasMore: ComputedRef<boolean>
   refresh: () => Promise<void>
   handlePageChange: (page: number) => void
   handleSizeChange: (size: number) => void
+  updateParams: (params: any) => void
+  reset: () => Promise<void>
 }
 
 // ==================== VNode类型 ====================

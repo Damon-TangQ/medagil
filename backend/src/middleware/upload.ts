@@ -19,21 +19,21 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 
 // 存储配置
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const userDir = path.join(UPLOAD_DIR, req.user?.id || 'anonymous');
+  destination: (_req, _file, cb) => {
+    const userDir = path.join(UPLOAD_DIR, 'anonymous');
     if (!fs.existsSync(userDir)) {
       fs.mkdirSync(userDir, { recursive: true });
     }
     cb(null, userDir);
   },
-  filename: (req, file, cb) => {
+  filename: (_req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, uniqueSuffix + path.extname(file.originalname));
   }
 });
 
 // 文件过滤器
-const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   // 允许的文件类型
   const allowedTypes = [
     'image/jpeg',

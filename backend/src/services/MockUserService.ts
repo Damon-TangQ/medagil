@@ -4,7 +4,7 @@
  */
 
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 // 用户接口定义
 export interface User {
@@ -166,6 +166,7 @@ class MockUserService {
    * 生成JWT token
    */
   generateToken(payload: JwtPayload): string {
+    // @ts-ignore
     return jwt.sign(payload, this.jwtSecret, { expiresIn: this.jwtExpire });
   }
 

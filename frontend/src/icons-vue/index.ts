@@ -42,19 +42,15 @@ export {
   ArrowDown,
   CaretLeft,
   CaretRight,
-  CaretUp,
-  CaretDown,
   CirclePlus,
   CircleClose,
   CircleCheck,
-  CircleMinus,
   Warning,
   InfoFilled,
   SuccessFilled,
   WarningFilled,
   Loading,
   Menu,
-  Home,
   Document,
   Files,
   Notebook,
@@ -90,7 +86,6 @@ export {
   DataBoard,
   PieChart as PieChartIcon,
   Histogram as HistogramIcon,
-  LineChart,
   TrendCharts as TrendChartsIcon
 } from '@element-plus/icons-vue'
 

@@ -5,7 +5,7 @@
 
 import MockUserService, { RegisterData, LoginData, WechatLoginData } from './MockUserService';
 import MockProjectService, { CreateProjectData, UpdateProjectData } from './MockProjectService';
-import MockTaskService, { CreateTaskData, UpdateTaskData, ConversationMessage } from './MockTaskService';
+import MockTaskService, { CreateTaskData, ConversationMessage } from './MockTaskService';
 import MockSubscriptionService from './MockSubscriptionService';
 
 // ==================== 用户服务示例 ====================
@@ -289,24 +289,21 @@ async function runAllExamples() {
   await getUserInfoExample();
   await updateUserExample();
 
-  console.log('
-===== 项目服务示例 =====');
+  console.log('===== 项目服务示例 =====');
   await createProjectExample();
   await getUserProjectsExample();
   await updateProjectExample();
   await incrementViewCountExample();
   await searchProjectsExample();
 
-  console.log('
-===== 任务服务示例 =====');
+  console.log('===== 任务服务示例 =====');
   await createTaskExample();
   await getUserTasksExample();
   await addConversationExample();
   await getConversationHistoryExample();
   await markTaskAsCompletedExample();
 
-  console.log('
-===== 订阅服务示例 =====');
+  console.log('===== 订阅服务示例 =====');
   await getAllActiveSubscriptionsExample();
   await createSubscriptionRecordExample();
   await getActiveSubscriptionExample();
@@ -315,6 +312,9 @@ async function runAllExamples() {
   await getSubscriptionFeaturesExample();
   await hasFeatureExample();
 }
+
+// 导出函数以便在其他地方调用
+export { runAllExamples };
 
 // 取消注释以运行所有示例
 // runAllExamples();

@@ -3,7 +3,6 @@
  */
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
 
 // 消息接口
 export interface Message {
@@ -32,9 +31,6 @@ export interface TaskType {
   name: string
   description: string
 }
-
-// API基础URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 
 export const useTaskStore = defineStore('task', () => {
   // 状态
@@ -197,7 +193,7 @@ export const useTaskStore = defineStore('task', () => {
   }
 
   // 加载对话历史
-  const loadConversationHistory = async (conversationId: string) => {
+  const loadConversationHistory = async (_conversationId: string) => {
     try {
       // const response = await axios.get(`${API_BASE_URL}/conversations/${conversationId}`)
       // 模拟加载历史消息

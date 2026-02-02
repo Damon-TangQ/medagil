@@ -1,0 +1,238 @@
+// Layout Styles for Medagil Platform
+// Based on Manus Design Style
+
+@import './variables.scss';
+
+// Main Layout
+.layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+// Sidebar
+.sidebar {
+  width: $sidebar-width;
+  background-color: $card-background;
+  border-right: 1px solid $border-color;
+  display: flex;
+  flex-direction: column;
+  transition: width $transition-base $transition-timing;
+  z-index: $z-index-fixed;
+
+  &.collapsed {
+    width: $sidebar-collapsed-width;
+  }
+
+  .sidebar-header {
+    height: $header-height;
+    display: flex;
+    align-items: center;
+    padding: $spacing-md;
+    border-bottom: 1px solid $border-color;
+
+    .logo {
+      font-size: $font-size-xl;
+      font-weight: $font-weight-bold;
+      color: $primary-color;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity $transition-base $transition-timing;
+
+      &.collapsed {
+        opacity: 0;
+        width: 0;
+      }
+    }
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-sm 0;
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: $spacing-sm $spacing-md;
+      color: $text-secondary;
+      cursor: pointer;
+      transition: all $transition-base $transition-timing;
+      text-decoration: none;
+      margin: $spacing-xs $spacing-sm;
+      border-radius: $border-radius-base;
+
+      &:hover {
+        background-color: rgba($primary-color, 0.1);
+        color: $primary-color;
+      }
+
+      &.active {
+        background-color: $primary-color;
+        color: white;
+      }
+
+      .nav-icon {
+        font-size: $font-size-lg;
+        margin-right: $spacing-md;
+        flex-shrink: 0;
+      }
+
+      .nav-text {
+        white-space: nowrap;
+        overflow: hidden;
+        transition: opacity $transition-base $transition-timing;
+
+        &.collapsed {
+          opacity: 0;
+          width: 0;
+        }
+      }
+    }
+  }
+
+  .sidebar-footer {
+    padding: $spacing-md;
+    border-top: 1px solid $border-color;
+  }
+}
+
+// Main Content Area
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: $background-color;
+}
+
+// Header
+.header {
+  height: $header-height;
+  background-color: $card-background;
+  border-bottom: 1px solid $border-color;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $spacing-lg;
+  z-index: $z-index-sticky;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: $border-radius-base;
+    cursor: pointer;
+    transition: background-color $transition-base $transition-timing;
+
+    &:hover {
+      background-color: rgba($primary-color, 0.1);
+    }
+  }
+
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    cursor: pointer;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-base;
+    transition: background-color $transition-base $transition-timing;
+
+    &:hover {
+      background-color: rgba($primary-color, 0.1);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: $border-radius-full;
+      background-color: $primary-color;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+    }
+
+    .user-name {
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $text-primary;
+    }
+  }
+}
+
+// Page Content
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-lg;
+
+  .page-header {
+    margin-bottom: $spacing-lg;
+
+    .page-title {
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-bold;
+      color: $text-primary;
+      margin-bottom: $spacing-xs;
+    }
+
+    .page-description {
+      font-size: $font-size-sm;
+      color: $text-secondary;
+    }
+  }
+
+  .page-body {
+    .card {
+      margin-bottom: $spacing-lg;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: $breakpoint-md) {
+  .sidebar {
+    position: fixed;
+    left: -$sidebar-width;
+    height: 100vh;
+    z-index: $z-index-modal;
+
+    &.open {
+      left: 0;
+    }
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: $z-index-modal-backdrop;
+
+    &.active {
+      display: block;
+    }
+  }
+}

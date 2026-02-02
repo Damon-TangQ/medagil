@@ -92,6 +92,7 @@ export const deepClone = <T>(obj: T): T => {
     });
     return copy;
   }
+  return obj as any;
 };
 
 /**

@@ -18,9 +18,8 @@ import type {
   UpdateTaskData,
   Subscription,
   SubscriptionRecord,
-  ApiResponse,
   ProjectListResponse
-} from '@/shared'
+} from '@/shared/types'
 
 // ==================== 认证相关API ====================
 

@@ -1,19 +1,185 @@
 <template>
   <div class="task-chat-container">
-    <div class="chat-header">
-      <div class="header-left">
-        <el-icon class="back-icon" @click="goBack">
-          <DArrowLeft />
-        </el-icon>
-        <h2 class="task-title">{{ taskTitle }}</h2>
+    <!-- 左侧导航栏 -->
+    <div class="sidebar">
+      <!-- 搜索框 -->
+      <div class="sidebar-section">
+        <el-input
+          v-model="searchQuery"
+          placeholder="搜索历史对话..."
+          prefix-icon="Search"
+          clearable
+          class="search-input"
+        />
       </div>
-      <div class="header-right">
-        <el-button type="primary" size="small" @click="exportConversation">
-          <el-icon><Download /></el-icon>
-          导出对话
+
+      <!-- 项目库 -->
+      <div class="sidebar-section">
+        <div class="section-header">
+          <el-icon><Folder /></el-icon>
+          <span>项目库</span>
+        </div>
+        <el-tree
+          :data="projectTreeData"
+          :props="{ children: 'children', label: 'label' }"
+          node-key="id"
+          default-expand-all
+          :expand-on-click-node="false"
+          class="project-tree"
+        >
+          <template #default="{ node, data }">
+            <div class="tree-node">
+              <el-icon v-if="data.type === 'folder'"><Folder /></el-icon>
+              <el-icon v-else><Document /></el-icon>
+              <span>{{ node.label }}</span>
+            </div>
+          </template>
+        </el-tree>
+      </div>
+
+      <!-- 成果库 -->
+      <div class="sidebar-section">
+        <div class="section-header">
+          <el-icon><Star /></el-icon>
+          <span>成果库</span>
+        </div>
+        <div class="achievement-list">
+          <div
+            v-for="item in achievements"
+            :key="item.id"
+            class="achievement-item"
+            @click="openAchievement(item)"
+          >
+            <div class="achievement-icon">
+              <el-icon><Star /></el-icon>
+            </div>
+            <div class="achievement-content">
+              <div class="achievement-title">{{ item.title }}</div>
+              <div class="achievement-time">{{ formatTime(item.timestamp) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 所有任务 -->
+      <div class="sidebar-section">
+        <div class="section-header">
+          <el-icon><List /></el-icon>
+          <span>所有任务</span>
+        </div>
+        <div class="task-timeline">
+          <el-timeline>
+            <el-timeline-item
+              v-for="task in taskTimeline"
+              :key="task.id"
+              :timestamp="formatTime(task.timestamp)"
+              placement="top"
+              :type="task.type"
+            >
+              <div class="timeline-content">
+                <div class="timeline-title">{{ task.title }}</div>
+                <div class="timeline-desc">{{ task.description }}</div>
+              </div>
+            </el-timeline-item>
+          </el-timeline>
+        </div>
+      </div>
+
+      <!-- 设置入口 -->
+      <div class="sidebar-section settings-section">
+        <el-button text class="settings-button" @click="openSettings">
+          <el-icon><Setting /></el-icon>
+          <span>设置</span>
         </el-button>
       </div>
     </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+      <!-- 顶部状态栏 -->
+      <div class="chat-header">
+        <div class="header-left">
+          <el-icon class="back-icon" @click="goBack">
+            <DArrowLeft />
+          </el-icon>
+          <h2 class="task-title">{{ taskTitle }}</h2>
+        </div>
+        
+        <div class="header-center">
+          <!-- Medagil Logo -->
+          <div class="logo">
+            <el-icon :size="32" color="var(--el-color-primary)"><Promotion /></el-icon>
+            <span class="logo-text">Medagil</span>
+          </div>
+          
+          <!-- 模型切换 -->
+          <el-dropdown trigger="click" class="model-dropdown">
+            <span class="model-selector">
+              <el-icon><MagicStick /></el-icon>
+              <span>{{ currentModel }}</span>
+              <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  v-for="model in models"
+                  :key="model.id"
+                  :command="model"
+                  @click="selectModel(model)"
+                >
+                  <el-icon><MagicStick /></el-icon>
+                  {{ model.name }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          
+          <!-- 积分显示 -->
+          <div class="points-display">
+            <el-icon :size="20" color="#f59e0b"><Coin /></el-icon>
+            <span class="points-text">{{ points }} 积分</span>
+          </div>
+        </div>
+        
+        <div class="header-right">
+          <!-- 通知铃铛 -->
+          <el-badge :value="notificationCount" :hidden="notificationCount === 0" class="notification-badge">
+            <el-button circle class="notification-button" @click="showNotifications">
+              <el-icon :size="20"><Bell /></el-icon>
+            </el-button>
+          </el-badge>
+          
+          <!-- 用户菜单 -->
+          <el-dropdown trigger="click" class="user-dropdown">
+            <div class="user-avatar-wrapper">
+              <el-avatar :size="36" :src="userAvatar">
+                <el-icon><User /></el-icon>
+              </el-avatar>
+            </div>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="goToProfile">
+                  <el-icon><User /></el-icon>
+                  个人中心
+                </el-dropdown-item>
+                <el-dropdown-item @click="goToSettings">
+                  <el-icon><Setting /></el-icon>
+                  账号设置
+                </el-dropdown-item>
+                <el-dropdown-item divided @click="handleLogout">
+                  <el-icon><SwitchButton /></el-icon>
+                  退出登录
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          
+          <el-button type="primary" size="small" @click="exportConversation">
+            <el-icon><Download /></el-icon>
+            导出对话
+          </el-button>
+        </div>
+      </div>
 
     <div class="chat-content">
       <!-- 消息列表 -->
@@ -27,8 +193,12 @@
             <el-avatar :size="40" :src="message.role === 'user' ? userAvatar : aiAvatar" />
           </div>
           <div class="message-content">
+            <!-- 智能体标识和名称 -->
             <div class="message-info">
-              <span class="message-role">{{ message.role === 'user' ? '我' : 'AI助手' }}</span>
+              <div class="message-role-info">
+                <span class="message-role">{{ message.role === 'user' ? '我' : currentModel }}</span>
+                <el-tag v-if="message.role === 'ai'" size="small" type="primary" effect="plain">AI助手</el-tag>
+              </div>
               <span class="message-time">{{ formatTime(message.timestamp) }}</span>
             </div>
             <div class="message-text" v-html="message.content"></div>
@@ -51,7 +221,7 @@
                 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item command="5">⭐⭐⭐⭐⭐ 非常满意</el-dropdown-item>
+                    <el-dropdown-item command="5">⭐⭐⭐⭐⭐⭐ 非常满意</el-dropdown-item>
                     <el-dropdown-item command="4">⭐⭐⭐⭐ 满意</el-dropdown-item>
                     <el-dropdown-item command="3">⭐⭐⭐ 一般</el-dropdown-item>
                     <el-dropdown-item command="2">⭐⭐ 不满意</el-dropdown-item>
@@ -59,6 +229,24 @@
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
+            </div>
+
+            <!-- 推荐追问 -->
+            <div v-if="message.role === 'ai' && message.suggestions && message.suggestions.length > 0" class="follow-up-suggestions">
+              <div class="suggestions-title">推荐追问</div>
+              <div class="suggestions-list">
+                <el-button
+                  v-for="(suggestion, index) in message.suggestions"
+                  :key="index"
+                  size="small"
+                  text
+                  class="suggestion-button"
+                  @click="useSuggestion(suggestion)"
+                >
+                  <el-icon><ChatDotRound /></el-icon>
+                  {{ suggestion }}
+                </el-button>
+              </div>
             </div>
 
             <!-- 实时步骤展示组件 -->
@@ -111,37 +299,65 @@
     <!-- 消息输入框 -->
     <div class="chat-input">
       <div class="input-toolbar">
+        <!-- 附件上传 -->
         <el-upload
           :show-file-list="false"
           :before-upload="handleFileUpload"
           action="#"
-          accept="image/*,.pdf,.doc,.docx"
+          accept=".pdf,.doc,.docx,.txt"
         >
-          <el-button size="small" text>
+          <el-button size="small" text class="toolbar-button">
             <el-icon><Paperclip /></el-icon>
-            上传附件
+            <span>上传附件</span>
           </el-button>
         </el-upload>
-        <el-button size="small" text @click="insertTemplate">
-          <el-icon><Document /></el-icon>
-          插入模板
+        
+        <!-- 语音输入 -->
+        <el-button size="small" text class="toolbar-button" @click="toggleVoiceInput">
+          <el-icon><Microphone /></el-icon>
+          <span>{{ isRecording ? '停止录音' : '语音输入' }}</span>
         </el-button>
+        
+        <!-- 智能体选择 -->
+        <el-dropdown trigger="click" class="agent-dropdown">
+          <el-button size="small" text class="toolbar-button">
+            <el-icon><MagicStick /></el-icon>
+            <span>{{ currentModel }}</span>
+            <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                v-for="model in models"
+                :key="model.id"
+                :command="model"
+                @click="selectModel(model)"
+              >
+                <el-icon><MagicStick /></el-icon>
+                {{ model.name }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
+      
       <div class="input-area">
         <el-input
           v-model="inputMessage"
           type="textarea"
           :rows="4"
           placeholder="请输入您的消息..."
-          @keydown.enter.ctrl="sendMessage"
+          @keydown.enter="handleEnterKey"
         />
         <el-button type="primary" :loading="isSending" @click="sendMessage" class="send-button">
-          <el-icon><Promotion /></el-icon>
-          发送
+          <el-icon v-if="isSending" class="is-loading"><Loading /></el-icon>
+          <el-icon v-else><Promotion /></el-icon>
+          <span>发送</span>
         </el-button>
       </div>
+      
       <div class="input-hint">
-        <span>按 Ctrl+Enter 快速发送</span>
+        <span>按 Enter 快速发送，Shift+Enter 换行</span>
       </div>
     </div>
   </div>
@@ -150,7 +366,7 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   DArrowLeft,
   Download,
@@ -160,7 +376,18 @@ import {
   ArrowDown,
   Paperclip,
   Document,
-  Promotion
+  Promotion,
+  Search,
+  Folder,
+  List,
+  Setting,
+  MagicStick,
+  Coin,
+  Bell,
+  User,
+  SwitchButton,
+  Microphone,
+  Loading
 } from '@element-plus/icons-vue'
 
 // 路由相关
@@ -170,6 +397,24 @@ const router = useRouter()
 // 任务信息
 const taskId = computed(() => route.params.id as string)
 const taskTitle = ref('AI助手对话')
+
+// 顶部状态栏数据
+const currentModel = ref('临床论著助手')
+const points = ref(1250)
+const notificationCount = ref(3)
+
+// 模型列表
+const models = ref([
+  { id: '1', name: '临床论著助手' },
+  { id: '2', name: '文献分析助手' },
+  { id: '3', name: '数据可视化助手' },
+  { id: '4', name: '统计分析助手' },
+  { id: '5', name: '实验设计助手' },
+  { id: '6', name: '结果解读助手' },
+  { id: '7', name: '论文写作助手' },
+  { id: '8', name: '图表生成助手' },
+  { id: '9', name: '综合咨询助手' }
+])
 
 // 消息列表
 const messages = ref<Array<{
@@ -188,6 +433,13 @@ const messages = ref<Array<{
     content: string
     timestamp: number
   }>
+  suggestions?: string[]
+  attachments?: Array<{
+    name: string
+    type: string
+    size: string
+    url: string
+  }>
   rating?: number
 }>>([])
 
@@ -197,6 +449,7 @@ const inputMessage = ref('')
 // 发送状态
 const isSending = ref(false)
 const isTyping = ref(false)
+const isRecording = ref(false)
 
 // 消息列表引用
 const messageListRef = ref<HTMLElement>()
@@ -204,6 +457,141 @@ const messageListRef = ref<HTMLElement>()
 // 头像
 const userAvatar = ref('https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png')
 const aiAvatar = ref('https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png')
+
+// 左侧导航栏数据
+const searchQuery = ref('')
+
+// 项目库树形数据
+const projectTreeData = ref([
+  {
+    id: '1',
+    label: '医学文献研究',
+    type: 'folder',
+    children: [
+      {
+        id: '1-1',
+        label: '心血管疾病',
+        type: 'folder',
+        children: [
+          { id: '1-1-1', label: '高血压研究', type: 'file' },
+          { id: '1-1-2', label: '冠心病分析', type: 'file' }
+        ]
+      },
+      {
+        id: '1-2',
+        label: '神经科学',
+        type: 'folder',
+        children: [
+          { id: '1-2-1', label: '阿尔茨海默病', type: 'file' },
+          { id: '1-2-2', label: '帕金森病', type: 'file' }
+        ]
+      }
+    ]
+  },
+  {
+    id: '2',
+    label: '临床试验',
+    type: 'folder',
+    children: [
+      { id: '2-1', label: '一期试验', type: 'file' },
+      { id: '2-2', label: '二期试验', type: 'file' },
+      { id: '2-3', label: '三期试验', type: 'file' }
+    ]
+  },
+  {
+    id: '3',
+    label: '药物研发',
+    type: 'folder',
+    children: [
+      { id: '3-1', label: '靶点发现', type: 'file' },
+      { id: '3-2', label: '化合物筛选', type: 'file' }
+    ]
+  }
+])
+
+// 成果库数据
+const achievements = ref([
+  {
+    id: '1',
+    title: '心血管疾病风险预测模型',
+    timestamp: Date.now() - 86400000
+  },
+  {
+    id: '2',
+    title: '药物相互作用分析报告',
+    timestamp: Date.now() - 172800000
+  },
+  {
+    id: '3',
+    title: '临床试验数据可视化',
+    timestamp: Date.now() - 259200000
+  }
+])
+
+// 任务时间线数据
+const taskTimeline = ref([
+  {
+    id: '1',
+    title: '文献检索任务',
+    description: '检索心血管疾病相关文献',
+    timestamp: Date.now() - 3600000,
+    type: 'primary'
+  },
+  {
+    id: '2',
+    title: '数据分析任务',
+    description: '分析临床试验数据',
+    timestamp: Date.now() - 7200000,
+    type: 'success'
+  },
+  {
+    id: '3',
+    title: '报告生成任务',
+    description: '生成研究总结报告',
+    timestamp: Date.now() - 10800000,
+    type: 'warning'
+  }
+])
+
+// 打开成果
+const openAchievement = (item: any) => {
+  ElMessage.info(`打开成果: ${item.title}`)
+}
+
+// 打开设置
+const openSettings = () => {
+  ElMessage.info('打开设置页面')
+}
+
+// 顶部状态栏方法
+const selectModel = (model: any) => {
+  currentModel.value = model.name
+  ElMessage.success(`已切换到 ${model.name}`)
+}
+
+const showNotifications = () => {
+  ElMessage.info(`您有 ${notificationCount.value} 条未读通知`)
+  notificationCount.value = 0
+}
+
+const goToProfile = () => {
+  router.push('/profile')
+}
+
+const goToSettings = () => {
+  router.push('/settings')
+}
+
+const handleLogout = () => {
+  ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    ElMessage.success('已退出登录')
+    router.push('/login')
+  }).catch(() => {})
+}
 
 // 获取当前激活的步骤
 const getActiveStep = (steps: any[]) => {
@@ -220,6 +608,26 @@ const formatTime = (timestamp: number) => {
   const hours = date.getHours().toString().padStart(2, '0')
   const minutes = date.getMinutes().toString().padStart(2, '0')
   return `${hours}:${minutes}`
+}
+
+// 处理回车键
+const handleEnterKey = (e: KeyboardEvent) => {
+  if (!e.shiftKey) {
+    e.preventDefault()
+    sendMessage()
+  }
+}
+
+// 切换语音输入
+const toggleVoiceInput = () => {
+  isRecording.value = !isRecording.value
+  if (isRecording.value) {
+    ElMessage.info('开始录音...')
+    // 实际项目中这里应该调用语音识别API
+  } else {
+    ElMessage.success('录音已停止')
+    // 实际项目中这里应该处理识别结果
+  }
 }
 
 // 发送消息
@@ -256,14 +664,20 @@ const sendMessage = async () => {
     content: '',
     timestamp: Date.now(),
     steps: [
-      { step: 1, title: '分析需求', description: '分析用户需求和上下文', status: 'completed' as const, progress: 100 },
-      { step: 2, title: '信息检索', description: '检索相关信息和数据', status: 'in_progress' as const, progress: 50 },
-      { step: 3, title: '生成回复', description: '生成智能回复内容', status: 'pending' as const, progress: 0 },
-      { step: 4, title: '质量检查', description: '检查回复质量和准确性', status: 'pending' as const, progress: 0 }
+      { step: 1, title: '分析文档结构', description: '分析文档类型和结构', status: 'completed' as const, progress: 100 },
+      { step: 2, title: '生成IMRAD框架', description: '生成引言、方法、结果、讨论框架', status: 'completed' as const, progress: 100 },
+      { step: 3, title: '撰写引言部分', description: '撰写研究背景和目的', status: 'completed' as const, progress: 100 },
+      { step: 4, title: '质量检查', description: '检查回复质量和准确性', status: 'completed' as const, progress: 100 }
     ],
     thoughts: [
-      { id: '1', content: '正在分析用户需求...', timestamp: Date.now() },
-      { id: '2', content: '识别出关键信息点，准备检索相关数据...', timestamp: Date.now() + 500 }
+      { id: '1', content: '正在分析文档结构...', timestamp: Date.now() },
+      { id: '2', content: '识别出关键信息点，准备生成IMRAD框架...', timestamp: Date.now() + 500 },
+      { id: '3', content: '开始撰写引言部分...', timestamp: Date.now() + 1000 }
+    ],
+    suggestions: [
+      '能否提供更多研究背景信息？',
+      '需要我详细解释某个部分吗？',
+      '是否需要添加参考文献？'
     ]
   }
 
@@ -349,6 +763,12 @@ const rateMessage = (message: any, rating: string) => {
   // 实际应用中这里应该发送评分到服务器
 }
 
+// 使用推荐追问
+const useSuggestion = (suggestion: string) => {
+  inputMessage.value = suggestion
+  sendMessage()
+}
+
 // 上传附件
 const handleFileUpload = (file: File) => {
   ElMessage.success(`已上传附件：${file.name}`)
@@ -396,9 +816,150 @@ onMounted(() => {
 <style scoped lang="scss">
 .task-chat-container {
   display: flex;
-  flex-direction: column;
   height: 100%;
   background-color: #f5f7fa;
+}
+
+// 左侧导航栏
+.sidebar {
+  width: 280px;
+  background-color: #fff;
+  border-right: 1px solid #e4e7ed;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+
+  .sidebar-section {
+    padding: 16px;
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  // 搜索框
+  .search-input {
+    width: 100%;
+  }
+
+  // 区块标题
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #303133;
+
+    .el-icon {
+      color: var(--el-color-primary);
+    }
+  }
+
+  // 项目树
+  .project-tree {
+    .tree-node {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+
+      .el-icon {
+        font-size: 16px;
+      }
+    }
+  }
+
+  // 成果列表
+  .achievement-list {
+    .achievement-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: #f5f7fa;
+      }
+
+      .achievement-icon {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: rgba(var(--el-color-primary-rgb), 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--el-color-primary);
+      }
+
+      .achievement-content {
+        flex: 1;
+        min-width: 0;
+
+        .achievement-title {
+          font-size: 14px;
+          color: #303133;
+          margin-bottom: 4px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .achievement-time {
+          font-size: 12px;
+          color: #909399;
+        }
+      }
+    }
+  }
+
+  // 任务时间线
+  .task-timeline {
+    .timeline-content {
+      .timeline-title {
+        font-size: 14px;
+        color: #303133;
+        margin-bottom: 4px;
+      }
+
+      .timeline-desc {
+        font-size: 12px;
+        color: #909399;
+      }
+    }
+  }
+
+  // 设置按钮
+  .settings-section {
+    margin-top: auto;
+
+    .settings-button {
+      width: 100%;
+      justify-content: flex-start;
+      gap: 8px;
+      color: #606266;
+
+      &:hover {
+        color: var(--el-color-primary);
+      }
+    }
+  }
+}
+
+// 主内容区
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .chat-header {
@@ -414,6 +975,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 200px;
 
     .back-icon {
       font-size: 24px;
@@ -422,7 +984,7 @@ onMounted(() => {
       transition: color 0.3s;
 
       &:hover {
-        color: #409eff;
+        color: var(--el-color-primary);
       }
     }
 
@@ -431,6 +993,119 @@ onMounted(() => {
       font-size: 18px;
       font-weight: 500;
       color: #303133;
+    }
+  }
+
+  .header-center {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex: 1;
+    justify-content: center;
+
+    // Logo
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--el-color-primary);
+      cursor: pointer;
+      transition: all 0.3s;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      .logo-text {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    // 模型选择器
+    .model-dropdown {
+      .model-selector {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background-color: var(--el-bg-color-page);
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--el-text-color-primary);
+
+        &:hover {
+          background-color: var(--el-color-primary-light-9);
+          color: var(--el-color-primary);
+        }
+      }
+    }
+
+    // 积分显示
+    .points-display {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background-color: #fffbeb0;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #f59e0b;
+      transition: all 0.3s;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+      }
+
+      .points-text {
+        color: #f59e0b;
+      }
+    }
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 200px;
+    justify-content: flex-end;
+
+    // 通知铃铛
+    .notification-badge {
+      .notification-button {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background-color: var(--el-bg-color-page);
+        color: var(--el-text-color-regular);
+        transition: all 0.3s;
+
+        &:hover {
+          background-color: var(--el-color-primary-light-9);
+          color: var(--el-color-primary);
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    // 用户菜单
+    .user-dropdown {
+      .user-avatar-wrapper {
+        cursor: pointer;
+        transition: all 0.3s;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
     }
   }
 }
@@ -457,11 +1132,19 @@ onMounted(() => {
 
     .message-content {
       align-items: flex-end;
-      background-color: #ecf5ff;
+      background-color: var(--el-color-primary-light-9);
+      border: 1px solid var(--el-color-primary-light-5);
     }
 
     .message-info {
       flex-direction: row-reverse;
+    }
+  }
+
+  &.ai {
+    .message-content {
+      background-color: #fff;
+      border: 1px solid var(--el-border-color-light);
     }
   }
 
@@ -472,20 +1155,33 @@ onMounted(() => {
 
   .message-content {
     max-width: 70%;
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 12px 16px;
+    border-radius: 12px;
+    padding: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
 
     .message-info {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
+      align-items: center;
+      margin-bottom: 12px;
       font-size: 12px;
-      color: #909399;
+      color: var(--el-text-color-secondary);
 
-      .message-role {
-        font-weight: 500;
+      .message-role-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .message-role {
+          font-weight: 600;
+          font-size: 14px;
+          color: var(--el-text-color-primary);
+        }
       }
 
       .message-time {
@@ -495,10 +1191,52 @@ onMounted(() => {
 
     .message-text {
       font-size: 14px;
-      line-height: 1.6;
-      color: #303133;
+      line-height: 1.8;
+      color: var(--el-text-color-primary);
       white-space: pre-wrap;
       word-break: break-word;
+
+      // Markdown样式
+      :deep(h1), :deep(h2), :deep(h3) {
+        margin-top: 16px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      :deep(p) {
+        margin-bottom: 12px;
+      }
+
+      :deep(code) {
+        background-color: var(--el-fill-color-light);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+      }
+
+      :deep(pre) {
+        background-color: var(--el-fill-color-light);
+        padding: 12px;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 12px 0;
+      }
+
+      :deep(ul), :deep(ol) {
+        margin: 12px 0;
+        padding-left: 24px;
+      }
+
+      :deep(li) {
+        margin-bottom: 4px;
+      }
+
+      :deep(blockquote) {
+        border-left: 4px solid var(--el-color-primary);
+        padding-left: 12px;
+        margin: 12px 0;
+        color: var(--el-text-color-secondary);
+      }
     }
 
     .message-actions {
@@ -506,7 +1244,51 @@ onMounted(() => {
       gap: 8px;
       margin-top: 12px;
       padding-top: 12px;
-      border-top: 1px solid #e4e7ed;
+      border-top: 1px solid var(--el-border-color-light);
+    }
+
+    // 推荐追问
+    .follow-up-suggestions {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--el-border-color-light);
+
+      .suggestions-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--el-text-color-secondary);
+        margin-bottom: 12px;
+      }
+
+      .suggestions-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        .suggestion-button {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 6px 12px;
+          border-radius: 16px;
+          background-color: var(--el-fill-color-light);
+          border: 1px solid var(--el-border-color-lighter);
+          transition: all 0.3s;
+          font-size: 13px;
+          color: var(--el-text-color-regular);
+
+          &:hover {
+            background-color: var(--el-color-primary-light-9);
+            border-color: var(--el-color-primary-light-5);
+            color: var(--el-color-primary);
+            transform: translateY(-2px);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+      }
     }
 
     .task-steps {
@@ -581,26 +1363,84 @@ onMounted(() => {
 
 .chat-input {
   background-color: #fff;
-  border-top: 1px solid #e4e7ed;
+  border-top: 1px solid var(--el-border-color-light);
   padding: 16px 24px;
 
   .input-toolbar {
     display: flex;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: center;
+
+    .toolbar-button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.3s;
+      font-size: 14px;
+      color: var(--el-text-color-regular);
+
+      &:hover {
+        background-color: var(--el-fill-color-light);
+        color: var(--el-color-primary);
+      }
+
+      &.is-recording {
+        color: var(--el-color-danger);
+        background-color: rgba(var(--el-color-danger-rgb), 0.1);
+        animation: pulse 1.5s infinite;
+      }
+    }
+
+    .agent-dropdown {
+      .toolbar-button {
+        background-color: var(--el-fill-color-light);
+        color: var(--el-text-color-primary);
+        font-weight: 500;
+
+        &:hover {
+          background-color: var(--el-color-primary-light-9);
+          color: var(--el-color-primary);
+        }
+      }
+    }
   }
 
   .input-area {
     display: flex;
     gap: 12px;
+    align-items: flex-end;
 
     .el-textarea {
       flex: 1;
+      
+      :deep(textarea) {
+        border-radius: 8px;
+        resize: none;
+        font-size: 14px;
+        line-height: 1.6;
+      }
     }
 
     .send-button {
       height: auto;
       align-self: flex-end;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(var(--el-color-primary-rgb), 0.3);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
     }
   }
 
@@ -608,7 +1448,16 @@ onMounted(() => {
     margin-top: 8px;
     text-align: right;
     font-size: 12px;
-    color: #909399;
+    color: var(--el-text-color-secondary);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
   }
 }
 </style>

@@ -4,7 +4,7 @@
  */
 
 import { Router, Request, Response } from 'express';
-import MockProjectService from '../services/MockProjectService';
+import { MockProjectService } from '../services/MockProjectService';
 
 const router = Router();
 const projectService = new MockProjectService();
@@ -23,15 +23,12 @@ interface ApiResponse<T = any> {
  */
 router.get('/', async (req: Request, res: Response) => {
   try {
-    const { page = 1, pageSize = 12, keyword, categoryId, status, userId } = req.query;
+    const { page = 1, pageSize = 12, status } = req.query;
 
-    const result = await projectService.getProjects({
+    const result = await projectService.getAllProjects({
       page: Number(page),
       pageSize: Number(pageSize),
-      keyword: keyword as string,
-      categoryId: categoryId as string,
-      status: status ? Number(status) : undefined,
-      userId: userId as string
+      status: status ? Number(status) : undefined
     });
 
     const response: ApiResponse = {
@@ -46,8 +43,8 @@ router.get('/', async (req: Request, res: Response) => {
       }
     };
     return res.status(200).json(response);
-  } catch (error) {
-    console.error('获取项目列表错误:', error);
+  } catch (_error) {
+    console.error('获取项目列表错误:', _error);
     const response: ApiResponse = {
       success: false,
       message: '获取项目列表失败',
@@ -67,23 +64,23 @@ router.get('/:id', async (req: Request, res: Response) => {
 
     const result = await projectService.getProjectById(id);
 
-    if (result.success) {
+    if (result) {
       const response: ApiResponse = {
         success: true,
         message: '获取项目详情成功',
-        data: result.project
+        data: result
       };
       return res.status(200).json(response);
     } else {
       const response: ApiResponse = {
         success: false,
-        message: result.message || '项目不存在',
+        message: '项目不存在',
         code: 404
       };
       return res.status(404).json(response);
     }
-  } catch (error) {
-    console.error('获取项目详情错误:', error);
+  } catch (_error) {
+    console.error('获取项目详情错误:', _error);
     const response: ApiResponse = {
       success: false,
       message: '获取项目详情失败',
@@ -137,8 +134,8 @@ router.post('/', async (req: Request, res: Response) => {
       };
       return res.status(400).json(response);
     }
-  } catch (error) {
-    console.error('创建项目错误:', error);
+  } catch (_error) {
+    console.error('创建项目错误:', _error);
     const response: ApiResponse = {
       success: false,
       message: '创建项目失败',
@@ -183,8 +180,8 @@ router.put('/:id', async (req: Request, res: Response) => {
       };
       return res.status(400).json(response);
     }
-  } catch (error) {
-    console.error('更新项目错误:', error);
+  } catch (_error) {
+    console.error('更新项目错误:', _error);
     const response: ApiResponse = {
       success: false,
       message: '更新项目失败',
@@ -277,12 +274,12 @@ router.post('/:id/view', async (req: Request, res: Response) => {
 
     const result = await projectService.incrementViewCount(id);
 
-    if (result.success) {
+    if (result.success && result.project) {
       const response: ApiResponse = {
         success: true,
         message: '浏览量更新成功',
         data: {
-          viewCount: result.viewCount
+          viewCount: result.project.viewCount
         }
       };
       return res.status(200).json(response);
