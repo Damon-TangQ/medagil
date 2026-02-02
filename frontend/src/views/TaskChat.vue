@@ -181,7 +181,7 @@
         </div>
       </div>
 
-    <div class="chat-content">
+      <div class="chat-content">
       <!-- 消息列表 -->
       <div class="message-list" ref="messageListRef">
         <div
@@ -359,6 +359,7 @@
       <div class="input-hint">
         <span>按 Enter 快速发送，Shift+Enter 换行</span>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -799,12 +800,23 @@ const goBack = () => {
 
 // 组件挂载
 onMounted(() => {
-  // 添加欢迎消息
-  messages.value.push({
-    role: 'ai',
-    content: '您好！我是您的AI助手，可以帮您完成各种任务。请问有什么可以帮您的吗？',
-    timestamp: Date.now()
-  })
+  // 检查是否有从首页传递过来的搜索查询
+  const searchQuery = route.query.q as string
+  if (searchQuery) {
+    // 如果有搜索查询，不显示欢迎消息，直接发送搜索查询
+    inputMessage.value = searchQuery
+    // 延迟一下再发送，确保组件已经完全加载
+    setTimeout(() => {
+      sendMessage()
+    }, 500)
+  } else {
+    // 添加欢迎消息
+    messages.value.push({
+      role: 'ai',
+      content: '您好！我是您的AI助手，可以帮您完成各种任务。请问有什么可以帮您的吗？',
+      timestamp: Date.now()
+    })
+  }
 
   // 模拟加载任务信息
   if (taskId.value) {

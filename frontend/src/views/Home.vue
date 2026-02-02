@@ -1,55 +1,192 @@
 <template>
-  <div class="home">
-    <el-container>
-      <el-header>
-        <div class="header-content">
-          <h1>Medagil AI平台</h1>
-          <el-menu
-            :default-active="activeIndex"
-            mode="horizontal"
-            @select="handleSelect"
-            class="el-menu-demo"
-          >
-            <el-menu-item index="/">首页</el-menu-item>
-            <el-menu-item index="/about">关于我们</el-menu-item>
-          </el-menu>
+  <div class="home-page">
+    <div class="welcome-section">
+      <h1 class="welcome-title">欢迎使用 Medagil AI 医学科研平台</h1>
+      <p class="welcome-subtitle">智能驱动，加速科研创新</p>
+      <div class="action-buttons">
+        <el-button type="primary" size="large" @click="handleStart">
+          <el-icon><Promotion /></el-icon>
+          开始使用
+        </el-button>
+        <el-button size="large" @click="handleLearnMore">
+          了解更多
+        </el-button>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <el-card
+        v-for="feature in features"
+        :key="feature.title"
+        class="feature-card"
+        shadow="hover"
+      >
+        <div class="feature-icon">
+          <el-icon :size="40" :color="feature.color">
+            <component :is="feature.icon" />
+          </el-icon>
         </div>
-      </el-header>
-      <el-main>
-        <div class="content">
-          <h2>欢迎使用Medagil AI平台</h2>
-          <p>这是一个基于Vue3 + TypeScript + Element Plus构建的现代化AI平台</p>
-          <el-button type="primary" @click="getStarted">开始使用</el-button>
+        <h3 class="feature-title">{{ feature.title }}</h3>
+        <p class="feature-description">{{ feature.description }}</p>
+      </el-card>
+    </div>
+
+    <div class="stats-section">
+      <div class="stats-grid">
+        <div
+          v-for="stat in stats"
+          :key="stat.label"
+          class="stat-item"
+        >
+          <div class="stat-value">{{ stat.value }}</div>
+          <div class="stat-label">{{ stat.label }}</div>
         </div>
-      </el-main>
-      <el-footer>
-        <div class="footer-content">
-          <p>&copy; 2023 Medagil AI平台. All rights reserved.</p>
-        </div>
-      </el-footer>
-    </el-container>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { Promotion, Document, ChatDotRound, DataAnalysis } from '@element-plus/icons-vue'
 
 const router = useRouter()
-const activeIndex = computed(() => router.currentRoute.value.path)
 
-const handleSelect = (key: string) => {
-  router.push(key)
+const features = ref([
+  {
+    title: '智能文献检索',
+    description: '基于AI的智能文献检索系统，快速找到相关研究',
+    icon: Document,
+    color: '#667eea'
+  },
+  {
+    title: 'AI辅助科研',
+    description: '利用AI技术辅助科研工作，提高研究效率',
+    icon: ChatDotRound,
+    color: '#764ba2'
+  },
+  {
+    title: '数据分析可视化',
+    description: '强大的数据分析工具，直观展示研究结果',
+    icon: DataAnalysis,
+    color: '#f093fb'
+  }
+])
+
+const stats = ref([
+  { label: '用户数', value: '10,000+' },
+  { label: '项目数', value: '5,000+' },
+  { label: '论文数', value: '20,000+' },
+  { label: '引用数', value: '50,000+' }
+])
+
+const handleStart = () => {
+  router.push('/projects')
 }
 
-const getStarted = () => {
+const handleLearnMore = () => {
   router.push('/about')
 }
 </script>
 
 <style scoped>
-.home {
-  height: 100%;
+.home-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.welcome-section {
+  text-align: center;
+  padding: 80px 24px;
+}
+
+.welcome-title {
+  font-size: 48px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+}
+
+.welcome-subtitle {
+  font-size: 20px;
+  color: #666;
+  margin-bottom: 48px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 80px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.feature-card {
+  text-align: center;
+  padding: 32px;
+  transition: transform 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+}
+
+.feature-icon {
+  margin-bottom: 16px;
+}
+
+.feature-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.feature-description {
+  color: #666;
+  line-height: 1.6;
+}
+
+.stats-section {
+  background: white;
+  padding: 64px 24px;
+  margin-top: 80px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 16px;
+  color: #666;
 }
 
 .el-container {
@@ -147,5 +284,4 @@ const getStarted = () => {
   margin: 0;
   font-size: 14px;
 }
-</style>
 </style>

@@ -135,6 +135,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Search, Plus, Picture, View, Star, Clock } from '@element-plus/icons-vue'
+import api from '@/api'
 
 const router = useRouter()
 
@@ -259,64 +260,74 @@ const generateMockProjects = (count: number): Project[] => {
   }))
 }
 
-// 加载模拟数据
-const loadMockData = async () => {
+// 加载项目数据
+const loadProjects = async () => {
   loading.value = true
-  // 模拟异步加载
-  await new Promise(resolve => setTimeout(resolve, 500))
-  allProjects.value = generateMockProjects(50) // 生成50条模拟数据
-  total.value = filteredProjects.value.length
-  loading.value = false
+  try {
+    const response = await api.getProjectList({
+      page: currentPage.value,
+      pageSize: pageSize.value,
+      status: selectedStatus.value
+    })
+    
+    if (response.success && response.data) {
+      allProjects.value = response.data.projects
+      total.value = response.data.total
+    } else {
+      ElMessage.error(response.message || '加载项目列表失败')
+    }
+  } catch (error) {
+    console.error('加载项目列表错误:', error)
+    ElMessage.error('加载项目列表失败，请稍后重试')
+  } finally {
+    loading.value = false
+  }
 }
 
 // 搜索项目
-const handleSearch = () => {
+const handleSearch = async () => {
   currentPage.value = 1
-  total.value = filteredProjects.value.length
+  await loadProjects()
 }
 
 // 分类变更
-const handleCategoryChange = () => {
+const handleCategoryChange = async () => {
   currentPage.value = 1
-  total.value = filteredProjects.value.length
+  await loadProjects()
 }
 
 // 状态变更
-const handleStatusChange = () => {
+const handleStatusChange = async () => {
   currentPage.value = 1
-  total.value = filteredProjects.value.length
+  await loadProjects()
 }
 
 // 页码变更
-const handlePageChange = (page: number) => {
+const handlePageChange = async (page: number) => {
   currentPage.value = page
-  // 模拟分页加载
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 300)
+  await loadProjects()
 }
 
 // 每页数量变更
-const handleSizeChange = (size: number) => {
+const handleSizeChange = async (size: number) => {
   pageSize.value = size
   currentPage.value = 1
-  total.value = filteredProjects.value.length
+  await loadProjects()
 }
 
 // 点击项目卡片
 const handleProjectClick = (project: Project) => {
-  router.push(`/project/${project.id}`)
+  router.push(`/projects/${project.id}`)
 }
 
 // 创建新项目
 const handleCreateProject = () => {
-  ElMessage.info('创建项目功能开发中...')
+  router.push('/projects/create')
 }
 
 // 初始化
 onMounted(async () => {
-  await loadMockData()
+  await loadProjects()
 })
 </script>
 

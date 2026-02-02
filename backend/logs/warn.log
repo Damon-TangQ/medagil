@@ -1,0 +1,13 @@
+[2026-02-02 15:36:28.616] [WARN] HTTP Request {"method":"GET","path":"/favicon.ico","statusCode":404,"duration":1,"ip":"::1"}
+[2026-02-02 16:08:45.192] [WARN] HTTP Request {"method":"GET","path":"/","statusCode":404,"duration":3,"ip":"::1"}
+[2026-02-02 16:08:53.355] [WARN] HTTP Request {"method":"GET","path":"/","statusCode":404,"duration":1,"ip":"::1"}
+[2026-02-02 17:40:15.080] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":2,"ip":"::1"}
+[2026-02-02 17:40:16.191] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":2,"ip":"::1"}
+[2026-02-02 17:40:16.708] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":1,"ip":"::1"}
+[2026-02-02 17:40:16.893] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":1,"ip":"::1"}
+[2026-02-02 17:40:17.072] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":3,"ip":"::1"}
+[2026-02-02 17:40:18.773] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":1,"ip":"::1"}
+[2026-02-02 17:40:19.518] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":1,"ip":"::1"}
+[2026-02-02 17:40:23.286] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":1,"ip":"::1"}
+[2026-02-02 17:40:24.613] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":1,"ip":"::1"}
+[2026-02-02 18:20:21.729] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":1,"ip":"::1"}

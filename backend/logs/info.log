@@ -1,0 +1,21 @@
+[2026-02-02 15:10:49.524] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-02 15:10:49.526] [INFO] 所有服务初始化完成 
+[2026-02-02 15:10:49.529] [INFO] Medagil AI平台后端服务已启动，运行在端口 5000 
+[2026-02-02 15:20:16.281] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-02 15:20:16.282] [INFO] 所有服务初始化完成 
+[2026-02-02 15:20:16.285] [INFO] Medagil AI平台后端服务已启动，运行在端口 5000 
+[2026-02-02 15:36:28.568] [INFO] HTTP Request {"method":"GET","path":"/health","statusCode":200,"duration":5,"ip":"::1"}
+[2026-02-02 15:39:48.842] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-02 15:39:48.844] [INFO] 所有服务初始化完成 
+[2026-02-02 15:39:48.846] [INFO] Medagil AI平台后端服务已启动，运行在端口 5000 
+[2026-02-02 15:57:53.016] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-02 15:57:53.018] [INFO] 所有服务初始化完成 
+[2026-02-02 15:57:53.021] [INFO] Medagil AI平台后端服务已启动，运行在端口 5000 
+[2026-02-02 15:58:15.449] [INFO] HTTP Request {"method":"GET","path":"/health","statusCode":200,"duration":17,"ip":"::1"}
+[2026-02-02 16:12:43.182] [INFO] HTTP Request {"method":"GET","path":"/health","statusCode":200,"duration":24,"ip":"::1"}
+[2026-02-02 17:19:08.645] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-02 17:19:08.647] [INFO] 所有服务初始化完成 
+[2026-02-02 17:19:08.649] [INFO] Medagil AI平台后端服务已启动，运行在端口 5000 
+[2026-02-02 17:38:38.522] [INFO] HTTP Request {"method":"POST","path":"/register","statusCode":201,"duration":144,"ip":"::1"}
+[2026-02-02 17:40:28.464] [INFO] HTTP Request {"method":"POST","path":"/register","statusCode":201,"duration":76,"ip":"::1"}
+[2026-02-02 18:20:27.331] [INFO] HTTP Request {"method":"POST","path":"/register","statusCode":201,"duration":72,"ip":"::1"}

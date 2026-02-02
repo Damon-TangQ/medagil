@@ -31,11 +31,8 @@ const handleBack = () => {
 // 提交表单
 const handleSubmit = async (_formData: any) => {
   try {
-    // TODO: 调用创建项目API
-    // await axios.post('/api/projects', formData)
-
-    // 模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 500))
+    // 调用创建项目API
+    const response = await api.createProject(formData)
 
     ElMessage.success('项目创建成功')
     router.push('/projects')

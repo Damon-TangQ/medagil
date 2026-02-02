@@ -123,6 +123,34 @@ class MockProjectService {
         likeCount: 0,
         createdAt: new Date('2023-08-01'),
         updatedAt: new Date('2023-08-01')
+      },
+      {
+        id: 'project_006',
+        userId: 'user_002',
+        categoryId: '1',
+        name: '临床论文分析',
+        description: '分析临床医学论文，提取关键信息，辅助科研决策',
+        coverImage: '/images/project_cover_6.jpg',
+        tags: '医学,论文分析,临床研究',
+        status: 1,
+        viewCount: 890,
+        likeCount: 57,
+        createdAt: new Date('2023-08-15'),
+        updatedAt: new Date('2023-08-25')
+      },
+      {
+        id: 'project_007',
+        userId: 'user_003',
+        categoryId: '2',
+        name: '文献分析助手',
+        description: '智能分析学术文献，提取研究方法和结论',
+        coverImage: '/images/project_cover_7.jpg',
+        tags: '文献分析,学术研究,NLP',
+        status: 1,
+        viewCount: 723,
+        likeCount: 45,
+        createdAt: new Date('2023-09-01'),
+        updatedAt: new Date('2023-09-10')
       }
     ];
 

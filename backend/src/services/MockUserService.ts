@@ -79,6 +79,19 @@ class MockUserService {
   private initMockUsers(): void {
     const testUsers: User[] = [
       {
+        id: 'user_000',
+        username: 'testuser',
+        password: this.hashPassword('password123'),
+        phone: '13800138000',
+        email: 'test@example.com',
+        nickname: '测试用户',
+        subscriptionLevel: 1,
+        subscriptionExpireTime: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        status: 1,
+        createdAt: new Date('2023-01-01'),
+        updatedAt: new Date('2023-01-01')
+      },
+      {
         id: 'user_001',
         username: 'admin',
         password: this.hashPassword('admin123'),

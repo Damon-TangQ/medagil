@@ -13,12 +13,18 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const USE_MOCK = process.env.USE_MOCK === 'true';
 
 // 初始化服务
 async function initializeServices() {
   try {
-    // 初始化数据库
-    await DatabaseService.initialize();
+    if (!USE_MOCK) {
+      // 初始化数据库
+      await DatabaseService.initialize();
+      LoggerService.info('数据库初始化完成');
+    } else {
+      LoggerService.info('使用Mock数据模式，跳过数据库初始化');
+    }
     LoggerService.info('所有服务初始化完成');
   } catch (error) {
     LoggerService.error('服务初始化失败', {
@@ -47,13 +53,14 @@ app.use('/api', routes);
 // 健康检查路由
 app.get('/health', async (_req: Request, res: Response) => {
   try {
-    // 检查数据库连接
-    const isDbReady = DatabaseService.isReady();
-    const poolStatus = DatabaseService.getPoolStatus();
+    // 检查数据库连接（仅在非mock模式下）
+    const isDbReady = USE_MOCK ? true : DatabaseService.isReady();
+    const poolStatus = USE_MOCK ? { mode: 'mock' } : DatabaseService.getPoolStatus();
 
     res.status(200).json({
       status: 'ok',
       message: 'Medagil AI平台后端服务运行正常',
+      mode: USE_MOCK ? 'mock' : 'database',
       database: isDbReady ? 'connected' : 'disconnected',
       poolStatus
     });

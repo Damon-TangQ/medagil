@@ -45,8 +45,6 @@
 *   **Linux**：`sudo systemctl start mysql`
 
 ### 3. 创建数据库和用户
-
-#### 方法一：使用命令行
 ```bash
 # 登录 MySQL
 mysql -u root -p
@@ -61,12 +59,6 @@ FLUSH PRIVILEGES;
 
 # 退出 MySQL
 EXIT;
-```
-
-#### 方法二：使用项目架构文件
-```bash
-# 导入数据库架构（请确保 schema.sql 文件路径正确）
-mysql -u root -p medagil_platform < backend/database/schema.sql
 ```
 
 ### 4. 配置数据库连接
