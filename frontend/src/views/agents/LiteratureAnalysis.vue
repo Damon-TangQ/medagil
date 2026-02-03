@@ -356,7 +356,7 @@ const beforeUpload = (file: File) => {
 }
 
 // 上传成功
-const handleUploadSuccess = (response: any, file: any) => {
+const handleUploadSuccess = (_response: any, file: any) => {
   ElMessage.success(`${file.name} 上传成功`)
   uploadProgress.value = 100
   uploadStatus.value = 'success'

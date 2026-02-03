@@ -171,7 +171,18 @@ interface Project {
   createdAt: string
 }
 
-const allProjects = ref<Project[]>([])
+const allProjects = ref<Array<{
+  id: number
+  name: string
+  description: string
+  coverImage?: string
+  category: string
+  status: number
+  tags: string
+  viewCount: number
+  likeCount: number
+  createdAt: string
+}>>([])
 const projects = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
   const end = start + pageSize.value
@@ -220,46 +231,6 @@ const formatDate = (dateString: string) => {
   return `${Math.floor(days / 365)}年前`
 }
 
-// 生成模拟数据
-const generateMockProjects = (count: number): Project[] => {
-  const categories = ['1', '2', '3', '4'] // AI助手, 数据分析, NLP, 计算机视觉
-  const statuses = [0, 1] // 草稿, 已发布
-  const tagsList = [
-    'Vue3,TypeScript',
-    'Python,机器学习',
-    '深度学习,图像识别',
-    '自然语言处理,NLP',
-    '数据分析,可视化',
-    'React,Node.js',
-    'Spring Boot,MySQL',
-    'Docker,Kubernetes'
-  ]
-
-  const descriptions = [
-    '这是一个基于人工智能的智能助手项目，可以帮助用户自动化处理日常任务。',
-    '数据分析平台，提供强大的数据处理和可视化功能。',
-    '自然语言处理系统，支持文本分析和情感识别。',
-    '计算机视觉应用，实现图像识别和目标检测。',
-    '企业级管理系统，提供完整的项目管理解决方案。',
-    '实时数据监控平台，支持多数据源接入和实时分析。',
-    '智能推荐系统，基于用户行为提供个性化推荐。',
-    '自动化测试平台，提高测试效率和质量。'
-  ]
-
-  return Array.from({ length: count }, (_, i) => ({
-    id: i + 1,
-    name: `项目 ${i + 1}`,
-    description: descriptions[i % descriptions.length],
-    coverImage: `https://picsum.photos/400/300?random=${i}`,
-    category: categories[i % categories.length],
-    status: statuses[i % statuses.length],
-    tags: tagsList[i % tagsList.length],
-    viewCount: Math.floor(Math.random() * 1000) + 100,
-    likeCount: Math.floor(Math.random() * 500) + 50,
-    createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
-  }))
-}
-
 // 加载项目数据
 const loadProjects = async () => {
   loading.value = true
@@ -271,7 +242,7 @@ const loadProjects = async () => {
     })
     
     if (response.success && response.data) {
-      allProjects.value = response.data.projects
+      allProjects.value = response.data.projects as any[]
       total.value = response.data.total
     } else {
       ElMessage.error(response.message || '加载项目列表失败')

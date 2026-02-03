@@ -20,6 +20,7 @@
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import ProjectForm from '@/components/ProjectForm.vue'
+import { createProject } from '@/api'
 
 const router = useRouter()
 
@@ -29,10 +30,10 @@ const handleBack = () => {
 }
 
 // 提交表单
-const handleSubmit = async (_formData: any) => {
+const handleSubmit = async (formData: any) => {
   try {
     // 调用创建项目API
-    const response = await api.createProject(formData)
+    await createProject(formData)
 
     ElMessage.success('项目创建成功')
     router.push('/projects')

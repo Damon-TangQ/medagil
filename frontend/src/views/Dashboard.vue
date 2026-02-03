@@ -806,33 +806,118 @@ onBeforeUnmount(() => {
 }
 
 // 响应式布局
-@media (max-width: 1600px) {
+/* 大屏 > 1440px */
+@media (min-width: 1441px) {
   .dashboard-container {
+    .sidebar {
+      width: 280px;
+    }
+    
     .main-content {
+      max-width: calc(100% - 280px);
+      padding: 32px;
+      
       .metrics-grid {
-        grid-template-columns: repeat(2, 1fr);
+        gap: 28px;
       }
-
+      
       .charts-grid {
-        grid-template-columns: 1fr;
+        gap: 28px;
       }
-
+      
       .tables-grid {
-        grid-template-columns: repeat(2, 1fr);
+        gap: 28px;
       }
     }
   }
 }
 
-@media (max-width: 1200px) {
+/* 桌面端 1024px - 1440px */
+@media (min-width: 1024px) and (max-width: 1440px) {
   .dashboard-container {
+    .sidebar {
+      width: 260px;
+    }
+    
     .main-content {
+      max-width: calc(100% - 260px);
+      padding: 24px;
+    }
+  }
+}
+
+/* 平板端 768px - 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dashboard-container {
+    .sidebar {
+      width: 200px;
+    }
+    
+    .main-content {
+      max-width: calc(100% - 200px);
+      padding: 20px;
+      
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+      
+      .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .tables-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+      
+      .chart-card {
+        height: 380px;
+      }
+    }
+  }
+}
+
+/* 移动端 < 768px */
+@media (max-width: 767px) {
+  .dashboard-container {
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 1000;
+      transform: translateX(-100%);
+      width: 280px;
+      box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .sidebar.sidebar-visible {
+      transform: translateX(0);
+    }
+    
+    .main-content {
+      max-width: 100%;
+      padding: 16px;
+      
       .metrics-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
       }
-
+      
+      .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      
       .tables-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      
+      .chart-card {
+        height: 340px;
       }
     }
   }

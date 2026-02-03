@@ -41,7 +41,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
 export const useAuthStore = defineStore('auth', () => {
   // 初始化router
   const router = useRouter()
-  
+
   // 状态
   const token = ref<string | null>(localStorage.getItem('token') || null)
   const user = ref<User | null>(JSON.parse(localStorage.getItem('user') || 'null'))
@@ -133,7 +133,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // 手机号登录
+  // 手机号登录（支持无账号自动注册）
   const phoneLogin = async (phone: string, code: string) => {
     loading.value = true
     try {
@@ -147,22 +147,30 @@ export const useAuthStore = defineStore('auth', () => {
         setUser(response.data.data.user)
         // 登录成功后跳转到首页
         router.push('/')
-        return { success: true, message: response.data.message }
+        // 返回是否为新用户的信息
+        return { 
+          success: true, 
+          message: response.data.message,
+          data: {
+            isNewUser: response.data.data.isNewUser || false,
+            user: response.data.data.user
+          }
+        }
       } else {
         return { success: false, message: response.data.message || '登录失败' }
       }
     } catch (error: any) {
       console.error('手机号登录错误:', error)
-      return { 
-        success: false, 
-        message: error.response?.data?.message || '登录失败，请稍后重试' 
+      return {
+        success: false,
+        message: error.response?.data?.message || '登录失败，请稍后重试'
       }
     } finally {
       loading.value = false
     }
   }
 
-  // 微信登录
+  // 微信登录（支持无账号自动注册）
   const wechatLogin = async (openid: string, unionid?: string, nickname?: string, avatar?: string) => {
     loading.value = true
     try {
@@ -176,19 +184,22 @@ export const useAuthStore = defineStore('auth', () => {
       if (response.data.success && response.data.data) {
         setToken(response.data.data.token)
         setUser(response.data.data.user)
-        return { 
-          success: true, 
+        return {
+          success: true,
           message: response.data.message,
-          isNewUser: response.data.data.isNewUser 
+          data: {
+            isNewUser: response.data.data.isNewUser || false,
+            user: response.data.data.user
+          }
         }
       } else {
         return { success: false, message: response.data.message || '登录失败' }
       }
     } catch (error: any) {
       console.error('微信登录错误:', error)
-      return { 
-        success: false, 
-        message: error.response?.data?.message || '登录失败，请稍后重试' 
+      return {
+        success: false,
+        message: error.response?.data?.message || '登录失败，请稍后重试'
       }
     } finally {
       loading.value = false
@@ -215,9 +226,9 @@ export const useAuthStore = defineStore('auth', () => {
       console.error('获取用户信息错误:', error)
       // 如果获取失败，清除认证信息
       clearAuth()
-      return { 
-        success: false, 
-        message: error.response?.data?.message || '获取用户信息失败' 
+      return {
+        success: false,
+        message: error.response?.data?.message || '获取用户信息失败'
       }
     } finally {
       loading.value = false

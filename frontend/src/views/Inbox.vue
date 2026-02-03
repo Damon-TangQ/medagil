@@ -67,7 +67,6 @@
 import { ref, computed, markRaw } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
-  Search,
   Star,
   StarFilled,
   Delete,

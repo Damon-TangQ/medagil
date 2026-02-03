@@ -1,26 +1,75 @@
 // 响应式断点定义
 $breakpoints: (
-  'mobile': 767px,
-  'tablet': 768px,
-  'desktop': 1024px
+  'xs': 375px,
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  '2xl': 1536px,
+  '3xl': 1920px
 );
 
 // 响应式混合器
 @mixin mobile {
-  @media (max-width: map-get($breakpoints, 'mobile')) {
+  @media (max-width: 767px) {
     @content;
   }
 }
 
 @mixin tablet {
-  @media (min-width: map-get($breakpoints, 'tablet')) and (max-width: map-get($breakpoints, 'desktop') - 1px) {
+  @media (min-width: 768px) and (max-width: 1023px) {
     @content;
   }
 }
 
 @mixin desktop {
-  @media (min-width: map-get($breakpoints, 'desktop')) {
+  @media (min-width: 1024px) {
     @content;
+  }
+}
+
+@mixin wide {
+  @media (min-width: 1440px) {
+    @content;
+  }
+}
+
+@mixin ultra {
+  @media (min-width: 1920px) {
+    @content;
+  }
+}
+
+// 通用断点混合器
+@mixin respond-to($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (min-width: map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
+         + "Available breakpoints are: #{map-keys($breakpoints)}.";
+  }
+}
+
+@mixin respond-below($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (max-width: map-get($breakpoints, $breakpoint) - 1px) {
+      @content;
+    }
+  } @else {
+    @warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
+         + "Available breakpoints are: #{map-keys($breakpoints)}.";
+  }
+}
+
+@mixin respond-between($lower, $upper) {
+  @if map-has-key($breakpoints, $lower) and map-has-key($breakpoints, $upper) {
+    @media (min-width: map-get($breakpoints, $lower)) and (max-width: map-get($breakpoints, $upper) - 1px) {
+      @content;
+    }
+  } @else {
+    @warn "Invalid breakpoints. Available breakpoints are: #{map-keys($breakpoints)}.";
   }
 }
 
@@ -101,6 +150,54 @@ $breakpoints: (
       display: flex;
     }
   }
+
+  // 宽屏样式 (> 1440px)
+  @include wide {
+    .sidebar {
+      width: 280px;
+    }
+
+    .main-content {
+      width: calc(100% - 280px);
+      padding: 32px;
+    }
+  }
+}
+
+// 容器响应式类
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+  
+  @include tablet {
+    padding: 0 24px;
+  }
+  
+  @include desktop {
+    max-width: 1200px;
+  }
+  
+  @include wide {
+    max-width: 1400px;
+  }
+}
+
+.container-narrow {
+  @extend .container;
+  
+  @include desktop {
+    max-width: 800px;
+  }
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 16px;
+  
+  @include tablet {
+    padding: 0 24px;
+  }
 }
 
 // 响应式网格系统
@@ -118,6 +215,55 @@ $breakpoints: (
 
   @include desktop {
     grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @include wide {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// 网格列系统
+.grid {
+  display: grid;
+  gap: 24px;
+  
+  &.grid-gap-sm {
+    gap: 16px;
+  }
+  
+  &.grid-gap-lg {
+    gap: 32px;
+  }
+}
+
+// 响应式网格列
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    grid-column: span #{$i};
+  }
+  
+  @include mobile {
+    .col-mobile-#{$i} {
+      grid-column: span #{$i};
+    }
+  }
+  
+  @include tablet {
+    .col-tablet-#{$i} {
+      grid-column: span #{$i};
+    }
+  }
+  
+  @include desktop {
+    .col-desktop-#{$i} {
+      grid-column: span #{$i};
+    }
+  }
+  
+  @include wide {
+    .col-wide-#{$i} {
+      grid-column: span #{$i};
+    }
   }
 }
 
@@ -311,6 +457,12 @@ $breakpoints: (
   }
 }
 
+.hide-wide {
+  @include wide {
+    display: none !important;
+  }
+}
+
 .show-mobile {
   display: none;
 
@@ -332,5 +484,239 @@ $breakpoints: (
 
   @include desktop {
     display: block;
+  }
+}
+
+.show-wide {
+  display: none;
+
+  @include wide {
+    display: block;
+  }
+}
+
+// 响应式显示类
+.block-mobile {
+  @include mobile {
+    display: block;
+  }
+}
+
+.block-tablet {
+  @include tablet {
+    display: block;
+  }
+}
+
+.block-desktop {
+  @include desktop {
+    display: block;
+  }
+}
+
+.block-wide {
+  @include wide {
+    display: block;
+  }
+}
+
+// 响应式flex布局
+.flex-mobile {
+  @include mobile {
+    display: flex;
+  }
+}
+
+.flex-tablet {
+  @include tablet {
+    display: flex;
+  }
+}
+
+.flex-desktop {
+  @include desktop {
+    display: flex;
+  }
+}
+
+.flex-wide {
+  @include wide {
+    display: flex;
+  }
+}
+
+// 响应式网格布局
+.grid-mobile {
+  @include mobile {
+    display: grid;
+  }
+}
+
+.grid-tablet {
+  @include tablet {
+    display: grid;
+  }
+}
+
+.grid-desktop {
+  @include desktop {
+    display: grid;
+  }
+}
+
+.grid-wide {
+  @include wide {
+    display: grid;
+  }
+}
+
+// 响应式间距工具类
+@each $size in (0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24) {
+  .p-#{$size} {
+    padding: #{$size * 4}px;
+  }
+  
+  .pt-#{$size} {
+    padding-top: #{$size * 4}px;
+  }
+  
+  .pr-#{$size} {
+    padding-right: #{$size * 4}px;
+  }
+  
+  .pb-#{$size} {
+    padding-bottom: #{$size * 4}px;
+  }
+  
+  .pl-#{$size} {
+    padding-left: #{$size * 4}px;
+  }
+  
+  .px-#{$size} {
+    padding-left: #{$size * 4}px;
+    padding-right: #{$size * 4}px;
+  }
+  
+  .py-#{$size} {
+    padding-top: #{$size * 4}px;
+    padding-bottom: #{$size * 4}px;
+  }
+  
+  .m-#{$size} {
+    margin: #{$size * 4}px;
+  }
+  
+  .mt-#{$size} {
+    margin-top: #{$size * 4}px;
+  }
+  
+  .mr-#{$size} {
+    margin-right: #{$size * 4}px;
+  }
+  
+  .mb-#{$size} {
+    margin-bottom: #{$size * 4}px;
+  }
+  
+  .ml-#{$size} {
+    margin-left: #{$size * 4}px;
+  }
+  
+  .mx-#{$size} {
+    margin-left: #{$size * 4}px;
+    margin-right: #{$size * 4}px;
+  }
+  
+  .my-#{$size} {
+    margin-top: #{$size * 4}px;
+    margin-bottom: #{$size * 4}px;
+  }
+}
+
+// 响应式宽度工具类
+.w-full {
+  width: 100%;
+}
+
+.w-auto {
+  width: auto;
+}
+
+@include mobile {
+  .w-mobile-full {
+    width: 100%;
+  }
+}
+
+@include tablet {
+  .w-tablet-half {
+    width: 50%;
+  }
+}
+
+@include desktop {
+  .w-desktop-third {
+    width: 33.333%;
+  }
+}
+
+@include wide {
+  .w-wide-quarter {
+    width: 25%;
+  }
+}
+
+// 响应式文本对齐
+.text-left-mobile {
+  @include mobile {
+    text-align: left;
+  }
+}
+
+.text-center-mobile {
+  @include mobile {
+    text-align: center;
+  }
+}
+
+.text-right-mobile {
+  @include mobile {
+    text-align: right;
+  }
+}
+
+.text-left-tablet {
+  @include tablet {
+    text-align: left;
+  }
+}
+
+.text-center-tablet {
+  @include tablet {
+    text-align: center;
+  }
+}
+
+.text-right-tablet {
+  @include tablet {
+    text-align: right;
+  }
+}
+
+.text-left-desktop {
+  @include desktop {
+    text-align: left;
+  }
+}
+
+.text-center-desktop {
+  @include desktop {
+    text-align: center;
+  }
+}
+
+.text-right-desktop {
+  @include desktop {
+    text-align: right;
   }
 }

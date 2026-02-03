@@ -88,8 +88,6 @@ import {
   Plus,
   ChatDotRound,
   Document,
-  Medicine,
-  Stethoscope,
   DataAnalysis,
   User,
   Promotion

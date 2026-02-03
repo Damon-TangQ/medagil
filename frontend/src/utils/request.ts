@@ -6,7 +6,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import router from '@/router'
-import { storage } from '@/shared/utils'
+import { storage } from '@/shared'
 
 // ==================== 类型定义 ====================
 export interface RequestConfig extends AxiosRequestConfig {

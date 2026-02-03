@@ -132,7 +132,7 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { Promotion, Check, Loading } from '@element-plus/icons-vue'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth_mock'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -151,7 +151,7 @@ const registerForm = reactive({
 })
 
 // 自定义验证规则：确认密码
-const validateConfirmPassword = (rule: any, value: any, callback: any) => {
+const validateConfirmPassword = (_rule: any, value: any, callback: any) => {
   if (value === '') {
     callback(new Error('请再次输入密码'))
   } else if (value !== registerForm.password) {

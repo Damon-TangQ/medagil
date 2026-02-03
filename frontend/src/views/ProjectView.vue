@@ -106,208 +106,45 @@
     <div class="main-content">
       <!-- 顶部操作栏 -->
       <div class="top-bar">
-      <!-- 创建项目按钮 -->
-      <el-button type="primary" size="large" class="create-button" @click="handleCreateProject">
-        <el-icon><Plus /></el-icon>
-        创建项目
-      </el-button>
+        <!-- 创建项目按钮 -->
+        <el-button type="primary" size="large" class="create-button" @click="handleCreateProject">
+          <el-icon><Plus /></el-icon>
+          创建项目
+        </el-button>
 
-      <!-- 搜索框 -->
-      <el-input
-        v-model="searchQuery"
-        placeholder="搜索项目..."
-        prefix-icon="Search"
-        clearable
-        class="search-input"
-      />
+        <!-- 搜索框 -->
+        <el-input
+          v-model="searchQuery"
+          placeholder="搜索项目..."
+          prefix-icon="Search"
+          clearable
+          class="search-input"
+        />
 
-      <!-- 视图切换 -->
-      <el-radio-group v-model="viewMode" class="view-toggle">
-        <el-radio-button value="list">
-          <el-icon><List /></el-icon>
-          列表
-        </el-radio-button>
-        <el-radio-button value="grid">
-          <el-icon><Grid /></el-icon>
-          网格
-        </el-radio-button>
-      </el-radio-group>
+        <!-- 视图切换 -->
+        <el-radio-group v-model="viewMode" class="view-toggle">
+          <el-radio-button value="list">
+            <el-icon><List /></el-icon>
+            列表
+          </el-radio-button>
+          <el-radio-button value="grid">
+            <el-icon><Grid /></el-icon>
+            网格
+          </el-radio-button>
+        </el-radio-group>
 
-      <!-- 筛选下拉 -->
-      <div class="filter-group">
-        <el-select v-model="filterCategory" placeholder="按分类筛选" clearable class="filter-select">
-          <el-option
-            v-for="category in categories"
-            :key="category.id"
-            :label="category.name"
-            :value="category.id"
-          />
-        </el-select>
+        <!-- 筛选下拉 -->
+        <div class="filter-group">
+          <el-select v-model="filterCategory" placeholder="按分类筛选" clearable class="filter-select">
+            <el-option
+              v-for="category in categories"
+              :key="category.id"
+              :label="category.name"
+              :value="category.id"
+            />
+          </el-select>
 
-        <el-select v-model="filterStatus" placeholder="按状态筛选" clearable class="filter-select">
-          <el-option
-            v-for="status in statuses"
-            :key="status.value"
-            :label="status.label"
-            :value="status.value"
-          />
-        </el-select>
-      </div>
-    </div>
-
-    <!-- 项目列表/网格视图 -->
-    <div v-if="viewMode === 'list'" class="project-list">
-      <el-table :data="filteredProjects" stripe style="width: 100%">
-        <el-table-column prop="name" label="项目名称" min-width="200">
-          <template #default="{ row }">
-            <div class="project-name-cell">
-              <el-icon class="project-icon"><Folder /></el-icon>
-              <span>{{ row.name }}</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="category" label="分类" width="150" />
-        <el-table-column prop="status" label="状态" width="120">
-          <template #default="{ row }">
-            <el-tag :type="getStatusType(row.status)" size="small">
-              {{ getStatusText(row.status) }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="updateTime" label="更新时间" width="180" />
-        <el-table-column label="操作" width="200" fixed="right">
-          <template #default="{ row }">
-            <el-button size="small" text @click="handleEdit(row)">
-              <el-icon><Edit /></el-icon>
-              编辑
-            </el-button>
-            <el-button size="small" text @click="handleDelete(row)">
-              <el-icon><Delete /></el-icon>
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-
-    <div v-else class="project-grid">
-      <!-- 空状态 -->
-      <div v-if="filteredProjects.length === 0" class="empty-state">
-        <el-empty description="暂无项目">
-          <el-button type="primary" size="large" @click="handleCreateProject">
-            <el-icon><Plus /></el-icon>
-            创建第一个项目
-          </el-button>
-        </el-empty>
-      </div>
-
-      <!-- 项目卡片 -->
-      <el-card
-        v-for="project in filteredProjects"
-        :key="project.id"
-        class="project-card"
-        shadow="hover"
-      >
-        <div class="card-cover" @click="handleViewProject(project)">
-          <el-icon class="cover-icon" :size="48"><Folder /></el-icon>
-        </div>
-        
-        <div class="card-body">
-          <!-- 项目名称 -->
-          <div class="card-title">
-            <span 
-              class="project-name" 
-              :contenteditable="editingName === project.id"
-              @blur="handleNameBlur(project)"
-              @keydown.enter.prevent="handleNameBlur(project)"
-            >
-              {{ project.name }}
-            </span>
-            <el-button 
-              text 
-              size="small" 
-              @click="startEditName(project)"
-              v-if="editingName !== project.id"
-            >
-              <el-icon><Edit /></el-icon>
-            </el-button>
-          </div>
-
-          <!-- 描述摘要 -->
-          <div class="card-description">
-            {{ project.description || '暂无描述' }}
-          </div>
-
-          <!-- 分类标签 -->
-          <div class="card-tags">
-            <el-tag size="small" type="primary" effect="plain">
-              {{ project.category }}
-            </el-tag>
-          </div>
-
-          <!-- 最后修改时间 -->
-          <div class="card-footer">
-            <div class="update-time">
-              <el-icon><Clock /></el-icon>
-              <span>{{ project.updateTime }}</span>
-            </div>
-
-            <!-- 操作菜单 -->
-            <el-dropdown trigger="click" @command="(cmd) => handleCardAction(cmd, project)">
-              <el-button circle size="small" text>
-                <el-icon><MoreFilled /></el-icon>
-              </el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item command="edit">
-                    <el-icon><Edit /></el-icon>
-                    编辑
-                  </el-dropdown-item>
-                  <el-dropdown-item command="archive">
-                    <el-icon><Box /></el-icon>
-                    归档
-                  </el-dropdown-item>
-                  <el-dropdown-item command="delete" divided>
-                    <el-icon><Delete /></el-icon>
-                    删除
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </div>
-        </div>
-      </el-card>
-    </div>
-
-    <!-- 创建/编辑项目对话框 -->
-    <el-dialog
-      v-model="dialogVisible"
-      :title="isEditMode ? '编辑项目' : '创建项目'"
-      width="600px"
-      @close="resetForm"
-    >
-      <el-form :model="projectForm" :rules="formRules" ref="formRef" label-width="100px">
-        <el-form-item label="项目名称" prop="name">
-          <el-input v-model="projectForm.name" placeholder="请输入项目名称" />
-        </el-form-item>
-        <el-form-item label="项目分类" prop="category">
-          <el-cascader
-            v-model="projectForm.category"
-            :options="categoryOptions"
-            :props="{ expandTrigger: 'hover' }"
-            placeholder="请选择项目分类"
-          />
-        </el-form-item>
-        <el-form-item label="项目描述" prop="description">
-          <el-input
-            v-model="projectForm.description"
-            type="textarea"
-            :rows="4"
-            placeholder="请输入项目描述"
-          />
-        </el-form-item>
-        <el-form-item label="项目状态" prop="status">
-          <el-select v-model="projectForm.status" placeholder="请选择项目状态">
+          <el-select v-model="filterStatus" placeholder="按状态筛选" clearable class="filter-select">
             <el-option
               v-for="status in statuses"
               :key="status.value"
@@ -315,13 +152,178 @@
               :value="status.value"
             />
           </el-select>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
-      </template>
-    </el-dialog>
+        </div>
+      </div>
+
+      <!-- 项目列表/网格视图 -->
+      <div v-if="viewMode === 'list'" class="project-list">
+        <el-table :data="filteredProjects" stripe style="width: 100%">
+          <el-table-column prop="name" label="项目名称" min-width="200">
+            <template #default="{ row }">
+              <div class="project-name-cell">
+                <el-icon class="project-icon"><Folder /></el-icon>
+                <span>{{ row.name }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="category" label="分类" width="150" />
+          <el-table-column prop="status" label="状态" width="120">
+            <template #default="{ row }">
+              <el-tag :type="getStatusType(row.status)" size="small">
+                {{ getStatusText(row.status) }}
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="updateTime" label="更新时间" width="180" />
+          <el-table-column label="操作" width="200" fixed="right">
+            <template #default="{ row }">
+              <el-button size="small" text @click="handleEdit(row)">
+                <el-icon><Edit /></el-icon>
+                编辑
+              </el-button>
+              <el-button size="small" text @click="handleDelete(row)">
+                <el-icon><Delete /></el-icon>
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+
+      <div v-else class="project-grid">
+        <!-- 空状态 -->
+        <div v-if="filteredProjects.length === 0" class="empty-state">
+          <el-empty description="暂无项目">
+            <el-button type="primary" size="large" @click="handleCreateProject">
+              <el-icon><Plus /></el-icon>
+              创建第一个项目
+            </el-button>
+          </el-empty>
+        </div>
+
+        <!-- 项目卡片 -->
+        <el-card
+          v-for="project in filteredProjects"
+          :key="project.id"
+          class="project-card"
+          shadow="hover"
+        >
+          <div class="card-cover" @click="handleViewProject(project)">
+            <el-icon class="cover-icon" :size="48"><Folder /></el-icon>
+          </div>
+          
+          <div class="card-body">
+            <!-- 项目名称 -->
+            <div class="card-title">
+              <span 
+                class="project-name" 
+                :contenteditable="editingName === project.id"
+                @blur="handleNameBlur(project)"
+                @keydown.enter.prevent="handleNameBlur(project)"
+                @input="handleNameInput(project, $event)"
+              >
+                {{ project.name }}
+              </span>
+              <el-button 
+                text 
+                size="small" 
+                @click="startEditName(project)"
+                v-if="editingName !== project.id"
+              >
+                <el-icon><Edit /></el-icon>
+              </el-button>
+            </div>
+
+            <!-- 描述摘要 -->
+            <div class="card-description">
+              {{ project.description || '暂无描述' }}
+            </div>
+
+            <!-- 分类标签 -->
+            <div class="card-tags">
+              <el-tag size="small" type="primary" effect="plain">
+                {{ project.category }}
+              </el-tag>
+            </div>
+
+            <!-- 最后修改时间 -->
+            <div class="card-footer">
+              <div class="update-time">
+                <el-icon><Clock /></el-icon>
+                <span>{{ project.updateTime }}</span>
+              </div>
+
+              <!-- 操作菜单 -->
+              <el-dropdown trigger="click" @command="(command: string) => handleCardAction(command, project)">
+                <el-button circle size="small" text>
+                  <el-icon><MoreFilled /></el-icon>
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item command="edit">
+                      <el-icon><Edit /></el-icon>
+                      编辑
+                    </el-dropdown-item>
+                    <el-dropdown-item command="archive">
+                      <el-icon><Box /></el-icon>
+                      归档
+                    </el-dropdown-item>
+                    <el-dropdown-item command="delete" divided>
+                      <el-icon><Delete /></el-icon>
+                      删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </div>
+          </div>
+        </el-card>
+      </div>
+
+      <!-- 创建/编辑项目对话框 -->
+      <el-dialog
+        v-model="dialogVisible"
+        :title="isEditMode ? '编辑项目' : '创建项目'"
+        width="600px"
+        @close="resetForm"
+      >
+        <el-form :model="projectForm" :rules="formRules" ref="formRef" label-width="100px">
+          <el-form-item label="项目名称" prop="name">
+            <el-input v-model="projectForm.name" placeholder="请输入项目名称" />
+          </el-form-item>
+          <el-form-item label="项目分类" prop="category">
+            <el-cascader
+              v-model="projectForm.category"
+              :options="categoryOptions"
+              :props="{ expandTrigger: 'hover' }"
+              placeholder="请选择项目分类"
+            />
+          </el-form-item>
+          <el-form-item label="项目描述" prop="description">
+            <el-input
+              v-model="projectForm.description"
+              type="textarea"
+              :rows="4"
+              placeholder="请输入项目描述"
+            />
+          </el-form-item>
+          <el-form-item label="项目状态" prop="status">
+            <el-select v-model="projectForm.status" placeholder="请选择项目状态">
+              <el-option
+                v-for="status in statuses"
+                :key="status.value"
+                :label="status.label"
+                :value="status.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSubmit">确定</el-button>
+        </template>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -330,14 +332,12 @@ import { ref, computed } from 'vue'
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
 import {
   Plus,
-  Search,
   List,
   Grid,
   Folder,
   Edit,
   Delete,
   MoreFilled,
-  FolderOpened,
   Clock,
   Box,
   Document,
@@ -351,8 +351,59 @@ import {
   Refresh
 } from '@element-plus/icons-vue'
 
+// ========== 类型定义 ==========
+/** 分类树节点类型 */
+interface CategoryTreeNode {
+  id: string
+  label: string
+  type: 'folder' | 'file'
+  count: number
+  children?: CategoryTreeNode[]
+}
+
+/** 分类选项类型 */
+interface CategoryOption {
+  id: string
+  name: string
+}
+
+/** 状态选项类型 */
+interface StatusOption {
+  value: ProjectStatus
+  label: string
+}
+
+/** 分类级联选项类型 */
+interface CategoryCascaderOption {
+  value: string
+  label: string
+  children?: CategoryCascaderOption[]
+}
+
+/** 项目状态类型 */
+type ProjectStatus = 'active' | 'completed' | 'paused'
+
+/** 项目数据类型 */
+interface Project {
+  id: string
+  name: string
+  category: string
+  status: ProjectStatus
+  description: string
+  updateTime: string
+}
+
+/** 项目表单类型 */
+interface ProjectForm {
+  name: string
+  category: string[]
+  description: string
+  status: ProjectStatus
+}
+
+// ========== 响应式数据 ==========
 // 分类树形数据
-const categoryTreeData = ref([
+const categoryTreeData = ref<CategoryTreeNode[]>([
   {
     id: '1',
     label: '医学文献研究',
@@ -386,23 +437,15 @@ const categoryTreeData = ref([
   }
 ])
 
-// 项目统计数据
-const projectStats = computed(() => ({
-  total: projects.value.length,
-  active: projects.value.filter(p => p.status === 'active').length,
-  completed: projects.value.filter(p => p.status === 'completed').length,
-  paused: projects.value.filter(p => p.status === 'paused').length
-}))
-
 // 视图模式
-const viewMode = ref('list')
+const viewMode = ref<'list' | 'grid'>('list')
 
 // 搜索查询
 const searchQuery = ref('')
 
 // 筛选条件
 const filterCategory = ref('')
-const filterStatus = ref('')
+const filterStatus = ref<ProjectStatus | ''>('')
 
 // 对话框显示
 const dialogVisible = ref(false)
@@ -413,11 +456,11 @@ const editingName = ref<string | null>(null)
 const formRef = ref<FormInstance>()
 
 // 项目表单
-const projectForm = ref({
+const projectForm = ref<ProjectForm>({
   name: '',
-  category: [] as string[],
+  category: [],
   description: '',
-  status: ''
+  status: 'active'
 })
 
 // 表单验证规则
@@ -434,7 +477,7 @@ const formRules: FormRules = {
 }
 
 // 分类选项
-const categories = ref([
+const categories = ref<CategoryOption[]>([
   { id: '1', name: '医学文献研究' },
   { id: '2', name: '临床试验' },
   { id: '3', name: '药物研发' },
@@ -442,14 +485,14 @@ const categories = ref([
 ])
 
 // 状态选项
-const statuses = ref([
+const statuses = ref<StatusOption[]>([
   { value: 'active', label: '进行中' },
   { value: 'completed', label: '已完成' },
   { value: 'paused', label: '已暂停' }
 ])
 
 // 分类级联选项
-const categoryOptions = ref([
+const categoryOptions = ref<CategoryCascaderOption[]>([
   {
     value: '1',
     label: '医学文献研究',
@@ -479,7 +522,7 @@ const categoryOptions = ref([
 ])
 
 // 项目列表数据
-const projects = ref([
+const projects = ref<Project[]>([
   {
     id: '1',
     name: '心血管疾病风险预测模型',
@@ -514,6 +557,15 @@ const projects = ref([
   }
 ])
 
+// ========== 计算属性 ==========
+// 项目统计数据
+const projectStats = computed(() => ({
+  total: projects.value.length,
+  active: projects.value.filter(p => p.status === 'active').length,
+  completed: projects.value.filter(p => p.status === 'completed').length,
+  paused: projects.value.filter(p => p.status === 'paused').length
+}))
+
 // 过滤后的项目
 const filteredProjects = computed(() => {
   return projects.value.filter(project => {
@@ -527,9 +579,10 @@ const filteredProjects = computed(() => {
   })
 })
 
+// ========== 工具函数 ==========
 // 获取状态类型
-const getStatusType = (status: string) => {
-  const typeMap: Record<string, any> = {
+const getStatusType = (status: ProjectStatus) => {
+  const typeMap: Record<ProjectStatus, string> = {
     active: 'success',
     completed: 'info',
     paused: 'warning'
@@ -538,8 +591,8 @@ const getStatusType = (status: string) => {
 }
 
 // 获取状态文本
-const getStatusText = (status: string) => {
-  const statusMap: Record<string, string> = {
+const getStatusText = (status: ProjectStatus) => {
+  const statusMap: Record<ProjectStatus, string> = {
     active: '进行中',
     completed: '已完成',
     paused: '已暂停'
@@ -547,6 +600,7 @@ const getStatusText = (status: string) => {
   return statusMap[status] || status
 }
 
+// ========== 事件处理 ==========
 // 创建项目
 const handleCreateProject = () => {
   isEditMode.value = false
@@ -555,7 +609,7 @@ const handleCreateProject = () => {
 }
 
 // 树节点点击
-const handleNodeClick = (data: any) => {
+const handleNodeClick = (data: CategoryTreeNode) => {
   console.log('点击节点:', data)
   // 实际应用中这里应该根据选中的分类过滤项目
   ElMessage.success(`已选择分类：${data.label}`)
@@ -580,78 +634,112 @@ const handleRefresh = () => {
 }
 
 // 编辑项目
-const handleEdit = (row: any) => {
+const handleEdit = (row: Project) => {
   isEditMode.value = true
+  // 修复分类赋值逻辑：匹配级联选择器的格式
+  const categoryId = categories.value.find(c => c.name === row.category)?.id || ''
+  const categoryChildId = row.category === '医学文献研究' ? '1-1' : 
+                          row.category === '临床试验' ? '2-1' : 
+                          row.category === '药物研发' ? '3-1' : ''
+  
   projectForm.value = {
     name: row.name,
-    category: [row.category],
-    description: '',
+    category: categoryChildId ? [categoryId, categoryChildId] : [categoryId],
+    description: row.description,
     status: row.status
   }
   dialogVisible.value = true
 }
 
 // 删除项目
-const handleDelete = (row: any) => {
-  ElMessageBox.confirm('确定要删除该项目吗？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
+const handleDelete = async (row: Project) => {
+  try {
+    await ElMessageBox.confirm(
+      '确定要删除该项目吗？', 
+      '提示', 
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
     const index = projects.value.findIndex(p => p.id === row.id)
     if (index !== -1) {
       projects.value.splice(index, 1)
       ElMessage.success('删除成功')
     }
-  }).catch(() => {})
+  } catch (error) {
+    // 取消删除时无操作
+  }
 }
 
 // 查看项目
-const handleViewProject = (project: any) => {
+const handleViewProject = (project: Project) => {
   ElMessage.info(`查看项目：${project.name}`)
 }
 
 // 卡片操作
-const handleCardAction = (command: string, project: any) => {
-  if (command === 'edit') {
+const handleCardAction = (cmd: string, project: Project) => {
+  if (cmd === 'edit') {
     handleEdit(project)
-  } else if (command === 'archive') {
+  } else if (cmd === 'archive') {
     handleArchive(project)
-  } else if (command === 'delete') {
+  } else if (cmd === 'delete') {
     handleDelete(project)
   }
 }
 
 // 开始编辑名称
-const startEditName = (project: any) => {
+const startEditName = (project: Project) => {
   editingName.value = project.id
+  // 编辑时自动聚焦
+  setTimeout(() => {
+    const el = document.querySelector(`.project-name[data-id="${project.id}"]`) as HTMLElement
+    el?.focus()
+  }, 0)
+}
+
+// 实时更新名称（防XSS）
+const handleNameInput = (project: Project, e: Event) => {
+  const target = e.target as HTMLSpanElement
+  // 简单防XSS：移除HTML标签
+  const cleanText = target.textContent?.replace(/<[^>]*>/g, '') || ''
+  project.name = cleanText
 }
 
 // 完成编辑名称
-const handleNameBlur = (project: any) => {
-  if (editingName.value) {
+const handleNameBlur = (project: Project) => {
+  if (editingName.value === project.id) {
     editingName.value = null
     ElMessage.success('项目名称已更新')
   }
 }
 
 // 归档项目
-const handleArchive = (project: any) => {
-  ElMessageBox.confirm('确定要归档该项目吗？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
+const handleArchive = async (_project: Project) => {
+  try {
+    await ElMessageBox.confirm(
+      '确定要归档该项目吗？', 
+      '提示', 
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
     ElMessage.success('归档成功')
-  }).catch(() => {})
+  } catch (error) {
+    // 取消归档时无操作
+  }
+}
 
 // 重置表单
 const resetForm = () => {
   projectForm.value = {
     name: '',
-    category: [] as string[],
+    category: [],
     description: '',
-    status: ''
+    status: 'active'
   }
   formRef.value?.clearValidate()
 }
@@ -660,16 +748,36 @@ const resetForm = () => {
 const handleSubmit = async () => {
   if (!formRef.value) return
 
-  await formRef.value.validate((valid) => {
-    if (valid) {
-      if (isEditMode.value) {
-        ElMessage.success('更新成功')
-      } else {
-        ElMessage.success('创建成功')
+  try {
+    // 正确的异步验证方式
+    await formRef.value.validate()
+    
+    if (isEditMode.value) {
+      ElMessage.success('更新成功')
+      // 实际应用中添加更新逻辑
+    } else {
+      // 模拟创建新项目
+      const newProject: Project = {
+        id: Date.now().toString(),
+        name: projectForm.value.name,
+        category: categories.value.find(c => c.id === projectForm.value.category[0])?.name || '',
+        status: projectForm.value.status,
+        description: projectForm.value.description,
+        updateTime: new Date().toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        }).replace(/\//g, '-')
       }
-      dialogVisible.value = false
+      projects.value.push(newProject)
+      ElMessage.success('创建成功')
     }
-  })
+    dialogVisible.value = false
+  } catch (error) {
+    ElMessage.error('表单验证失败，请检查必填项')
+  }
 }
 </script>
 
@@ -816,217 +924,221 @@ const handleSubmit = async () => {
   .main-content {
     flex: 1;
     min-width: 0;
-  }
 
-// 顶部操作栏
-.top-bar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-  .create-button {
-    flex-shrink: 0;
-    padding: 12px 24px;
-    font-size: 15px;
-    font-weight: 600;
-    border-radius: 8px;
-    transition: all 0.3s;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(var(--el-color-primary-rgb), 0.3);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
-
-  .search-input {
-    flex: 1;
-    max-width: 400px;
-
-    :deep(.el-input__wrapper) {
-      border-radius: 20px;
-      padding: 4px 16px;
-    }
-  }
-
-  .view-toggle {
-    flex-shrink: 0;
-
-    :deep(.el-radio-button) {
-      padding: 8px 16px;
-      border-radius: 8px;
-
-      &:first-child {
-        border-top-left-radius: 8px;
-        border-bottom-left-radius: 8px;
-      }
-
-      &:last-child {
-        border-top-right-radius: 8px;
-        border-bottom-right-radius: 8px;
-      }
-    }
-  }
-
-  .filter-group {
-    display: flex;
-    gap: 12px;
-    flex-shrink: 0;
-
-    .filter-select {
-      width: 160px;
-
-      :deep(.el-input__wrapper) {
-        border-radius: 8px;
-      }
-    }
-  }
-}
-
-// 项目列表视图
-.project-list {
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-  .project-name-cell {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .project-icon {
-      color: var(--el-color-primary);
-      font-size: 18px;
-    }
-  }
-}
-
-// 项目网格视图
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-  padding: 20px;
-
-  // 空状态
-  .empty-state {
-    grid-column: 1 / -1;
-    padding: 60px 20px;
-    text-align: center;
-  }
-
-  // 项目卡片
-  .project-card {
-    cursor: pointer;
-    transition: all 0.3s;
-    border-radius: 16px;
-    overflow: hidden;
-
-    &:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
-    }
-
-    :deep(.el-card__body) {
-      padding: 0;
-    }
-
-    // 卡片封面
-    .card-cover {
+    // 顶部操作栏
+    .top-bar {
       display: flex;
       align-items: center;
-      justify-content: center;
-      height: 120px;
-      background: linear-gradient(135deg, var(--el-color-primary-light-9) 0%, var(--el-color-primary-light-7) 100%);
-      transition: all 0.3s;
-
-      .cover-icon {
-        color: var(--el-color-primary);
-      }
-
-      &:hover {
-        background: linear-gradient(135deg, var(--el-color-primary-light-8) 0%, var(--el-color-primary-light-6) 100%);
-      }
-    }
-
-    // 卡片内容
-    .card-body {
+      gap: 16px;
+      margin-bottom: 24px;
       padding: 20px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
-      // 卡片标题
-      .card-title {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-        gap: 8px;
+      .create-button {
+        flex-shrink: 0;
+        padding: 12px 24px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s;
 
-        .project-name {
-          flex: 1;
-          font-size: 16px;
-          font-weight: 600;
-          color: var(--el-text-color-primary);
-          transition: all 0.3s;
-          padding: 4px 8px;
-          border-radius: 4px;
-          border: 1px solid transparent;
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(var(--el-color-primary-rgb), 0.3);
+        }
 
-          &:hover,
-          &:focus {
-            background-color: var(--el-fill-color-light);
-            border-color: var(--el-border-color);
-            outline: none;
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      .search-input {
+        flex: 1;
+        max-width: 400px;
+
+        :deep(.el-input__wrapper) {
+          border-radius: 20px;
+          padding: 4px 16px;
+        }
+      }
+
+      .view-toggle {
+        flex-shrink: 0;
+
+        :deep(.el-radio-button) {
+          padding: 8px 16px;
+          border-radius: 8px;
+
+          &:first-child {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
           }
 
-          &[contenteditable="true"] {
-            background-color: var(--el-fill-color-light);
-            border-color: var(--el-color-primary);
+          &:last-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
           }
         }
       }
 
-      // 卡片描述
-      .card-description {
-        font-size: 14px;
-        color: var(--el-text-color-regular);
-        line-height: 1.6;
-        margin-bottom: 16px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        min-height: 44px;
-      }
+      .filter-group {
+        display: flex;
+        gap: 12px;
+        flex-shrink: 0;
 
-      // 卡片标签
-      .card-tags {
-        margin-bottom: 16px;
-      }
+        .filter-select {
+          width: 160px;
 
-      // 卡片底部
-      .card-footer {
+          :deep(.el-input__wrapper) {
+            border-radius: 8px;
+          }
+        }
+      }
+    }
+
+    // 项目列表视图
+    .project-list {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+      .project-name-cell {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding-top: 16px;
-        border-top: 1px solid var(--el-border-color-lighter);
+        gap: 8px;
 
-        .update-time {
+        .project-icon {
+          color: var(--el-color-primary);
+          font-size: 18px;
+        }
+      }
+    }
+
+    // 项目网格视图
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      padding: 0;
+
+      // 空状态
+      .empty-state {
+        grid-column: 1 / -1;
+        padding: 60px 20px;
+        text-align: center;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      // 项目卡片
+      .project-card {
+        cursor: pointer;
+        transition: all 0.3s;
+        border-radius: 16px;
+        overflow: hidden;
+
+        &:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        :deep(.el-card__body) {
+          padding: 0;
+        }
+
+        // 卡片封面
+        .card-cover {
           display: flex;
           align-items: center;
-          gap: 4px;
-          font-size: 13px;
-          color: var(--el-text-color-secondary);
+          justify-content: center;
+          height: 120px;
+          background: linear-gradient(135deg, var(--el-color-primary-light-9) 0%, var(--el-color-primary-light-7) 100%);
+          transition: all 0.3s;
+
+          .cover-icon {
+            color: var(--el-color-primary);
+          }
+
+          &:hover {
+            background: linear-gradient(135deg, var(--el-color-primary-light-8) 0%, var(--el-color-primary-light-6) 100%);
+          }
+        }
+
+        // 卡片内容
+        .card-body {
+          padding: 20px;
+
+          // 卡片标题
+          .card-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            gap: 8px;
+
+            .project-name {
+              flex: 1;
+              font-size: 16px;
+              font-weight: 600;
+              color: var(--el-text-color-primary);
+              transition: all 0.3s;
+              padding: 4px 8px;
+              border-radius: 4px;
+              border: 1px solid transparent;
+              outline: none;
+
+              &:hover,
+              &:focus {
+                background-color: var(--el-fill-color-light);
+                border-color: var(--el-border-color);
+              }
+
+              &[contenteditable="true"] {
+                background-color: var(--el-fill-color-light);
+                border-color: var(--el-color-primary);
+              }
+            }
+          }
+
+          // 卡片描述
+          .card-description {
+            font-size: 14px;
+            color: var(--el-text-color-regular);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 44px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+          }
+
+          // 卡片标签
+          .card-tags {
+            margin-bottom: 16px;
+          }
+
+          // 卡片底部
+          .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--el-border-color-lighter);
+
+            .update-time {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              font-size: 13px;
+              color: var(--el-text-color-secondary);
+            }
+          }
         }
       }
     }

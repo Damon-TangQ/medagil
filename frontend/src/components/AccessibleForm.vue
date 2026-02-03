@@ -255,7 +255,7 @@ const handleBlur = (fieldName: string) => {
 }
 
 // 处理聚焦
-const handleFocus = (fieldName: string) => {
+const handleFocus = (_fieldName: string) => {
   // 可以在这里添加聚焦时的逻辑
 }
 

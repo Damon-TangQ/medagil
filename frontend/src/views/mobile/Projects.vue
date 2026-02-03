@@ -51,7 +51,7 @@
                   {{ project.fileCount }} 个文件
                 </span>
               </div>
-              <el-dropdown trigger="click" @command="(cmd) => handleCardAction(cmd, project)">
+              <el-dropdown trigger="click" @command="(cmd: string) => handleCardAction(cmd, project)">
                 <el-button circle text size="small">
                   <el-icon><MoreFilled /></el-icon>
                 </el-button>

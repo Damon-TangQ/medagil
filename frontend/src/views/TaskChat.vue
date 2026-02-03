@@ -217,7 +217,7 @@
                 <el-button size="small" text>
                   <el-icon><Star /></el-icon>
                   评分
-                  <el-icon class="el-icon--right"><arrow-down /></el-icon>
+                  <el-icon class="el-icon--right"><ArrowDown /></el-icon>
                 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu>
@@ -345,7 +345,8 @@
         <el-input
           v-model="inputMessage"
           type="textarea"
-          :rows="4"
+          :rows="3"
+          :autosize="{ minRows: 2, maxRows: 6 }"
           placeholder="请输入您的消息..."
           @keydown.enter="handleEnterKey"
         />
@@ -365,7 +366,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, computed } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
@@ -373,13 +374,11 @@ import {
   Download,
   DocumentCopy,
   Share,
-  Star,
   ArrowDown,
   Paperclip,
-  Document,
-  Promotion,
-  Search,
   Folder,
+  Document,
+  Star,
   List,
   Setting,
   MagicStick,
@@ -388,7 +387,9 @@ import {
   User,
   SwitchButton,
   Microphone,
-  Loading
+  Loading,
+  ChatDotRound,
+  Promotion
 } from '@element-plus/icons-vue'
 
 // 路由相关
@@ -396,7 +397,7 @@ const route = useRoute()
 const router = useRouter()
 
 // 任务信息
-const taskId = computed(() => route.params.id as string)
+const taskId = ref<string>('')
 const taskTitle = ref('AI助手对话')
 
 // 顶部状态栏数据
@@ -561,11 +562,11 @@ const openAchievement = (item: any) => {
 
 // 打开设置
 const openSettings = () => {
-  ElMessage.info('打开设置页面')
+  router.push('/settings')
 }
 
 // 顶部状态栏方法
-const selectModel = (model: any) => {
+const selectModel = (model: { name: string }) => {
   currentModel.value = model.name
   ElMessage.success(`已切换到 ${model.name}`)
 }
@@ -640,7 +641,7 @@ const sendMessage = async () => {
 
   // 添加用户消息
   messages.value.push({
-    role: 'user',
+    role: 'user' as const,
     content: inputMessage.value,
     timestamp: Date.now()
   })
@@ -776,17 +777,6 @@ const handleFileUpload = (file: File) => {
   return false // 阻止自动上传
 }
 
-// 插入模板
-const insertTemplate = () => {
-  const templates = [
-    '请帮我分析当前的市场趋势',
-    '请为我的产品制定营销方案',
-    '请帮我优化项目流程'
-  ]
-  const template = templates[Math.floor(Math.random() * templates.length)]
-  inputMessage.value = template
-}
-
 // 导出对话
 const exportConversation = () => {
   ElMessage.success('对话已导出')
@@ -812,7 +802,7 @@ onMounted(() => {
   } else {
     // 添加欢迎消息
     messages.value.push({
-      role: 'ai',
+      role: 'ai' as const,
       content: '您好！我是您的AI助手，可以帮您完成各种任务。请问有什么可以帮您的吗？',
       timestamp: Date.now()
     })
@@ -834,13 +824,21 @@ onMounted(() => {
 
 // 左侧导航栏
 .sidebar {
-  width: 280px;
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
   background-color: #fff;
   border-right: 1px solid #e4e7ed;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   flex-shrink: 0;
+  
+  @media (max-width: 1200px) {
+    width: 260px;
+    min-width: 260px;
+    max-width: 260px;
+  }
 
   .sidebar-section {
     padding: 16px;
@@ -1133,6 +1131,14 @@ onMounted(() => {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  .message-item {
+    width: 100%;
+    max-width: 900px;
+  }
 }
 
 .message-item {
@@ -1166,7 +1172,7 @@ onMounted(() => {
   }
 
   .message-content {
-    max-width: 70%;
+    max-width: 80%;
     border-radius: 12px;
     padding: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -1377,6 +1383,12 @@ onMounted(() => {
   background-color: #fff;
   border-top: 1px solid var(--el-border-color-light);
   padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 
   .input-toolbar {
     display: flex;

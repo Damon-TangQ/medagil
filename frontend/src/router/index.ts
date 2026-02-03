@@ -4,7 +4,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('@/views/HomeGenspark.vue'),
+    component: () => import('@/views/Home.vue'),
     meta: {
       title: '首页'
     }
@@ -12,7 +12,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/LoginSimple.vue'),
+    component: () => import('@/views/Login.vue'),
     meta: {
       title: '登录'
     }
@@ -220,14 +220,6 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: '移动端个人中心',
       requiresAuth: false
-    }
-  },
-  {
-    path: '/icon-test',
-    name: 'IconTest',
-    component: () => import('@/views/IconTest.vue'),
-    meta: {
-      title: '图标测试'
     }
   }
 ]

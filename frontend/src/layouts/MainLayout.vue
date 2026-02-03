@@ -11,7 +11,6 @@
       <div class="header-right">
         <template v-if="!isLoggedIn">
           <el-button type="primary" @click="handleLogin">登录</el-button>
-          <el-button @click="handleRegister">注册</el-button>
         </template>
         <template v-else>
           <el-dropdown @command="handleUserCommand" trigger="click">
@@ -78,6 +77,12 @@
     <div v-if="isMobile" class="mobile-nav-toggle" @click="toggleSidebar">
       <el-icon :size="24"><Menu /></el-icon>
     </div>
+
+    <!-- 登录模态框 -->
+    <LoginModal
+      v-model:visible="loginModalVisible"
+      @login-success="handleLoginSuccess"
+    />
   </div>
 </template>
 
@@ -94,16 +99,18 @@ import {
   Menu,
   House,
   Message,
-  Folder,
-  Document,
-  List,
-  Setting
+  Folder
 } from '@element-plus/icons-vue'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth_mock'
+import LoginModal from '@/components/LoginModal.vue'
+import { useAuthRequired } from '@/composables/useAuthRequired'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+
+// 登录拦截
+const { loginModalVisible, handleLoginSuccess } = useAuthRequired()
 
 // 登录状态
 const isLoggedIn = computed(() => authStore.isAuthenticated)
@@ -115,7 +122,7 @@ const userInfo = computed(() => authStore.user || { username: '用户', avatar: 
 const isMobile = ref(false)
 const sidebarVisible = ref(true)
 
-// 菜单项
+// 菜单项 - 简化为核心入口
 const menuItems = [
   {
     path: '/',
@@ -132,21 +139,6 @@ const menuItems = [
     path: '/workspace',
     title: '工作区',
     icon: Folder
-  },
-  {
-    path: '/achievements',
-    title: '成果库',
-    icon: Document
-  },
-  {
-    path: '/tasks',
-    title: '所有任务',
-    icon: List
-  },
-  {
-    path: '/settings',
-    title: '设置',
-    icon: Setting
   }
 ]
 
@@ -183,11 +175,6 @@ const handleLogin = () => {
   router.push('/login')
 }
 
-// 注册
-const handleRegister = () => {
-  router.push('/register')
-}
-
 // 退出登录
 const handleLogout = () => {
   authStore.logout()
@@ -202,7 +189,8 @@ const toggleSidebar = () => {
 
 // 检测屏幕尺寸
 const checkScreenSize = () => {
-  isMobile.value = window.innerWidth < 768
+  const width = window.innerWidth
+  isMobile.value = width < 768
   sidebarVisible.value = !isMobile.value
 }
 
@@ -235,6 +223,9 @@ onBeforeUnmount(() => {
   padding: 0 24px;
   z-index: 1000;
   flex-shrink: 0;
+  max-width: 1920px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .header-left {
@@ -255,6 +246,10 @@ onBeforeUnmount(() => {
   font-weight: 600;
   color: #1F2937;
   letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .header-right {
@@ -295,14 +290,15 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 
-/* 左侧导航栏 */
+/* 左侧导航栏 - 紧凑设计 */
 .sidebar {
-  width: 260px;
-  background-color: #F9FAFB;
-  padding: 24px 12px;
+  width: 200px;
+  background-color: #ffffff;
+  padding: 20px 8px;
   overflow-y: auto;
   flex-shrink: 0;
-  transition: transform 0.3s;
+  transition: transform 0.3s, width 0.3s;
+  border-right: 1px solid #f0f0f0;
 }
 
 .sidebar-nav {
@@ -314,12 +310,14 @@ onBeforeUnmount(() => {
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 8px;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  margin-bottom: 4px;
+  font-size: 13px;
 }
 
 .nav-item:hover {
@@ -329,6 +327,7 @@ onBeforeUnmount(() => {
 .nav-item-active {
   background-color: #EEF2FF;
   color: #667eea;
+  font-weight: 600;
 }
 
 .nav-text {
@@ -357,9 +356,11 @@ onBeforeUnmount(() => {
 }
 
 .content-wrapper {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 32px;
+  padding: 32px 24px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* 移动端导航切换按钮 */
@@ -386,7 +387,68 @@ onBeforeUnmount(() => {
 }
 
 /* 响应式设计 */
-@media screen and (max-width: 768px) {
+/* 超大屏 > 1920px */
+@media screen and (min-width: 1921px) {
+  .sidebar {
+    width: 320px;
+  }
+
+  .content-wrapper {
+    max-width: 1400px;
+    padding: 48px 32px;
+  }
+}
+
+/* 大屏 1441px - 1920px */
+@media screen and (min-width: 1441px) {
+  .sidebar {
+    width: 280px;
+  }
+  
+  .content-wrapper {
+    max-width: 1200px;
+    padding: 40px 28px;
+  }
+}
+
+/* 桌面端 1024px - 1440px */
+@media screen and (min-width: 1024px) and (max-width: 1440px) {
+  .sidebar {
+    width: 260px;
+  }
+  
+  .content-wrapper {
+    max-width: 1100px;
+    padding: 32px 24px;
+  }
+}
+
+/* 平板端 768px - 1023px */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .sidebar {
+    width: 220px;
+  }
+  
+  .sidebar-nav {
+    gap: 2px;
+  }
+  
+  .nav-item {
+    padding: 10px 12px;
+  }
+  
+  .nav-text {
+    font-size: 13px;
+  }
+  
+  .content-wrapper {
+    max-width: 100%;
+    padding: 24px 20px;
+  }
+}
+
+/* 移动端 < 768px */
+@media screen and (max-width: 767px) {
   .sidebar {
     position: fixed;
     left: 0;
@@ -394,6 +456,8 @@ onBeforeUnmount(() => {
     bottom: 0;
     z-index: 1000;
     transform: translateX(-100%);
+    width: 280px;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
   }
 
   .sidebar.sidebar-visible {
@@ -405,7 +469,12 @@ onBeforeUnmount(() => {
   }
 
   .content-wrapper {
+    max-width: 100%;
     padding: 16px;
+  }
+  
+  .top-header {
+    padding: 0 16px;
   }
 }
 

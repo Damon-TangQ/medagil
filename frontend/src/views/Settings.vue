@@ -392,8 +392,6 @@ import {
   Coin,
   Sunny,
   Moon,
-  Grid,
-  List,
   Service
 } from '@element-plus/icons-vue'
 
@@ -472,7 +470,7 @@ const paymentDialogVisible = ref(false)
 const qrCodeUrl = ref('')
 
 // 升级订阅
-const handleUpgrade = (plan: string) => {
+const handleUpgrade = (_plan: string) => {
   paymentDialogVisible.value = true
   // 实际应用中这里应该生成支付二维码
   qrCodeUrl.value = 'https://via.placeholder.com/200'

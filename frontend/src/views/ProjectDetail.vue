@@ -104,7 +104,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Picture, Edit, Share, View, Star, Clock, ChatDotRound } from '@element-plus/icons-vue'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth_mock'
 
 const route = useRoute()
 const router = useRouter()
