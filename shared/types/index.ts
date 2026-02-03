@@ -58,6 +58,7 @@ export interface Project {
   name: string;
   description?: string;
   coverImage?: string;
+  category?: string;
   tags?: string;
   status: number;
   viewCount: number;

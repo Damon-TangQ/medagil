@@ -3,7 +3,6 @@
  */
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
 
 // 用户接口
 export interface AdminUser {
@@ -47,7 +46,7 @@ export interface SystemStatus {
 }
 
 // API基础URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 
 export const useAdminStore = defineStore('admin', () => {
   // 状态

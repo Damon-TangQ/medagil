@@ -233,9 +233,7 @@ import {
   Search,
   Refresh,
   Delete,
-  Lock,
-  View,
-  Edit
+  Lock
 } from '@element-plus/icons-vue'
 
 // 加载状态

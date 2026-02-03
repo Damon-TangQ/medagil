@@ -4,7 +4,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('@/views/Home.vue'),
+    component: () => import('@/views/Dashboard.vue'),
     meta: {
       title: '首页'
     }
@@ -12,7 +12,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/users',
     name: 'Users',
-    component: () => import('@/views/Users.vue'),
+    component: () => import('@/views/UserManagement.vue'),
     meta: {
       title: '用户管理'
     }
@@ -20,7 +20,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/content',
     name: 'Content',
-    component: () => import('@/views/Content.vue'),
+    component: () => import('@/views/Dashboard.vue'),
     meta: {
       title: '内容管理'
     }
@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/settings',
     name: 'Settings',
-    component: () => import('@/views/Settings.vue'),
+    component: () => import('@/views/Dashboard.vue'),
     meta: {
       title: '系统设置'
     }
@@ -41,7 +41,7 @@ const router = createRouter({
 })
 
 // 全局路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   // 设置页面标题
   if (to.meta.title) {
     document.title = `${to.meta.title} - Medagil管理后台`
