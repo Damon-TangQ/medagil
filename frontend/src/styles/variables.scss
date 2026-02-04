@@ -1,62 +1,65 @@
 // Medagil UI Design System Variables
 // Based on Manus Design Style
 
-// Brand Colors
-$brand-primary: #667eea;      // Brand Primary - Purple Blue
-$brand-secondary: #764ba2;    // Brand Secondary - Purple
-$brand-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+// Brand Colors - Manus Light Theme
+$brand-primary: #8b5cf6;      // Brand Primary - Purple
+$brand-secondary: #a78bfa;    // Brand Secondary - Lighter Purple
+$brand-gradient: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
 
-// Color Palette
-$primary-color: #3B82F6;      // Tech Blue - Main color
-$primary-dark: #1E40AF;       // Deep Blue
-$primary-light: #60A5FA;      // Light Blue
-$primary-lighter: #DBEAFE;    // Very Light Blue
+// Color Palette - Light Theme
+$primary-color: #8b5cf6;      // Primary - Purple (main brand color)
+$primary-dark: #7c3aed;       // Darker Purple for hover states
+$primary-light: #a78bfa;      // Lighter Purple
+$primary-lighter: rgba(139, 92, 246, 0.1);    // Very Light Purple with transparency
 
-$background-color: #F8FAFC;  // Light Gray Background
-$card-background: #FFFFFF;    // White Card
-$background-secondary: #F3F4F6; // Secondary Background
-$background-tertiary: #E5E7EB; // Tertiary Background
+// Background Colors - Light Theme
+$background-color: #f5f5f7;  // Main Background - Light Gray (Manus style)
+$card-background: #ffffff;    // Card Background - White
+$background-secondary: #1a1a1c; // Secondary Background - Sidebar/Navigation (Dark)
+$background-tertiary: #f2f2f7; // Tertiary Background - Content Areas
 
-$text-primary: #1F2937;      // Primary Text
-$text-secondary: #6B7280;     // Secondary Text
-$text-tertiary: #9CA3AF;     // Tertiary Text
-$text-disabled: #D1D5DB;      // Disabled Text
-$text-inverse: #FFFFFF;      // Inverse Text
+// Text Colors - Light Theme
+$text-primary: #1d1d1f;      // Primary Text - Dark Black (Manus style)
+$text-secondary: #86868b;     // Secondary Text - Medium Gray
+$text-tertiary: #6b7280;     // Tertiary Text - Darker Gray
+$text-disabled: #d2d2d7;      // Disabled Text - Light Gray
+$text-inverse: #ffffff;      // Inverse Text - White
 
-$border-color: #E5E7EB;      // Border Color
-$divider-color: #F3F4F6;      // Divider Color
-$border-light: #F3F4F6;      // Light Border
-$border-dark: #D1D5DB;       // Dark Border
+// Border Colors - Light Theme
+$border-color: #d2d2d7;      // Border Color - Light Gray
+$divider-color: #e5e5e7;      // Divider Color - Even Lighter
+$border-light: #e5e5e7;      // Light Border
+$border-dark: #3a3a3c;       // Dark Border (for dark areas)
 
-// Status Colors
+// Status Colors - Dark Theme
 $success-color: #10B981;     // Success
-$success-light: #D1FAE5;     // Light Success
+$success-light: rgba(16, 185, 129, 0.1);     // Light Success with transparency
 $success-dark: #059669;      // Dark Success
 
 $warning-color: #F59E0B;     // Warning
-$warning-light: #FEF3C7;     // Light Warning
+$warning-light: rgba(245, 158, 11, 0.1);     // Light Warning with transparency
 $warning-dark: #D97706;      // Dark Warning
 
 $danger-color: #EF4444;      // Danger
-$danger-light: #FEE2E2;      // Light Danger
+$danger-light: rgba(239, 68, 68, 0.1);      // Light Danger with transparency
 $danger-dark: #DC2626;       // Dark Danger
 
 $info-color: #3B82F6;        // Info
-$info-light: #DBEAFE;        // Light Info
+$info-light: rgba(59, 130, 246, 0.1);        // Light Info with transparency
 $info-dark: #2563EB;         // Dark Info
 
-// Additional Colors
+// Additional Colors - Dark Theme
 $purple-color: #8B5CF6;      // Purple
-$purple-light: #EDE9FE;      // Light Purple
+$purple-light: rgba(139, 92, 246, 0.1);      // Light Purple with transparency
 
 $pink-color: #EC4899;        // Pink
-$pink-light: #FCE7F3;        // Light Pink
+$pink-light: rgba(236, 72, 153, 0.1);        // Light Pink with transparency
 
 $teal-color: #14B8A6;        // Teal
-$teal-light: #CCFBF1;        // Light Teal
+$teal-light: rgba(20, 184, 166, 0.1);        // Light Teal with transparency
 
 $orange-color: #F97316;      // Orange
-$orange-light: #FFEDD5;      // Light Orange
+$orange-light: rgba(249, 115, 22, 0.1);      // Light Orange with transparency
 
 $gray-50: #F9FAFB;
 $gray-100: #F3F4F6;
@@ -69,8 +72,8 @@ $gray-700: #374151;
 $gray-800: #1F2937;
 $gray-900: #111827;
 
-// Typography
-$font-family: 'Inter', 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+// Typography - Manus Style
+$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, 'Inter', 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
 $font-family-mono: 'Fira Code', 'Monaco', 'Consolas', 'Courier New', monospace;
 
 $font-size-xs: 12px;
@@ -134,20 +137,20 @@ $spacing-xl: $spacing-8;
 $spacing-2xl: $spacing-12;
 $spacing-3xl: $spacing-16;
 
-// Border Radius
-$border-radius-sm: 4px;
-$border-radius-base: 8px;    // Base border radius
-$border-radius-lg: 12px;
-$border-radius-xl: 16px;
+// Border Radius - Manus Style
+$border-radius-sm: 8px;     // Small radius
+$border-radius-base: 12px;  // Base border radius
+$border-radius-lg: 16px;    // Large radius
+$border-radius-xl: 20px;    // Extra large radius
 $border-radius-full: 9999px;
 
-// Shadows
-$shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-$shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-$shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-$shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-$shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-$shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+// Shadows - Dark Theme
+$shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+$shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+$shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+$shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+$shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+$shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 
 // Transitions
 $transition-fast: 150ms;
@@ -243,9 +246,9 @@ $screen-desktop: 1024px;
 $screen-wide: 1440px;
 $screen-ultra: 1920px;
 
-// Interaction
+// Interaction - Dark Theme
 $focus-ring-width: 2px;
-$focus-ring-color: rgba(59, 130, 246, 0.5);
+$focus-ring-color: rgba(139, 92, 246, 0.5);  // Purple focus ring
 $focus-ring-offset: 2px;
 
 $hover-lift: translateY(-2px);
@@ -303,8 +306,8 @@ $form-item-margin-bottom: 16px;
 $form-group-margin-bottom: 24px;
 
 $input-border-width: 1px;
-$input-border-color: #E5E7EB;
-$input-border-focus-color: #3B82F6;
+$input-border-color: rgba(255, 255, 255, 0.1);  // Dark theme border
+$input-border-focus-color: #8b5cf6;  // Purple focus
 $input-padding-x: 12px;
 $input-padding-y: 10px;
 
@@ -334,11 +337,11 @@ $modal-backdrop-opacity: 0.5;
 $modal-max-width: 600px;
 $modal-max-width-lg: 800px;
 
-// Table
+// Table - Dark Theme
 $table-cell-padding: 12px 16px;
-$table-header-bg: #F9FAFB;
-$table-row-hover-bg: #F3F4F6;
-$table-border-color: #E5E7EB;
+$table-header-bg: rgba(30, 30, 40, 0.95);  // Dark header
+$table-row-hover-bg: rgba(139, 92, 246, 0.05);  // Subtle purple hover
+$table-border-color: rgba(255, 255, 255, 0.05);  // Subtle border
 
 // Tooltip
 $tooltip-padding: 8px 12px;
@@ -346,8 +349,8 @@ $tooltip-border-radius: 6px;
 $tooltip-max-width: 200px;
 $tooltip-font-size: 12px;
 
-// Dropdown
+// Dropdown - Dark Theme
 $dropdown-padding: 8px;
 $dropdown-item-height: 36px;
 $dropdown-border-radius: 8px;
-$dropdown-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+$dropdown-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);  // Darker shadow

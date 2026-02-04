@@ -243,6 +243,20 @@ export const downloadFile = (url: string, filename: string) => {
   return download(url, filename)
 }
 
+// ==================== AI聊天相关API ====================
+
+/**
+ * AI聊天接口
+ * 使用免费模型API生成回复
+ */
+export const chatWithAI = (data: { message: string; history?: Array<{ role: string; content: string }> }) => {
+  // 使用免费的Hugging Face API（需要配置API Key）
+  // 这里使用Inference API调用免费的模型
+  return post<{
+    response: string
+  }>('/ai/chat', data)
+}
+
 // ==================== 统计相关API ====================
 
 /**
@@ -312,6 +326,9 @@ export default {
   // 文件
   uploadFile,
   downloadFile,
+
+  // AI聊天
+  chatWithAI,
 
   // 统计
   getStatistics,

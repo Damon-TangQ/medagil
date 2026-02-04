@@ -35,6 +35,7 @@
         v-for="project in filteredProjects"
         :key="project.id"
         class="project-card"
+        :data-status="project.status"
         shadow="hover"
         @click="handleProjectClick(project)"
       >
@@ -83,8 +84,10 @@ import {
   Clock,
   User
 } from '@element-plus/icons-vue'
+import { useAuthStore } from '@/stores/auth_mock'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const searchKeyword = ref('')
 const selectedCategory = ref('all')
 const selectedStatus = ref('all')
@@ -97,7 +100,7 @@ const projects = ref([
     category: 'literature',
     status: 'ongoing',
     icon: Document,
-    color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    color: 'linear-gradient(135deg, rgba(102, 126, 234, 0.7) 0%, rgba(118, 75, 162, 0.7) 100%)',
     members: 5,
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 2)
   },
@@ -108,7 +111,7 @@ const projects = ref([
     category: 'analysis',
     status: 'completed',
     icon: DataBoard,
-    color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    color: 'linear-gradient(135deg, rgba(240, 147, 251, 0.7) 0%, rgba(245, 87, 108, 0.7) 100%)',
     members: 3,
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24)
   },
@@ -119,7 +122,7 @@ const projects = ref([
     category: 'chat',
     status: 'ongoing',
     icon: ChatDotRound,
-    color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    color: 'linear-gradient(135deg, rgba(79, 172, 254, 0.7) 0%, rgba(0, 242, 254, 0.7) 100%)',
     members: 2,
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 48)
   },
@@ -130,7 +133,7 @@ const projects = ref([
     category: 'visualization',
     status: 'archived',
     icon: Folder,
-    color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    color: 'linear-gradient(135deg, rgba(67, 233, 123, 0.7) 0%, rgba(56, 249, 215, 0.7) 100%)',
     members: 4,
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7)
   }
@@ -192,10 +195,16 @@ const getStatusText = (status: string) => {
 }
 
 const handleProjectClick = (project: any) => {
+  if (!authStore.requireAuth()) {
+    return
+  }
   router.push(`/projects/${project.id}`)
 }
 
 const handleCreateProject = () => {
+  if (!authStore.requireAuth()) {
+    return
+  }
   router.push('/projects/create')
 }
 </script>
@@ -205,6 +214,7 @@ const handleCreateProject = () => {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  background-color: var(--bg-primary, #f5f5f7);
 }
 
 .page-header {
@@ -214,13 +224,27 @@ const handleCreateProject = () => {
   margin-bottom: 16px;
 }
 
+.page-header :deep(.el-button--primary) {
+  background: #8b5cf6;
+  border: none;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+  transition: all 0.3s;
+}
+
+.page-header :deep(.el-button--primary:hover) {
+  background: #7c3aed;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  transform: translateY(-1px);
+}
+
 .page-title {
   font-size: 32px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-weight: var(--font-weight-title, 600);
+  color: var(--text-primary, #1d1d1f);
 }
 
 .workspace-filters {
@@ -228,6 +252,50 @@ const handleCreateProject = () => {
   gap: 12px;
   margin-bottom: 24px;
   flex-wrap: wrap;
+}
+
+.workspace-filters :deep(.el-input__wrapper) {
+  background-color: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-light, #d2d2d7);
+  border-radius: var(--radius-sm, 8px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.workspace-filters :deep(.el-input__wrapper:hover) {
+  border-color: var(--primary, #8b5cf6);
+}
+
+.workspace-filters :deep(.el-input__wrapper.is-focus) {
+  border-color: var(--primary, #8b5cf6);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.workspace-filters :deep(.el-input__inner) {
+  color: var(--text-primary, #1d1d1f);
+}
+
+.workspace-filters :deep(.el-input__inner::placeholder) {
+  color: var(--text-secondary, #86868b);
+}
+
+.workspace-filters :deep(.el-select .el-input__wrapper) {
+  background-color: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-light, #d2d2d7);
+  border-radius: var(--radius-sm, 8px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.workspace-filters :deep(.el-select .el-input__wrapper:hover) {
+  border-color: var(--primary, #8b5cf6);
+}
+
+.workspace-filters :deep(.el-select .el-input__wrapper.is-focus) {
+  border-color: var(--primary, #8b5cf6);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.workspace-filters :deep(.el-select .el-input__inner) {
+  color: var(--text-primary, #1d1d1f);
 }
 
 .search-input {
@@ -242,13 +310,33 @@ const handleCreateProject = () => {
 }
 
 .project-card {
-  border: none;
+  background: #ffffff;
+  border: 1px solid #d2d2d7;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all var(--transition-normal, 0.3s);
+  position: relative;
+  overflow: hidden;
 }
 
 .project-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-4px);
+  background: #ffffff;
+  box-shadow: var(--shadow-card, 0 4px 12px rgba(0, 0, 0, 0.08));
+}
+
+.project-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #8b5cf6;
+}
+
+.project-card[data-status="completed"]::before {
+  background-color: #10b981;
 }
 
 .project-cover {
@@ -279,15 +367,15 @@ const handleCreateProject = () => {
 
 .project-name {
   font-size: 18px;
-  font-weight: 600;
-  color: #1F2937;
+  font-weight: var(--font-weight-title, 600);
+  color: var(--text-primary, #1d1d1f);
   margin-bottom: 8px;
 }
 
 .project-description {
   font-size: 14px;
-  color: #6B7280;
-  line-height: 1.6;
+  color: var(--text-secondary, #86868b);
+  line-height: var(--line-height-normal, 1.5);
   margin-bottom: 16px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -300,7 +388,7 @@ const handleCreateProject = () => {
   justify-content: space-between;
   align-items: center;
   padding-top: 12px;
-  border-top: 1px solid #E5E7EB;
+  border-top: 1px solid var(--divider-color, rgba(255, 255, 255, 0.05));
 }
 
 .meta-item {
@@ -308,7 +396,7 @@ const handleCreateProject = () => {
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: #9CA3AF;
+  color: var(--text-secondary, #94a3b8);
 }
 
 @media screen and (max-width: 768px) {

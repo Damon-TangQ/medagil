@@ -182,8 +182,7 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Check } from '@/icons-vue'
 import { getCurrentUser, getUserSubscriptionRecords, createSubscriptionOrder } from '@/api'
-import { formatDate, storage } from '@/shared'
-import { SUBSCRIPTION_LEVEL, SUBSCRIPTION_LEVEL_NAMES, PAYMENT_STATUS, PAYMENT_STATUS_NAMES } from '@/shared/constants'
+import { formatDate, storage, SUBSCRIPTION_LEVEL, SUBSCRIPTION_LEVEL_NAMES, PAYMENT_STATUS, PAYMENT_STATUS_NAMES } from '@/shared'
 
 // 用户信息
 const user = ref<any>(null)

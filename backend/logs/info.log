@@ -31,3 +31,114 @@
 [2026-02-03 16:14:21.209] [INFO] 使用Mock数据模式，跳过数据库初始化 
 [2026-02-03 16:14:21.212] [INFO] 所有服务初始化完成 
 [2026-02-03 16:14:21.214] [INFO] Medagil AI平台后端服务已启动，运行在端口 5000 
+[2026-02-04 09:14:47.364] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-04 09:14:47.366] [INFO] 所有服务初始化完成 
+[2026-02-04 09:14:47.386] [INFO] Medagil AI平台后端服务已启动，运行在端口 5000 
+[2026-02-04 09:35:33.321] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-04 09:35:33.322] [INFO] 所有服务初始化完成 
+[2026-02-04 09:35:33.326] [INFO] Medagil AI平台后端服务已启动，运行在端口 5000 
+[2026-02-04 09:48:51.338] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-04 09:48:51.341] [INFO] 所有服务初始化完成 
+[2026-02-04 09:48:51.343] [INFO] Medagil AI平台后端服务已启动，运行在端口 5000 
+[2026-02-04 09:50:34.038] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-04 09:50:34.039] [INFO] 所有服务初始化完成 
+[2026-02-04 09:50:34.041] [INFO] Medagil AI平台后端服务已启动，运行在端口 5000 
+[2026-02-04 09:55:02.855] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-04 09:55:02.856] [INFO] 所有服务初始化完成 
+[2026-02-04 09:55:02.858] [INFO] Medagil AI平台后端服务已启动，运行在端口 3000 
+[2026-02-04 09:56:37.965] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1009,"ip":"::1"}
+[2026-02-04 09:57:15.413] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1011,"ip":"::1"}
+[2026-02-04 09:58:29.715] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-04 09:58:29.717] [INFO] 所有服务初始化完成 
+[2026-02-04 09:58:29.719] [INFO] Medagil AI平台后端服务已启动，运行在端口 3000 
+[2026-02-04 10:00:08.047] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-04 10:00:08.049] [INFO] 所有服务初始化完成 
+[2026-02-04 10:00:08.051] [INFO] Medagil AI平台后端服务已启动，运行在端口 3000 
+[2026-02-04 10:01:31.858] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1035,"ip":"::1"}
+[2026-02-04 10:21:07.228] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1013,"ip":"::1"}
+[2026-02-04 10:22:39.207] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1013,"ip":"::1"}
+[2026-02-04 10:23:26.942] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1013,"ip":"::1"}
+[2026-02-04 10:25:55.207] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1009,"ip":"::1"}
+[2026-02-04 10:26:08.638] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1008,"ip":"::1"}
+[2026-02-04 10:31:22.719] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1016,"ip":"::1"}
+[2026-02-04 10:37:45.105] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1003,"ip":"::1"}
+[2026-02-04 10:41:08.962] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1005,"ip":"::1"}
+[2026-02-04 10:46:29.401] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1011,"ip":"::1"}
+[2026-02-04 11:20:30.340] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-04 11:20:30.342] [INFO] 所有服务初始化完成 
+[2026-02-04 11:20:30.346] [INFO] Medagil AI平台后端服务已启动，运行在端口 3000 
+[2026-02-04 12:07:40.020] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1014,"ip":"::1"}
+[2026-02-04 12:51:14.046] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1014,"ip":"::1"}
+[2026-02-04 15:57:35.415] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":7,"ip":"::1"}
+[2026-02-04 15:57:45.936] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":2,"ip":"::1"}
+[2026-02-04 15:57:55.774] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 15:58:08.210] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":3,"ip":"::1"}
+[2026-02-04 15:58:16.574] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":2,"ip":"::1"}
+[2026-02-04 15:58:38.438] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 15:59:35.287] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:00:34.132] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":2,"ip":"::1"}
+[2026-02-04 16:00:38.212] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":2,"ip":"::1"}
+[2026-02-04 16:00:39.280] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":11,"ip":"::1"}
+[2026-02-04 16:00:40.276] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:00:42.058] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:00:47.931] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":2,"ip":"::1"}
+[2026-02-04 16:03:51.250] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:04:15.255] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:04:40.087] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:08:12.153] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:12:46.156] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:12:48.779] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:12:51.409] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":2,"ip":"::1"}
+[2026-02-04 16:12:53.050] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":2,"ip":"::1"}
+[2026-02-04 16:12:53.887] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:12:56.248] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:12:57.616] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:12:59.806] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:13:02.619] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":3,"ip":"::1"}
+[2026-02-04 16:13:13.068] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 16:57:58.088] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":2,"ip":"::1"}
+[2026-02-04 17:34:50.083] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-04 17:34:50.084] [INFO] 所有服务初始化完成 
+[2026-02-04 17:34:50.086] [INFO] Medagil AI平台后端服务已启动，运行在端口 3000 
+[2026-02-04 18:10:52.915] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1009,"ip":"::1"}
+[2026-02-04 18:11:09.943] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1004,"ip":"::1"}
+[2026-02-04 18:13:22.482] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1005,"ip":"::1"}
+[2026-02-04 18:14:42.012] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1004,"ip":"::1"}
+[2026-02-04 18:14:52.858] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1009,"ip":"::1"}
+[2026-02-04 18:16:37.303] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1005,"ip":"::1"}
+[2026-02-04 18:19:04.716] [INFO] 使用Mock数据模式，跳过数据库初始化 
+[2026-02-04 18:19:04.718] [INFO] 所有服务初始化完成 
+[2026-02-04 18:19:04.720] [INFO] Medagil AI平台后端服务已启动，运行在端口 3000 
+[2026-02-04 18:26:17.024] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1007,"ip":"::1"}
+[2026-02-04 18:27:35.450] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1004,"ip":"::1"}
+[2026-02-04 18:29:45.493] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1007,"ip":"::1"}
+[2026-02-04 18:31:02.372] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1006,"ip":"::1"}
+[2026-02-04 18:32:32.794] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1011,"ip":"::1"}
+[2026-02-04 18:40:05.592] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":3,"ip":"::1"}
+[2026-02-04 18:41:23.074] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":3,"ip":"::1"}
+[2026-02-04 18:43:54.019] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 18:46:03.355] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 18:55:29.611] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1011,"ip":"::1"}
+[2026-02-04 18:56:51.232] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1010,"ip":"::1"}
+[2026-02-04 18:58:31.786] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1007,"ip":"::1"}
+[2026-02-04 18:59:36.134] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1016,"ip":"::1"}
+[2026-02-04 19:00:34.835] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1015,"ip":"::1"}
+[2026-02-04 19:00:55.236] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1008,"ip":"::1"}
+[2026-02-04 19:02:20.358] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1016,"ip":"::1"}
+[2026-02-04 19:02:29.000] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 19:10:55.508] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1014,"ip":"::1"}
+[2026-02-04 19:11:09.532] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1009,"ip":"::1"}
+[2026-02-04 19:11:29.877] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1012,"ip":"::1"}
+[2026-02-04 19:16:42.243] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":3,"ip":"::1"}
+[2026-02-04 19:16:49.176] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":3,"ip":"::1"}
+[2026-02-04 19:29:15.341] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":8,"ip":"::1"}
+[2026-02-04 19:47:19.401] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1016,"ip":"::1"}
+[2026-02-04 19:57:02.014] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":2,"ip":"::1"}
+[2026-02-04 19:58:32.572] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":2,"ip":"::1"}
+[2026-02-04 19:58:37.365] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1013,"ip":"::1"}
+[2026-02-04 19:59:45.905] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1013,"ip":"::1"}
+[2026-02-04 20:00:18.394] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1006,"ip":"::1"}
+[2026-02-04 20:16:50.042] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":4,"ip":"::1"}
+[2026-02-04 20:16:56.514] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 20:29:25.525] [INFO] HTTP Request {"method":"GET","path":"/","statusCode":200,"duration":1,"ip":"::1"}
+[2026-02-04 20:29:45.208] [INFO] HTTP Request {"method":"POST","path":"/chat","statusCode":200,"duration":1013,"ip":"::1"}

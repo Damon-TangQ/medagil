@@ -11,3 +11,9 @@
 [2026-02-02 17:40:23.286] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":1,"ip":"::1"}
 [2026-02-02 17:40:24.613] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":1,"ip":"::1"}
 [2026-02-02 18:20:21.729] [WARN] HTTP Request {"method":"POST","path":"/register","statusCode":400,"duration":1,"ip":"::1"}
+[2026-02-04 10:08:50.270] [WARN] HTTP Request {"method":"GET","path":"/user","statusCode":401,"duration":3,"ip":"::1"}
+[2026-02-04 10:08:50.278] [WARN] HTTP Request {"method":"GET","path":"/api/subscriptions/records","statusCode":404,"duration":2,"ip":"::1"}
+[2026-02-04 17:28:42.291] [WARN] HTTP Request {"method":"GET","path":"/","statusCode":404,"duration":4,"ip":"::1"}
+[2026-02-04 17:28:42.374] [WARN] HTTP Request {"method":"GET","path":"/favicon.ico","statusCode":404,"duration":1,"ip":"::1"}
+[2026-02-04 17:29:14.350] [WARN] HTTP Request {"method":"GET","path":"/","statusCode":404,"duration":1,"ip":"::1"}
+[2026-02-04 17:29:17.459] [WARN] HTTP Request {"method":"GET","path":"/.well-known/appspecific/com.chrome.devtools.json","statusCode":404,"duration":1,"ip":"::1"}

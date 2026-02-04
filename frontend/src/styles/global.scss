@@ -18,6 +18,12 @@ html, body {
   background-color: $background-color;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  // Dark theme specific
+  &::selection {
+    background-color: rgba(139, 92, 246, 0.3);  // Purple selection
+    color: $text-primary;
+  }
 }
 
 #app {
@@ -26,36 +32,48 @@ html, body {
   flex-direction: column;
 }
 
-// Typography
+// Typography - Manus Style
 h1, h2, h3, h4, h5, h6 {
-  font-weight: $font-weight-semibold;
-  line-height: $line-height-tight;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-relaxed;
   margin-bottom: $spacing-sm;
+  color: $text-primary;
 }
 
 h1 {
   font-size: $font-size-4xl;
   font-weight: $font-weight-bold;
+  color: $text-primary;
 }
 
 h2 {
   font-size: $font-size-3xl;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
 }
 
 h3 {
   font-size: $font-size-2xl;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
 }
 
 h4 {
   font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
 }
 
 h5 {
   font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  color: $text-primary;
 }
 
 h6 {
   font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: $text-primary;
 }
 
 p {
@@ -63,13 +81,19 @@ p {
   line-height: $line-height-relaxed;
 }
 
+// Links - Dark Theme
 a {
   color: $primary-color;
   text-decoration: none;
-  transition: color $transition-base $transition-timing;
+  transition: all $transition-base $transition-timing;
 
   &:hover {
-    color: $primary-dark;
+    color: $primary-light;
+    text-shadow: 0 0 8px rgba(139, 92, 246, 0.4);  // Purple glow
+  }
+
+  &:active {
+    color: $primary-color;
   }
 }
 
@@ -94,9 +118,15 @@ a {
   &.btn-primary {
     background-color: $primary-color;
     color: white;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);  // Purple glow
 
     &:hover:not(:disabled) {
       background-color: $primary-dark;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);  // Enhanced glow
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
     }
   }
 
@@ -106,16 +136,18 @@ a {
     border: 1px solid $border-color;
 
     &:hover:not(:disabled) {
-      background-color: $background-color;
+      background-color: rgba(139, 92, 246, 0.1);  // Subtle purple hover
+      border-color: rgba(139, 92, 246, 0.3);
     }
   }
 
   &.btn-ghost {
     background-color: transparent;
-    color: $primary-color;
+    color: $text-secondary;
 
     &:hover:not(:disabled) {
-      background-color: rgba($primary-color, 0.1);
+      background-color: rgba(139, 92, 246, 0.1);
+      color: $text-primary;
     }
   }
 
@@ -130,13 +162,14 @@ a {
   }
 }
 
-// Cards
+// Cards - Dark Theme
 .card {
   background-color: $card-background;
   border-radius: $border-radius-base;
   box-shadow: $shadow-base;
   padding: $spacing-lg;
   margin-bottom: $spacing-md;
+  border: 1px solid $border-color;  // Subtle border for dark theme
 
   &.card-hover {
     transition: all $transition-base $transition-timing;
@@ -144,6 +177,7 @@ a {
     &:hover {
       box-shadow: $shadow-lg;
       transform: translateY(-2px);
+      border-color: rgba(139, 92, 246, 0.2);  // Purple border on hover
     }
   }
 }
@@ -160,29 +194,39 @@ a {
   color: $text-primary;
 }
 
+// Form Controls - Dark Theme
 .form-control {
   width: 100%;
   padding: $spacing-sm $spacing-md;
   font-size: $font-size-base;
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
-  background-color: $card-background;
+  background-color: rgba(30, 30, 40, 0.95);
   color: $text-primary;
-  transition: border-color $transition-base $transition-timing;
+  transition: all $transition-base $transition-timing;
+
+  &::placeholder {
+    color: $text-tertiary;
+  }
 
   &:focus {
     outline: none;
     border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);  // Purple focus ring
+  }
+
+  &:hover:not(:focus):not(:disabled) {
+    border-color: rgba(255, 255, 255, 0.15);
   }
 
   &:disabled {
-    background-color: $background-color;
+    background-color: rgba(30, 30, 40, 0.5);
     cursor: not-allowed;
+    color: $text-disabled;
   }
 }
 
-// Status badges
+// Status Badges - Dark Theme
 .badge {
   display: inline-flex;
   align-items: center;
@@ -192,23 +236,27 @@ a {
   border-radius: $border-radius-full;
 
   &.badge-primary {
-    background-color: rgba($primary-color, 0.1);
+    background-color: rgba(139, 92, 246, 0.15);
     color: $primary-color;
+    border: 1px solid rgba(139, 92, 246, 0.2);
   }
 
   &.badge-success {
-    background-color: rgba($success-color, 0.1);
+    background-color: rgba(16, 185, 129, 0.15);
     color: $success-color;
+    border: 1px solid rgba(16, 185, 129, 0.2);
   }
 
   &.badge-warning {
-    background-color: rgba($warning-color, 0.1);
+    background-color: rgba(245, 158, 11, 0.15);
     color: $warning-color;
+    border: 1px solid rgba(245, 158, 11, 0.2);
   }
 
   &.badge-danger {
-    background-color: rgba($danger-color, 0.1);
+    background-color: rgba(239, 68, 68, 0.15);
     color: $danger-color;
+    border: 1px solid rgba(239, 68, 68, 0.2);
   }
 }
 

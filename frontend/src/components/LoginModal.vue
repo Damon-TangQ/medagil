@@ -162,13 +162,6 @@
               </el-form>
             </el-dialog>
           </el-tabs>
-
-          <div class="agreement">
-            登录即表示您同意
-            <el-link type="primary" @click="handleAgreement">《用户服务协议》</el-link>
-            和
-            <el-link type="primary" @click="handlePrivacy">《隐私政策》</el-link>
-          </div>
         </div>
       </div>
     </transition>
@@ -352,16 +345,6 @@ const handlePhoneLogin = async () => {
       }
     }
   })
-}
-
-// 处理用户协议
-const handleAgreement = () => {
-  ElMessage.info('用户服务协议页面开发中...')
-}
-
-// 处理隐私政策
-const handlePrivacy = () => {
-  ElMessage.info('隐私政策页面开发中...')
 }
 
 // 计算二维码状态文本

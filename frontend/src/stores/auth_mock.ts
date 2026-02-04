@@ -225,6 +225,15 @@ export const useAuthStore = defineStore('auth', () => {
     router.push('/login')
   }
 
+  // 检查用户是否已登录，如果未登录则跳转到登录页面
+  const requireAuth = (): boolean => {
+    if (!isAuthenticated.value) {
+      router.push('/login')
+      return false
+    }
+    return true
+  }
+
   return {
     token,
     user,
@@ -237,6 +246,7 @@ export const useAuthStore = defineStore('auth', () => {
     initUser,
     register,
     phoneLogin,
-    logout
+    logout,
+    requireAuth
   }
 })

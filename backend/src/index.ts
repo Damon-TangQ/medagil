@@ -12,7 +12,7 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const USE_MOCK = process.env.USE_MOCK === 'true';
 
 // 初始化服务

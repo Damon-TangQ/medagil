@@ -201,8 +201,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Plus, Folder, List, Star, Lock, Bell } from '@element-plus/icons-vue'
 import { getCurrentUser, updateUserInfo, changePassword } from '@/api'
-import { formatDate, storage } from '@/shared'
-import { SUBSCRIPTION_LEVEL, SUBSCRIPTION_LEVEL_NAMES } from '@/shared/constants'
+import { formatDate, storage, SUBSCRIPTION_LEVEL, SUBSCRIPTION_LEVEL_NAMES } from '@/shared'
 import { useForm } from '@/composables'
 
 const router = useRouter()

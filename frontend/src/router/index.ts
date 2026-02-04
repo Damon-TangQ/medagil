@@ -142,6 +142,15 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: '/my-tasks',
+    name: 'MyTasks',
+    component: () => import('@/views/MyTasks.vue'),
+    meta: {
+      title: '我的任务',
+      requiresAuth: false
+    }
+  },
+  {
     path: '/agents/clinical-paper',
     name: 'ClinicalPaper',
     component: () => import('@/views/agents/ClinicalPaper.vue'),
@@ -219,6 +228,87 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/mobile/Profile.vue'),
     meta: {
       title: '移动端个人中心',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/outputs',
+    name: 'Outputs',
+    component: () => import('@/views/Outputs.vue'),
+    meta: {
+      title: '我的成果',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/recent',
+    name: 'Recent',
+    component: () => import('@/views/Recent.vue'),
+    meta: {
+      title: '最近使用',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/tools/literature',
+    name: 'LiteratureTools',
+    component: () => import('@/views/tools/Literature.vue'),
+    meta: {
+      title: '文献工具',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/tools/format',
+    name: 'FormatTools',
+    component: () => import('@/views/tools/Format.vue'),
+    meta: {
+      title: '格式工具',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/tools/translate',
+    name: 'TranslateTools',
+    component: () => import('@/views/tools/Translate.vue'),
+    meta: {
+      title: '翻译工具',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/member',
+    name: 'Member',
+    component: () => import('@/views/Member.vue'),
+    meta: {
+      title: '会员中心',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/help',
+    name: 'Help',
+    component: () => import('@/views/Help.vue'),
+    meta: {
+      title: '帮助反馈',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/settings/account',
+    name: 'AccountSettings',
+    component: () => import('@/views/settings/Account.vue'),
+    meta: {
+      title: '账户设置',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/settings/appearance',
+    name: 'AppearanceSettings',
+    component: () => import('@/views/settings/Appearance.vue'),
+    meta: {
+      title: '界面设置',
       requiresAuth: false
     }
   }

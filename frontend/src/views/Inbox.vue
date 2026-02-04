@@ -75,7 +75,9 @@ import {
   DataBoard,
   TrendCharts
 } from '@element-plus/icons-vue'
+import { useAuthStore } from '@/stores/auth_mock'
 
+const authStore = useAuthStore()
 const filterType = ref('all')
 const searchKeyword = ref('')
 
@@ -165,7 +167,7 @@ const formatTime = (date: Date) => {
 const getMessageType = (type: string) => {
   const typeMap: Record<string, any> = {
     '分析结果': 'primary',
-    '对话消息': 'success',
+    '对话消息': 'info',
     '数据报告': 'warning',
     '预测分析': 'info'
   }
@@ -173,11 +175,17 @@ const getMessageType = (type: string) => {
 }
 
 const toggleStar = (message: any) => {
+  if (!authStore.requireAuth()) {
+    return
+  }
   message.isStarred = !message.isStarred
   ElMessage.success(message.isStarred ? '已收藏' : '已取消收藏')
 }
 
 const deleteMessage = (id: number) => {
+  if (!authStore.requireAuth()) {
+    return
+  }
   ElMessageBox.confirm('确定要删除这条消息吗？', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -194,6 +202,7 @@ const deleteMessage = (id: number) => {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  background-color: var(--bg-primary, #f5f5f7);
 }
 
 .page-header {
@@ -203,17 +212,14 @@ const deleteMessage = (id: number) => {
 
 .page-title {
   font-size: 32px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-weight: var(--font-weight-title, 600);
+  color: #1d1d1f;
   margin-bottom: 8px;
 }
 
 .page-subtitle {
   font-size: 16px;
-  color: #6B7280;
+  color: #86868b;
 }
 
 .inbox-filters {
@@ -225,8 +231,71 @@ const deleteMessage = (id: number) => {
   flex-wrap: wrap;
 }
 
+.inbox-filters :deep(.el-radio-group) {
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  gap: 8px;
+}
+
+.inbox-filters :deep(.el-radio-button) {
+  background-color: #ffffff;
+  border: 1px solid #d2d2d7;
+  color: #86868b;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 400;
+  transition: all 0.3s;
+}
+
+.inbox-filters :deep(.el-radio-button:hover) {
+  background-color: #f2f2f7;
+  color: #1d1d1f;
+}
+
+.inbox-filters :deep(.el-radio-button__original-radio) {
+  display: none;
+}
+
+.inbox-filters :deep(.el-radio-button.is-active) {
+  background-color: #8b5cf6;
+  color: #ffffff;
+  border: none;
+  box-shadow: none;
+}
+
 .search-input {
   width: 300px;
+}
+
+.search-input :deep(.el-input__wrapper) {
+  background-color: #ffffff;
+  border: 1px solid #d2d2d7;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.search-input :deep(.el-input__wrapper:hover) {
+  border-color: #8b5cf6;
+}
+
+.search-input :deep(.el-input__wrapper.is-focus) {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.search-input :deep(.el-input__inner) {
+  color: #1d1d1f;
+}
+
+.search-input :deep(.el-input__inner::placeholder) {
+  color: #86868b;
+}
+
+.search-input :deep(.el-input__prefix) {
+  color: #86868b;
 }
 
 .inbox-list {
@@ -236,16 +305,21 @@ const deleteMessage = (id: number) => {
 }
 
 .message-card {
+  background: #ffffff;
   border: none;
+  border-radius: 12px;
   transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .message-card:hover {
   transform: translateY(-2px);
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .message-unread {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  background: rgba(139, 92, 246, 0.05);
 }
 
 .message-header {
@@ -261,7 +335,7 @@ const deleteMessage = (id: number) => {
   gap: 8px;
   font-size: 16px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1d1d1f;
 }
 
 .message-actions {
@@ -271,8 +345,8 @@ const deleteMessage = (id: number) => {
 
 .message-content {
   margin-bottom: 16px;
-  color: #4B5563;
-  line-height: 1.6;
+  color: #86868b;
+  line-height: 1.5;
 }
 
 .message-footer {
@@ -280,12 +354,27 @@ const deleteMessage = (id: number) => {
   justify-content: space-between;
   align-items: center;
   padding-top: 12px;
-  border-top: 1px solid #E5E7EB;
+  border-top: 1px solid var(--border-light, #d2d2d7);
 }
 
 .message-time {
   font-size: 12px;
-  color: #9CA3AF;
+  color: #86868b;
+}
+
+.message-footer :deep(.el-tag) {
+  background-color: #8b5cf6;
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.message-footer :deep(.el-tag--info) {
+  background-color: #3b82f6;
 }
 
 @media screen and (max-width: 768px) {

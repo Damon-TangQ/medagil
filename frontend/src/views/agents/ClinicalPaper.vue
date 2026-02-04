@@ -358,6 +358,10 @@ import {
   MagicStick,
   Check
 } from '@element-plus/icons-vue'
+import { useAuthStore } from '@/stores/auth_mock'
+
+// 登录检查
+const authStore = useAuthStore()
 
 // 当前步骤
 const currentStep = ref(0)
@@ -483,11 +487,17 @@ const handleBack = () => {
 
 // 保存
 const handleSave = () => {
+  if (!authStore.requireAuth()) {
+    return
+  }
   ElMessage.success('保存成功')
 }
 
 // 导出
 const handleExport = () => {
+  if (!authStore.requireAuth()) {
+    return
+  }
   ElMessage.success('导出成功')
 }
 
@@ -591,11 +601,17 @@ const handleAIAssist = () => {
 
 // 保存草稿
 const handleSaveDraft = () => {
+  if (!authStore.requireAuth()) {
+    return
+  }
   ElMessage.success('草稿已保存')
 }
 
 // 发布
 const handlePublish = () => {
+  if (!authStore.requireAuth()) {
+    return
+  }
   ElMessage.success('发布成功')
 }
 

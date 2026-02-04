@@ -11,10 +11,10 @@
   overflow: hidden;
 }
 
-// Sidebar
+// Sidebar - Manus Style
 .sidebar {
   width: $sidebar-width;
-  background-color: $card-background;
+  background-color: $background-secondary;
   border-right: 1px solid $border-color;
   display: flex;
   flex-direction: column;
