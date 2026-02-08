@@ -1,0 +1,11 @@
+{
+  "name": "medagil",
+  "private": true,
+  "scripts": {
+    "generate:api": "pnpm --filter @medagil/api-client generate"
+  },
+  "devDependencies": {
+    "pnpm": "^8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}
