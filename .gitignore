@@ -14,9 +14,13 @@ Thumbs.db
 
 # ---------- IDE / 编辑器 ----------
 .idea/
-.vscode/
 *.swp
 *.swo
+
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/README.md
+
 *~
 .project
 .classpath

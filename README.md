@@ -65,11 +65,14 @@ Medagil/
 ├── .trae/                    # Trae 配置（agents、commands、contexts、rules、skills、hooks）
 ├── .agents/                  # 其他 AI 工具的 skills（如 api-design-principles）
 ├── .cursor/                  # Cursor 配置（rules、skills、agents、commands 等）
-├── .cursorignore
-├── .gitignore
-├── .editorconfig
-├── .prettierrc
-└── .prettierignore
+├── .cursorignore             # cursor 忽略文件
+├── .gitignore                # git 忽略文件
+├── .editorconfig             # editorconfig 配置
+├── .prettierrc               # prettier 配置
+├── .prettierignore           # prettier 忽略文件
+├── .markdownlintignore       # markdownlint 忽略文件
+├── .markdownlint.yaml        # markdownlint 配置
+├── .vscode/                  # VS Code 推荐插件与工作区设置
 ```
 
 后端采用 **Clean Architecture / 六边形架构**：领域层（domain）→ 用例层（use_cases）→ 适配器层（adapters）→ 基础设施（infra），依赖向内，便于测试与扩展。详见 `project/docs/项目结构说明(MVP).md`。
@@ -143,6 +146,7 @@ pnpm generate:api         # 生成 packages/api-client（user + admin 两套）
 ### 代码格式与风格
 
 - **TS/JS/CSS/MD**：`pnpm format`（Prettier）、`pnpm format:check`（仅检查）；配置见 `.prettierrc`、`.editorconfig`。
+- **VS Code**：使用 VS Code 时，建议安装 `.vscode/extensions.json` 中推荐的插件，以自动应用保存时格式化、ESLint 修复等；详见 `.vscode/README.md`。
 - **Go**：`cd services/api-service && go fmt ./...`
 - **Python**：`cd services/ai-service && ruff format . && ruff check .`（开发依赖可 `uv add --dev ruff`）
 - 包管理规范见 `.cursor/rules/common/package-management.mdc`。
