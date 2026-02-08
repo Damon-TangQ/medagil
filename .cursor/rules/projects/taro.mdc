@@ -1,0 +1,24 @@
+---
+description: Taro 小程序规范（apps/miniapp）
+globs: "apps/miniapp/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# 子项目规则：Taro 小程序（miniapp）
+
+## 技术栈
+
+- Taro、TypeScript、Mobx、Taro UI；与 **common/state-management.mdc**、**common/api-integration.mdc** 配合使用。
+
+## API 与端能力
+
+- 使用 `@medagil/api-client/user` 的请求函数（非 React Query hooks），配合 Mobx 管理状态。
+- 端能力：微信登录、手机号、分享、微信支付等，按 Taro 与微信文档实现；鉴权与 api-service 用户端约定一致。
+
+## 与 Web 用户端对齐
+
+- 功能与 apps/web 用户端对齐（7 大模块）；业务 API 与 web 共用 `/api/v1/*`。
+
+## 格式与包管理
+
+- 提交前执行 `pnpm format`；包管理见 [package-management.mdc](mdc:.cursor/rules/common/package-management.mdc)。

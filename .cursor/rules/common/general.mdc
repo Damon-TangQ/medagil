@@ -1,0 +1,51 @@
+---
+description: 通用规范总览，引用所有规则并约定团队协同
+alwaysApply: true
+---
+
+# 通用规范（Medagil）
+
+本仓库为**混合架构**（Go / Python / Next.js / Taro），规则分为**通用规则**与**子项目规则**，便于管理与团队共享。
+
+## 关键项目文件
+
+- 项目文档：[project/docs/项目结构说明(MVP).md](mdc:project/docs/项目结构说明(MVP).md)、[project/docs/API设计规范(MVP).md](mdc:project/docs/API设计规范(MVP).md)
+- 开发排期：[project/plan/开发排期(MVP).md](mdc:project/plan/开发排期(MVP).md)
+- API 客户端：[packages/api-client/orval.config.ts](mdc:packages/api-client/orval.config.ts)、[packages/api-client/spec/openapi.yaml](mdc:packages/api-client/spec/openapi.yaml)
+- 工作区配置：[pnpm-workspace.yaml](mdc:pnpm-workspace.yaml)、[package.json](mdc:package.json)
+
+## 规则目录结构
+
+- **common/**（通用规则）：跨技术栈的规范，所有成员遵守。
+  - [project-structure.mdc](mdc:.cursor/rules/common/project-structure.mdc) — 项目结构、文档与目录约定
+  - [code-style-formatting.mdc](mdc:.cursor/rules/common/code-style-formatting.mdc) — 代码风格与格式管理（EditorConfig、Prettier、go fmt、Ruff）
+  - [package-management.mdc](mdc:.cursor/rules/common/package-management.mdc) — 包管理规范（pnpm、Go modules、Python）
+  - [typescript.mdc](mdc:.cursor/rules/common/typescript.mdc) — TypeScript 规范（不可变、错误处理、校验）
+  - [react.mdc](mdc:.cursor/rules/common/react.mdc) — React 开发规范（apps/web、apps/admin）
+  - [document.mdc](mdc:.cursor/rules/common/document.mdc) — 文档与注释规范
+  - [git.mdc](mdc:.cursor/rules/common/git.mdc) — Git 提交与协作规范
+  - [performance.mdc](mdc:.cursor/rules/common/performance.mdc) — 性能优化规范
+  - [accessibility-i18n.mdc](mdc:.cursor/rules/common/accessibility-i18n.mdc) — 可访问性与国际化
+  - [security.mdc](mdc:.cursor/rules/common/security.mdc) — 安全规范
+  - [api-integration.mdc](mdc:.cursor/rules/common/api-integration.mdc) — API 集成与客户端使用
+  - [state-management.mdc](mdc:.cursor/rules/common/state-management.mdc) — 状态管理规范
+  - [testing.mdc](mdc:.cursor/rules/common/testing.mdc) — 测试规范
+  - [patterns.mdc](mdc:.cursor/rules/common/patterns.mdc) — 通用模式（API 响应、Repository、Hooks）
+  - [packages.mdc](mdc:.cursor/rules/common/packages.mdc) — 共享包约定（api-types、api-client）
+  - [database.mdc](mdc:.cursor/rules/common/database.mdc) — 数据库脚本与 schema
+  - [infra.mdc](mdc:.cursor/rules/common/infra.mdc) — 运维与部署
+- **projects/**（子项目规则）：按技术栈/端生效，打开对应代码时应用。
+  - [go.mdc](mdc:.cursor/rules/projects/go.mdc) — api-service（Go + Gin）
+  - [python.mdc](mdc:.cursor/rules/projects/python.mdc) — ai-service（Python + FastAPI）
+  - [nextjs.mdc](mdc:.cursor/rules/projects/nextjs.mdc) — apps/web、apps/admin（Next.js）
+  - [taro.mdc](mdc:.cursor/rules/projects/taro.mdc) — apps/miniapp（Taro 小程序）
+
+## 通用编码原则
+
+- **不可变**：禁止原地修改对象/数组，使用展开或新引用。
+- **错误处理**：捕获后必须记录（如 logger）并给出可理解信息，不吞掉错误。
+- **输入校验**：用户输入与外部数据必须校验（如 Zod）后再用。
+- **命名**：清晰、一致；函数用动词+名词，布尔用 is/has/can 前缀。
+- **文件与函数**：单文件约 200–400 行（上限约 800）；函数尽量 <50 行，嵌套 ≤4 层；提交前去掉 `console.log`、硬编码敏感/魔法值。
+
+修改需求或方案前，优先查阅 `project/docs/` 与 `project/plan/`；按端开发时同时遵守 **common** 中对应规范与 **projects** 下对应技术栈规则。

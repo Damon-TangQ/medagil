@@ -1,0 +1,23 @@
+---
+description: 数据库脚本、迁移与 schema 约定
+globs: "db/**/*,services/**/database/**,services/**/repositories/**"
+alwaysApply: false
+---
+
+# 数据库规范
+
+## 脚本目录（db/）
+
+- 按三端/服务分子目录：db/web、db/admin、db/miniapp 或按服务（如 db/api-service）划分。
+-  migrations 与 schema 命名可读、带版本或日期；与 [project/docs/技术实现方案(MVP).md](mdc:project/docs/技术实现方案(MVP).md) 约定一致。
+
+## 存储分工（api-service）
+
+- **PostgreSQL**：用户、权限、订单、订阅、积分流水、系统配置。
+- **MongoDB**：项目、任务/对话内容、成果库等。
+- **Redis**：会话、限流、缓存。
+
+## 安全
+
+- 禁止在 SQL 中拼接未校验的用户输入；使用参数化查询或 ORM。
+- 生产脚本需可重复执行（幂等）或带版本控制；敏感数据不写入脚本。

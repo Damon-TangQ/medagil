@@ -1,0 +1,26 @@
+---
+description: Next.js 应用规范（apps/web、apps/admin）
+globs: "apps/web/**/*.{ts,tsx},apps/admin/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# 子项目规则：Next.js（web / admin）
+
+## 技术栈
+
+- Next.js 14+、TypeScript、Radix UI、Tailwind、Zustand、React Query。
+- 与 **common/react.mdc**、**common/state-management.mdc**、**common/api-integration.mdc** 配合使用。
+
+## 按端区分
+
+- **apps/web**：用户端，使用 `@medagil/api-client/user`，鉴权为用户 JWT/微信。
+- **apps/admin**：管理端，使用 `@medagil/api-client/admin`，鉴权为管理员 RBAC。
+
+## 路由与数据
+
+- 路由与数据获取遵循 Next.js App Router 约定；服务端状态以 React Query 为主，SSR 需与缓存策略一致。
+- 大页面或重型组件使用 dynamic import 做代码分割。
+
+## 格式与包管理
+
+- 提交前执行 `pnpm format`；包管理见 [package-management.mdc](mdc:.cursor/rules/common/package-management.mdc)。

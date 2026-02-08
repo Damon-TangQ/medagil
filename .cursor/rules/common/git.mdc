@@ -1,0 +1,28 @@
+---
+description: Git 提交与协作规范
+alwaysApply: true
+---
+
+# Git 规范
+
+## 提交信息格式
+
+```
+<type>: <简短描述>
+
+<可选正文>
+```
+
+**type**：feat | fix | refactor | docs | test | chore | perf | ci
+
+示例：`feat(web): 用户中心增加头像上传`、`fix(api): 登录态过期返回 401`
+
+## 分支与 PR
+
+- 功能/修复从 main 拉分支，完成后通过 PR 合并。
+- PR 前用 `git diff [base]...HEAD` 自检变更；PR 描述包含变更说明与测试要点。
+- 新分支首次推送使用 `-u` 设置上游。
+
+## 与开发流程配合
+
+- 新功能先规划（可配合 planner）；采用 TDD 时先写测试再实现；代码完成后做 code review（可配合 code-reviewer）。

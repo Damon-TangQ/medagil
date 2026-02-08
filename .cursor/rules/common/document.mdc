@@ -1,0 +1,22 @@
+---
+description: 文档与注释规范（项目文档、代码注释、README）
+alwaysApply: true
+---
+
+# 文档规范
+
+## 项目文档（project/docs、project/plan）
+
+- 统一文档放在 `project/docs/` 根目录，分端文档放在 `project/docs/web|admin|miniapp/`。
+- 文档命名与现有风格一致（如 xxx(MVP).md）；重要变更需同步更新相关 doc。
+- 开发排期放在 `project/plan/`，与 docs 配合使用。
+
+## 代码注释
+
+- 公共 API、复杂逻辑、非显而易见的行为必须注释；注释用中文或英文统一即可。
+- 避免无信息量的注释（如重复函数名）；TODO 需带负责人或截止上下文。
+
+## README 与包说明
+
+- 每个 app、service、package 应有 README：用途、如何运行、关键脚本、与 monorepo 的关系。
+- packages/api-client 的 README 中说明生成流程（Orval、spec 位置、pnpm generate）。

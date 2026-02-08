@@ -1,0 +1,34 @@
+---
+description: 项目结构、monorepo、文档与目录约定
+alwaysApply: true
+---
+
+# 项目结构规范
+
+## 仓库结构
+
+| 目录 | 说明 |
+|------|------|
+| [apps/](mdc:apps) | 三端前端：`web`（Next.js 用户端）、`admin`（Next.js 管理端）、`miniapp`（Taro 小程序） |
+| [services/](mdc:services) | 后端：`api-service`（Go + Gin）、`ai-service`（Python + FastAPI） |
+| [packages/](mdc:packages) | 共享：`api-types`、`api-client`（Orval 生成，勿手改生成代码） |
+| [project/docs/](mdc:project/docs) | 项目文档，见下文 |
+| [project/plan/](mdc:project/plan) | 开发排期文档（如 [开发排期(MVP).md](mdc:project/plan/开发排期(MVP).md)） |
+| [tests/](mdc:tests) | 测试用例，按三端：tests/web、tests/admin、tests/miniapp |
+| [db/](mdc:db) | 数据库脚本，按三端/服务分子目录 |
+| [infra/](mdc:infra) | 运维与部署（Docker、网关等），见 [infra/README.md](mdc:infra/README.md) |
+
+## 项目文档（project/docs）
+
+- **根目录**：统一文档（全项目/跨端），如 项目结构说明、技术实现方案、API设计规范、项目概况、智能体概况、项目成本预估等。
+- **project/docs/web/**：Web 用户端专属（功能清单、技术实现方案等）。
+- **project/docs/admin/**：管理端专属。
+- **project/docs/miniapp/**：小程序端专属。
+- 新增/修改需求或方案：统一文档放根目录，分端文档放对应子目录。
+
+## 技术栈与 API
+
+- 用户端 API：`/api/v1/*`，鉴权 JWT/微信；管理端 API：`/api/v1/admin/*`，鉴权 RBAC。
+- 前端按端引用：web/miniapp 用 `@medagil/api-client/user`，admin 用 `@medagil/api-client/admin`，勿混用。
+- 根目录 pnpm workspace；依赖用 workspace 协议，在对应 app 或 package 的 package.json 中安装。
+- 代码风格、格式、包管理见 [code-style-formatting.mdc](mdc:.cursor/rules/common/code-style-formatting.mdc)、[package-management.mdc](mdc:.cursor/rules/common/package-management.mdc)。

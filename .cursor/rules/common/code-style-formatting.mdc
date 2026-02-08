@@ -1,0 +1,41 @@
+---
+description: 代码风格与格式管理（EditorConfig、Prettier、go fmt、Python 格式化）
+alwaysApply: true
+---
+
+# 代码风格与格式管理
+
+## 跨编辑器基础配置（EditorConfig）
+
+根目录 [.editorconfig](mdc:.editorconfig) 统一缩进、换行、编码：
+
+- 缩进：2 空格（TS/TSX/JSON/CSS/HTML）；Go 用 `gofmt` 默认（tab）；Python 4 空格。
+- 换行：LF。
+- 编码：UTF-8。
+- 文件末尾保留空行。
+
+## TypeScript / JavaScript / JSON / CSS / Markdown
+
+- **工具**：Prettier，配置见 [.prettierrc](mdc:.prettierrc)。
+- **范围**：`apps/`、`packages/` 下的 `.ts`、`.tsx`、`.js`、`.json`、`.css`、`.md` 等。
+- **命令**：`pnpm format`（格式化）、`pnpm format:check`（仅检查）。
+- **建议**：IDE 启用 format on save；提交前执行 `pnpm format` 或由 pre-commit 自动执行。
+
+## Go
+
+- **工具**：`go fmt` / `gofmt`（官方格式化）。
+- **命令**：`cd services/api-service && go fmt ./...`。
+- **规范**：提交前对 `services/api-service` 执行 `go fmt`，保持与 `gofmt` 一致。
+
+## Python
+
+- **工具**：Black 或 Ruff（`ruff format` 兼容 Black）；配置见 [services/ai-service/pyproject.toml](mdc:services/ai-service/pyproject.toml)。
+- **命令**：`cd services/ai-service && ruff format . && ruff check .`（或 `black .`）。
+- **规范**：提交前对 `services/ai-service` 执行 Ruff/Black，保持风格一致。
+
+## 通用风格约定
+
+- **命名**：camelCase（TS/JS 变量、函数）；PascalCase（类型、组件、类）；snake_case（Python、Go 部分导出）。
+- **行宽**：Prettier 默认 80；Python Black 默认 88；可统一为 100 以内。
+- **引号**：TS/JSON 统一双引号（Prettier 默认）；Python 单双引号均可（Black 自动）。
+- **分号**：TS/JS 使用分号（Prettier 默认 semi: true）。

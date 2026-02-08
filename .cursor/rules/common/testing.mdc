@@ -1,0 +1,21 @@
+---
+description: 测试规范（单元、集成、E2E 与目录约定）
+alwaysApply: true
+---
+
+# 测试规范
+
+## 目录与分层
+
+- 测试用例根目录：**tests/**，按三端分子目录 tests/web、tests/admin、tests/miniapp，与 apps 对应。
+- 单元/集成测试可 colocate 在各自 app 或 service 内（如 `__tests__` 或 `*.test.ts`），与团队约定一致即可。
+
+## 覆盖率与类型
+
+- 目标覆盖率 80%+；单元测试（函数、工具、组件）+ 集成测试（API、DB）+ E2E（关键流程，如 Playwright）均需覆盖。
+- TDD：先写失败用例（RED）→ 最小实现通过（GREEN）→ 重构（IMPROVE）；新功能建议先写测试。
+
+## 实践
+
+- 测试隔离、可重复；不依赖外部未 mock 的服务；失败时优先修实现，仅在用例错误时改测试。
+- 可使用 tdd-guide、e2e-runner 等 agent 辅助编写与排查。

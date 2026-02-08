@@ -1,7 +1,7 @@
 # 项目结构说明（MVP）
 
-**文档类型：** 架构文档  
-**适用范围：** Medagil 代码仓库目录与分层约定  
+**文档类型：** 架构文档
+**适用范围：** Medagil 代码仓库目录与分层约定
 **对齐文档：** 《技术实现方案(MVP)》、三端功能清单与技术实现方案
 
 ---
@@ -18,7 +18,9 @@
 
 ```
 Medagil/
-├── README.md
+├── .cursor/                      # Cursor 规则配置
+│   ├── skills/                   # Cursor 技能配置
+│   └── rules/                    # Cursor 规则
 ├── project/                      # 产品与项目文档（需求、方案、排期）
 │   ├── docs/                     # 技术方案、功能清单、智能体概况等
 │   └── plan/                     # 开发排期等
@@ -32,7 +34,25 @@ Medagil/
 ├── packages/                     # 跨应用共享包
 │   ├── api-types/                # 手写/共享类型（DTO、枚举等）
 │   └── api-client/               # 由 api-service OpenAPI 自动生成的 API 客户端
-└── infra/                        # 运维与部署（Docker、网关配置等，MVP 可后续补充）
+│── infra/                        # 运维与部署（Docker、网关,日志监控等配置等
+│   ├── docker/                   # Docker 相关（MVP 阶段）
+│   ├── gateway/                  # APISIX 网关配置
+│   ├── monitoring/               # Prometheus、Grafana 等监控与日志配置
+│   └── logging/                  # 日志配置
+├── tests/                        # 测试用例
+├── db/
+├── .gitignore                    # Git 忽略文件
+├── pnpm-workspace.yaml           # pnpm 工作区配置
+├── pnpm-lock.yaml                # pnpm 锁定文件
+├── .prettierignore               # Prettier 忽略文件
+├── .prettierrc                   # Prettier 配置
+├── .editorconfig                 # EditorConfig 配置
+├── README.md                     # 本文件
+
+
+
+
+
 ```
 
 ---
@@ -109,7 +129,8 @@ ai-service/
 │   │   └── gateways/       # Dify、Zilliz 等
 │   └── infra/
 ├── main.py
-├── requirements.txt
+├── pyproject.toml
+├── uv.lock
 └── Dockerfile（可选）
 ```
 
@@ -132,12 +153,12 @@ ai-service/
 
 ## 7. 与功能清单的对应关系
 
-| 功能清单/模块       | 前端实现        | 后端实现    |
-|--------------------|-----------------|-------------|
-| Web 用户端 7 大模块 | apps/web    | api-service + ai-service |
-| 管理端 9 大模块     | apps/admin  | api-service + ai-service |
-| 小程序端 7 大模块   | apps/miniapp    | api-service + ai-service |
-| 9 个智能体         | 前端调用 Dify / 经后端转发 | Dify 编排；api-service/ai-service 做鉴权与落库 |
+| 功能清单/模块       | 前端实现                   | 后端实现                                       |
+| ------------------- | -------------------------- | ---------------------------------------------- |
+| Web 用户端 7 大模块 | apps/web                   | api-service + ai-service                       |
+| 管理端 9 大模块     | apps/admin                 | api-service + ai-service                       |
+| 小程序端 7 大模块   | apps/miniapp               | api-service + ai-service                       |
+| 9 个智能体          | 前端调用 Dify / 经后端转发 | Dify 编排；api-service/ai-service 做鉴权与落库 |
 
 ---
 

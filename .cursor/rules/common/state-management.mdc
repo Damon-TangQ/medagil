@@ -1,0 +1,21 @@
+---
+description: 状态管理规范（React Query、Zustand、Mobx）
+alwaysApply: false
+globs: "apps/**/*.{ts,tsx}"
+---
+
+# 状态管理规范
+
+## apps/web、apps/admin（Next.js）
+
+- **服务端/接口状态**：使用 React Query（Orval 生成的 hooks），不重复造轮子；缓存与失效策略在 React Query 层配置。
+- **全局 UI/客户端状态**：使用 Zustand；保持 store 小而聚焦，按功能拆分。
+- 避免在全局 store 中存服务端数据副本（以 React Query 为单一数据源）；仅将 UI 态、用户偏好等放 Zustand。
+
+## apps/miniapp（Taro）
+
+- 按现有方案使用 Mobx（或项目约定状态库）；与后端交互用 `@medagil/api-client/user` 的请求函数，状态与页面生命周期与 Taro 约定一致。
+
+## 通用
+
+- 组件内部能解决的 state 不放全局；优先局部 state + 提升到最近公共父级，再考虑全局 store。

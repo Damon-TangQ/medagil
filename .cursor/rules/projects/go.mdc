@@ -1,0 +1,29 @@
+---
+description: api-service（Go + Gin）分层与开发规范
+globs: "services/api-service/**/*.go"
+alwaysApply: false
+---
+
+# 子项目规则：api-service（Go）
+
+## 分层结构（Clean Architecture）
+
+- **domain/**：实体、值对象、端口（接口）；不依赖外层。
+- **use_cases/**：业务规则与用例；仅依赖 domain 端口。
+- **adapters/**：实现端口 — `controllers/`（Gin handler，user 与 admin 分子目录）、`repositories/`、`gateways/`。
+- **infra/**：配置、数据库、日志等基础设施。
+- **cmd/server/**：程序入口。
+
+## 依赖方向
+
+- 依赖向内：adapters → use_cases → domain；domain 不引用 use_cases 或 adapters。
+- 控制器只做 HTTP 解析与调用 use case，不在 handler 内写业务逻辑。
+
+## API 与 OpenAPI
+
+- 用户端：`/api/v1/*`；管理端：`/api/v1/admin/*`。
+- 使用 swag 或手写 OpenAPI，与 `packages/api-client/spec/openapi.yaml` 同步，供 Orval 生成前端客户端。
+
+## 格式与包管理
+
+- 提交前执行 `go fmt ./...`；包管理见 [package-management.mdc](mdc:.cursor/rules/common/package-management.mdc)。

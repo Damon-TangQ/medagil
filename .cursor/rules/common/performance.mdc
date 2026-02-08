@@ -1,0 +1,23 @@
+---
+description: 性能优化规范（前端与接口）
+alwaysApply: false
+globs: "apps/**/*.{ts,tsx},packages/**/*.ts"
+---
+
+# 性能规范
+
+## 前端（Web / Admin）
+
+- 列表长数据使用虚拟滚动或分页，避免一次渲染过多 DOM。
+- 图片使用合适尺寸与格式（如 WebP），必要时懒加载。
+- 大组件或路由使用动态 import（React.lazy / next/dynamic）做代码分割。
+- 避免在渲染路径中做重计算；用 useMemo/useCallback 时依赖项正确，不滥用。
+
+## 接口与请求
+
+- 列表接口支持分页（page/limit 或 cursor）；避免单次返回过大 body。
+- 前端合并或防抖重复请求；使用 React Query 时合理设置 staleTime/cacheTime。
+
+## 通用
+
+- 不在循环内发起请求或创建新函数引用（若会导致子组件大量重渲染）。

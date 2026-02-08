@@ -1,0 +1,19 @@
+---
+description: 共享包约定（api-types、api-client）
+globs: "packages/**/*.ts"
+alwaysApply: false
+---
+
+# 共享包规范
+
+## packages/api-types
+
+- 手写或共享的 TypeScript 类型（DTO、枚举等），与 api-service / ai-service 约定一致。
+- 入口：[packages/api-types/index.ts](mdc:packages/api-types/index.ts)。
+- 前端与后端共用同一类型定义，避免接口字段歧义。
+
+## packages/api-client
+
+- 由 Orval 根据 [spec/openapi.yaml](mdc:packages/api-client/spec/openapi.yaml) 生成，**禁止手改**生成代码。
+- 配置与 mutator 见 [common/api-integration.mdc](mdc:.cursor/rules/common/api-integration.mdc)。
+- 接口变更后执行 `pnpm generate:api` 重新生成。

@@ -1,0 +1,92 @@
+---
+description: 包管理规范（pnpm、Go modules、Python）
+alwaysApply: true
+---
+
+# 包管理规范
+
+## pnpm（Next.js、Taro、packages）
+
+### 工作区
+
+- 根目录 [pnpm-workspace.yaml](mdc:pnpm-workspace.yaml) 定义工作区：`apps/*`、`packages/*`。
+- 包间依赖使用 `workspace:*`，如 `"@medagil/api-client": "workspace:*"`。
+- 依赖安装在**对应 app 或 package** 的 `package.json` 中，不在根目录安装业务依赖。
+
+### 安装命令
+
+```bash
+# 业务依赖
+pnpm add <pkg> --filter @medagil/web
+pnpm add <pkg> --filter @medagil/admin
+pnpm add <pkg> --filter @medagil/miniapp
+pnpm add <pkg> --filter @medagil/api-client
+pnpm add <pkg> --filter @medagil/api-types
+
+# 开发依赖（-D）
+pnpm add -D <pkg> --filter @medagil/web
+```
+
+或进入子目录：`cd apps/web && pnpm add <pkg>`。
+
+### 锁文件与安装
+
+- 根目录 `pnpm-lock.yaml` 统一锁定；**提交** lockfile，保证可复现构建。
+- 新增依赖后执行 `pnpm install`，确保 lockfile 更新。
+- 根目录脚本：`pnpm generate:api` 用于生成 api-client。
+
+---
+
+## Go modules（api-service）
+
+### 模块文件
+
+- 模块定义在 [services/api-service/go.mod](mdc:services/api-service/go.mod)。
+- `go.sum` 由工具维护，**提交**以保证可复现。
+
+### 命令
+
+```bash
+cd services/api-service
+
+# 添加依赖
+go get <module>@<version>   # 例如 go get github.com/gin-gonic/gin@v1.9.1
+
+# 整理依赖（移除未使用、更新 go.sum）
+go mod tidy
+
+# 下载依赖
+go mod download
+```
+
+### 版本规范
+
+- 新增依赖时指定版本，如 `@v1.2.3`；避免 `@latest` 在 CI 中造成不确定。
+- 升级依赖后执行 `go mod tidy`，再跑测试。
+
+---
+
+## Python（ai-service）
+
+### 工具与依赖文件
+
+- **包管理**：使用 [uv](https://docs.astral.sh/uv/)。
+- 依赖定义在 [pyproject.toml](mdc:services/ai-service/pyproject.toml) 的 `[project.dependencies]`；锁定文件 `uv.lock` 提交以保证可复现。
+
+### 安装
+
+```bash
+cd services/ai-service
+uv sync
+```
+
+（会创建 `.venv` 并安装依赖；不提交 `.venv/`。）
+
+### 新增依赖
+
+```bash
+uv add <pkg>        # 生产依赖
+uv add --dev <pkg>  # 开发依赖（如 ruff）
+```
+
+- 提交 `pyproject.toml` 与 `uv.lock`；不再使用 `requirements.txt`。

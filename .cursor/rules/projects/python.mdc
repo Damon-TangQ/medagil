@@ -1,0 +1,27 @@
+---
+description: ai-service（Python + FastAPI）分层与开发规范
+globs: "services/ai-service/**/*.py"
+alwaysApply: false
+---
+
+# 子项目规则：ai-service（Python）
+
+## 分层结构（Clean Architecture）
+
+- **app/domain/**：实体、值对象、接口（端口）。
+- **app/use_cases/**：业务用例，依赖 domain 接口。
+- **app/adapters/**：控制器（FastAPI 路由）、repositories、gateways（如 Dify、Zilliz）。
+- **app/infra/**：配置、外部关注点。
+- **main.py**：应用入口。
+
+## 依赖方向
+
+- 依赖向内：adapters → use_cases → domain；domain 不依赖 use_cases 或 adapters。
+
+## 接口与鉴权
+
+- 对外 REST 遵循 OpenAPI；鉴权与路径与 api-service 约定一致，参见 `project/docs/API设计规范(MVP).md`。
+
+## 格式与包管理
+
+- 提交前执行 `ruff format . && ruff check .`；配置见 [pyproject.toml](mdc:services/ai-service/pyproject.toml)；包管理见 [package-management.mdc](mdc:.cursor/rules/common/package-management.mdc)。

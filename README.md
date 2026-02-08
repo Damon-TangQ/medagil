@@ -71,7 +71,7 @@ Medagil/
 
 - **Node.js** 18+
 - **Go** 1.21+
-- **Python** 3.10+
+- **Python** 3.10+、**uv**（Python 包管理，<https://docs.astral.sh/uv/>）
 - **pnpm** 或 **npm**（前端）
 
 ### Web 用户端
@@ -111,12 +111,12 @@ go run ./cmd/server
 
 ```bash
 cd services/ai-service
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+uv sync
 uvicorn main:app --reload --port 8000
 # 默认 http://localhost:8000，/health、/api/v1/ping
 ```
+
+需先安装 [uv](https://docs.astral.sh/uv/)（`curl -LsSf https://astral.sh/uv/install.sh | sh` 或 `pip install uv`）。
 
 ### 生成 API 客户端（Orval）
 
@@ -128,6 +128,13 @@ pnpm generate:api         # 生成 packages/api-client（user + admin 两套）
 ```
 
 详见 `packages/api-client/README.md` 与 `project/docs/API设计规范(MVP).md`。
+
+### 代码格式与风格
+
+- **TS/JS/CSS/MD**：`pnpm format`（Prettier）、`pnpm format:check`（仅检查）；配置见 `.prettierrc`、`.editorconfig`。
+- **Go**：`cd services/api-service && go fmt ./...`
+- **Python**：`cd services/ai-service && ruff format . && ruff check .`（开发依赖可 `uv add --dev ruff`）
+- 包管理规范见 `.cursor/rules/common/package-management.mdc`。
 
 ---
 

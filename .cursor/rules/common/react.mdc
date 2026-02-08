@@ -1,0 +1,28 @@
+---
+description: React 开发规范（组件、Hooks、样式、API 客户端）
+globs: "apps/web/**/*.tsx,apps/admin/**/*.tsx"
+alwaysApply: false
+---
+
+# React 开发规范
+
+## 组件与 Hooks
+
+- 使用函数组件；可复用逻辑抽成自定义 hooks。
+- 组件单一职责，优先组合而非巨型组件。
+- 样式与组件同目录或使用 Tailwind；UI 组件优先 Radix UI + Tailwind。
+
+## API 客户端按端引入
+
+- **apps/web**：`from '@medagil/api-client/user'`（useGetMe、getProjects 等 React Query hooks 与请求函数）。
+- **apps/admin**：`from '@medagil/api-client/admin'`（管理端 hooks 与请求函数）。
+- 同一应用中禁止混用 user 与 admin 的 endpoints；鉴权由各 app 通过 mutator 注入（baseUrl、getToken）。
+
+## 状态与请求
+
+- 服务端状态用 React Query（Orval 已生成 hooks）；全局 UI/客户端状态用 Zustand。
+- 流式或特殊请求与 project/docs 中方案保持一致（直连或经 api-service 转发）。
+
+## 数据与不可变
+
+- 禁止在组件内直接修改 props 或 state；更新用 setState 或新对象/数组（展开或 copy）。

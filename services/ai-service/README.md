@@ -17,11 +17,11 @@ Medagil 知识库与 AI 对接服务：Python + FastAPI，采用 Clean Architect
 
 ## 运行
 
+需先安装 [uv](https://docs.astral.sh/uv/)。依赖以 `pyproject.toml` + `uv.lock` 管理，不再使用 `requirements.txt`。
+
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+uv sync
 uvicorn main:app --reload --port 8000
 ```
 
-默认监听 `8000`，`GET /health` 健康检查，`GET /api/v1/ping` 占位。
+首次执行 `uv sync` 会生成 `uv.lock`，请提交。默认监听 `8000`，`GET /health` 健康检查，`GET /api/v1/ping` 占位。

@@ -1,0 +1,23 @@
+---
+description: API 集成与客户端使用规范
+alwaysApply: false
+globs: "apps/**/*.{ts,tsx},packages/api-client/**/*.ts"
+---
+
+# API 集成规范
+
+## 客户端包（packages/api-client）
+
+- 生成代码（src/user/、src/admin/、mutator 与 model）由 Orval 根据 `spec/openapi.yaml` 生成，**禁止手改**。
+- 接口变更：更新 `spec/openapi.yaml`（或从 api-service 同步），再执行 `pnpm generate:api`（或于 packages/api-client 下 `pnpm generate`）。
+- 可手写：orval.config.ts、mutator 中与各 app 约定的 setApiConfig（baseUrl、getToken）等非生成部分。
+
+## 按端使用
+
+- **web、miniapp**：`@medagil/api-client/user`（useGetMe、getProjects 等）。
+- **admin**：`@medagil/api-client/admin`（管理端 hooks 与请求函数）。
+- 鉴权由各 app 通过 mutator 注入；同一 app 内不混用 user 与 admin 的 endpoints。
+
+## 错误与重试
+
+- 使用生成的 React Query hooks 时，错误在 UI 层统一处理（如 toast、错误页）；必要时在 mutator 中统一处理 401 跳转登录。

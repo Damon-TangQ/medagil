@@ -1,0 +1,52 @@
+---
+description: TypeScript/JavaScript 编码规范（不可变、错误处理、校验、文件组织）
+globs: "**/*.ts,**/*.tsx"
+alwaysApply: false
+---
+
+# TypeScript 规范
+
+适用于 [apps/](mdc:apps)、[packages/](mdc:packages) 下的 TS/TSX 文件。
+
+## 不可变性（必须遵守）
+
+```typescript
+// ❌ 错误
+user.name = name;
+items.push(item);
+
+// ✅ 正确
+const updated = { ...user, name };
+const next = [...items, item];
+```
+
+## 错误处理
+
+捕获后必须记录并给出可理解信息：
+
+```typescript
+// ❌ 错误
+try { await fetchData(); } catch (e) {}
+
+// ✅ 正确
+try {
+  await fetchData();
+} catch (e) {
+  logger.error('Fetch failed', { error: e });
+  throw new DataFetchError('无法获取数据', { cause: e });
+}
+```
+
+## 用户输入校验
+
+使用 Zod（或项目既定方案）校验后再用：
+
+```typescript
+const schema = z.object({ email: z.string().email(), age: z.number().int().min(0) });
+const validated = schema.parse(input);
+```
+
+## 文件与函数
+
+- 单文件约 200–400 行，上限约 800 行；按功能/领域组织。
+- 函数尽量 <50 行，嵌套 ≤4 层；提交前去掉 `console.log`、硬编码敏感/魔法值。
