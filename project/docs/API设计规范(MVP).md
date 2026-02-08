@@ -1,7 +1,7 @@
 # API 设计规范（MVP）
 
-**文档类型：** 技术规范  
-**适用范围：** api-service 接口设计、OpenAPI、前后端对接  
+**文档类型：** 技术规范
+**适用范围：** api-service 接口设计、OpenAPI、前后端对接
 **对齐文档：** 《技术实现方案(MVP)》《项目结构说明(MVP)》
 
 ---
@@ -16,10 +16,10 @@
 
 ## 2. 接口分类与路径
 
-| 分类 | 路径前缀 | 调用方 | 鉴权机制 |
-|------|----------|--------|----------|
-| **用户端 API** | `/api/v1/` | apps/web、apps/miniapp | 用户登录态（JWT / 微信 openid/session_key） |
-| **管理端 API** | `/api/v1/admin/` | apps/admin | 管理员 RBAC + 管理员 Token |
+| 分类           | 路径前缀         | 调用方                 | 鉴权机制                                    |
+| -------------- | ---------------- | ---------------------- | ------------------------------------------- |
+| **用户端 API** | `/api/v1/`       | apps/web、apps/miniapp | 用户登录态（JWT / 微信 openid/session_key） |
+| **管理端 API** | `/api/v1/admin/` | apps/admin             | 管理员 RBAC + 管理员 Token                  |
 
 **示例：**
 
@@ -72,11 +72,11 @@ api-service 开发/变更接口
 
 ### 4.3 按端使用
 
-| 端 | 引入 | 说明 |
-|----|------|------|
-| **apps/web** | `from '@medagil/api-client/user'` | 使用 useGetMe、getProjects 等 React Query hooks 与请求函数 |
-| **apps/admin** | `from '@medagil/api-client/admin'` | 使用 useGetDashboardStats、getAdminUsers 等 |
-| **apps/miniapp** | `from '@medagil/api-client/user'` | 仅用请求函数（getMe、getProjects 等），配合 Mobx |
+| 端               | 引入                               | 说明                                                       |
+| ---------------- | ---------------------------------- | ---------------------------------------------------------- |
+| **apps/web**     | `from '@medagil/api-client/user'`  | 使用 useGetMe、getProjects 等 React Query hooks 与请求函数 |
+| **apps/admin**   | `from '@medagil/api-client/admin'` | 使用 useGetDashboardStats、getAdminUsers 等                |
+| **apps/miniapp** | `from '@medagil/api-client/user'`  | 仅用请求函数（getMe、getProjects 等），配合 Mobx           |
 
 ### 4.4 目录与脚本
 

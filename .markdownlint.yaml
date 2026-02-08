@@ -1,0 +1,37 @@
+# markdownlint 配置
+# 文档：https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+# CLI：pnpm add -D markdownlint-cli && pnpm markdownlint "**/*.md"
+
+default: true
+
+# 行宽不强制（文档、中文混排时 80 字符过严）
+MD013: false
+
+# 允许多个 H1（如每个文档一个标题）
+MD025: false
+
+# 同文档内允许重复标题（长文档不同章节可能重复）
+MD024:
+  siblings_only: true
+
+# 文件首行不强制为 H1（允许 front matter、空行等）
+MD041: false
+
+# 代码块可不指定语言
+MD040: false
+
+# 标题末尾允许标点（如中文冒号）
+MD026:
+  punctuation: ".,;:!"
+
+# 列表缩进 2 空格
+MD007:
+  indent: 2
+
+# 有序列表前缀风格：统一用 1. 或按顺序
+MD029:
+  style: "one"
+
+# 代码围栏风格一致（用 ```）
+MD048:
+  style: "backtick"

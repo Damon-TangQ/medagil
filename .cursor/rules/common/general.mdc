@@ -7,6 +7,11 @@ alwaysApply: true
 
 本仓库为**混合架构**（Go / Python / Next.js / Taro），规则分为**通用规则**与**子项目规则**，便于管理与团队共享。
 
+## 上下文范围（仅用 .cursor）
+
+- `.krio/`、`.trae/`、`.agents/`、`.github/`、`.codacy/` 为其他 IDE/工具的规范目录，已在 `.cursorignore` 中配置跳过。
+- 使用 Cursor 时**仅以 `.cursor/` 下的 agents、commands、contexts、rules、skills 为准**；不引用上述目录中的配置。
+
 ## 关键项目文件
 
 - 项目文档：[project/docs/项目结构说明(MVP).md](mdc:project/docs/项目结构说明(MVP).md)、[project/docs/API设计规范(MVP).md](mdc:project/docs/API设计规范(MVP).md)

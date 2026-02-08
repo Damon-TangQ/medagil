@@ -4,6 +4,22 @@
 
 ---
 
+## 其他 IDE 规范目录（已跳过检索）
+
+项目中存在其他 IDE / 工具的规范目录，与 `.cursor/` 功能类似但格式不同，**已在根目录 `.cursorignore` 中配置跳过**，避免被 Cursor 的语义检索、@ 引用、Agent 读取，从而减少混淆、提高结果质量。
+
+| 被忽略目录   | 对应 .cursor 能力 | 说明                                                     |
+| ------------ | ----------------- | -------------------------------------------------------- |
+| **.krio/**   | 同 .cursor        | Krio IDE 的 agents、commands、contexts、rules、skills    |
+| **.trae/**   | 同 .cursor        | Trae 的 agents、commands、contexts、rules、skills、hooks |
+| **.agents/** | .cursor/skills    | 其他 AI 工具的 skills（如 api-design-principles）        |
+| **.github/** | -                 | GitHub Copilot / Codacy 等 AI 指令                       |
+| **.codacy/** | -                 | Codacy 规则与配置                                        |
+
+**使用 Cursor 时**：请以 `.cursor/` 下的 agents、commands、contexts、rules、skills 为准；不要引用 `.krio`、`.trae`、`.agents` 中的配置。
+
+---
+
 ## 目录结构一览
 
 ```

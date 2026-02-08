@@ -1,21 +1,21 @@
 # 管理端功能清单（MVP）
 
-**文档类型：** 需求文档  
-**创建日期：** 2026年2月8日  
-**版本：** v1.0  
+**文档类型：** 需求文档
+**创建日期：** 2026年2月8日
+**版本：** v1.0
 **适用范围：** Medagil AI 医学科研写作AI智能体平台
 
-| 功能模块 | 开发阶段 |
-|---------|----------|
-| 数据看板 (Dashboard) | MVP |
-| 用户管理 (User Management) | MVP |
-| 任务与对话管理 (Task & Dialogue Management) | MVP |
-| 项目与成果管理 (Project & Achievement Management) | MVP |
-| 会员与订单管理 (Subscription & Order Management) | MVP |
-| 积分管理 (Credits Management) | MVP |
-| 知识库管理 (Knowledge Base Management) | MVP |
-| 内容与运营管理 (Content & Operations Management) | MVP |
-| 系统设置 (System Settings) | MVP |
+| 功能模块                                          | 开发阶段 |
+| ------------------------------------------------- | -------- |
+| 数据看板 (Dashboard)                              | MVP      |
+| 用户管理 (User Management)                        | MVP      |
+| 任务与对话管理 (Task & Dialogue Management)       | MVP      |
+| 项目与成果管理 (Project & Achievement Management) | MVP      |
+| 会员与订单管理 (Subscription & Order Management)  | MVP      |
+| 积分管理 (Credits Management)                     | MVP      |
+| 知识库管理 (Knowledge Base Management)            | MVP      |
+| 内容与运营管理 (Content & Operations Management)  | MVP      |
+| 系统设置 (System Settings)                        | MVP      |
 
 ---
 

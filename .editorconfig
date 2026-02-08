@@ -9,8 +9,8 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# TypeScript / JavaScript / JSON / CSS / Markdown / YAML 等
-[*.{ts,tsx,js,jsx,json,jsonc,css,scss,html,md,mdc,yml,yaml,toml}]
+# TypeScript / JavaScript / JSON / CSS / YAML 等
+[*.{ts,tsx,js,jsx,json,jsonc,css,scss,html,yml,yaml,toml}]
 indent_style = space
 indent_size = 2
 

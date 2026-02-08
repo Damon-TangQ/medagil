@@ -15,28 +15,28 @@
 
 ## 主要交付（MVP）
 
-| 交付物       | 说明 |
-|--------------|------|
-| **Web 用户端** | 个人中心、搜索、项目管理、成果库、任务对话、导航与组织、会员与订阅 |
-| **Web 管理端** | 数据看板、用户管理、任务与对话管理、项目与成果、会员与订单、积分、知识库管理、内容与运营、系统设置 |
-| **小程序端**   | 与 Web 用户端功能对齐的 7 大模块，支持微信登录、手机号、分享、微信支付 |
+| 交付物             | 说明                                                                                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Web 用户端**     | 个人中心、搜索、项目管理、成果库、任务对话、导航与组织、会员与订阅                                                                                     |
+| **Web 管理端**     | 数据看板、用户管理、任务与对话管理、项目与成果、会员与订单、积分、知识库管理、内容与运营、系统设置                                                     |
+| **小程序端**       | 与 Web 用户端功能对齐的 7 大模块，支持微信登录、手机号、分享、微信支付                                                                                 |
 | **9 个科研智能体** | 临床论著助手、基础论著助手、综述/范围综述助手、国自然面上/重点/专项基金助手、博士基础/临床研究课题助手、文献分析助手、智能选刊助手（均在 Dify 上编排） |
 
 ---
 
 ## 技术栈概览
 
-| 层级     | 技术选型 |
-|----------|----------|
-| **AI 集成** | Dify（工作流编排、多模型、流式输出） |
-| **向量数据库** | Zilliz（知识库与 RAG） |
-| **Web 前端** | Next.js 14+、TypeScript、Radix UI、Tailwind CSS、Zustand、React Query |
-| **小程序** | Taro、TypeScript、Mobx、Taro UI、微信小程序 |
-| **业务后端** | Go（Gin）：用户、项目、任务、订单、积分、内容与运营、系统设置 |
-| **AI 侧服务** | Python（FastAPI）：知识库、Dify/向量检索对接 |
-| **数据存储** | PostgreSQL、MongoDB、Redis、Zilliz；文件采用对象存储 |
-| **网关** | APISIX（路由、鉴权、限流） |
-| **支付** | 微信支付 |
+| 层级           | 技术选型                                                              |
+| -------------- | --------------------------------------------------------------------- |
+| **AI 集成**    | Dify（工作流编排、多模型、流式输出）                                  |
+| **向量数据库** | Zilliz（知识库与 RAG）                                                |
+| **Web 前端**   | Next.js 14+、TypeScript、Radix UI、Tailwind CSS、Zustand、React Query |
+| **小程序**     | Taro、TypeScript、Mobx、Taro UI、微信小程序                           |
+| **业务后端**   | Go（Gin）：用户、项目、任务、订单、积分、内容与运营、系统设置         |
+| **AI 侧服务**  | Python（FastAPI）：知识库、Dify/向量检索对接                          |
+| **数据存储**   | PostgreSQL、MongoDB、Redis、Zilliz；文件采用对象存储                  |
+| **网关**       | APISIX（路由、鉴权、限流）                                            |
+| **支付**       | 微信支付                                                              |
 
 ---
 
@@ -44,21 +44,32 @@
 
 ```
 Medagil/
-├── README.md                 # 本文件
+├── README.md
+├── package.json              # 根 workspace 脚本（如 generate:api）
+├── pnpm-workspace.yaml       # pnpm 工作区：apps/*、packages/*
 ├── project/                  # 产品与项目文档
-│   ├── docs/                 # 技术方案、功能清单、智能体概况、项目结构说明等
+│   ├── docs/                 # 技术方案、功能清单、智能体概况、API 设计规范等
 │   └── plan/                 # 开发排期
-├── apps/
+├── apps/                     # 前端应用（三端独立）
 │   ├── web/                  # Next.js：用户端
 │   ├── admin/                # Next.js：管理端
 │   └── miniapp/              # Taro：小程序端
-├── services/
-│   ├── api-service/          # Go + Gin 业务 API（Clean Architecture 分层）
-│   └── ai-service/           # Python + FastAPI 知识库与 AI 对接
-├── packages/
-│   ├── api-types/            # 前后端共享 TypeScript 类型
-│   └── api-client/           # 由 OpenAPI 自动生成的 API 客户端
-└── infra/                    # 运维与部署（Docker、网关等，MVP 可后续补充）
+├── services/                 # 后端服务
+│   ├── api-service/          # Go + Gin：业务 API，REST + OpenAPI，用户端/管理端分离
+│   └── ai-service/           # Python + FastAPI：知识库与 Dify/向量检索
+├── packages/                 # 共享包
+│   ├── api-types/            # 前后端共享 TypeScript 类型（DTO、枚举等）
+│   └── api-client/           # Orval 根据 OpenAPI 生成的 API 客户端（user + admin）
+├── infra/                    # 运维与部署（Docker、网关等，MVP 可后续补充）
+├── .krio/                    # Krio IDE 配置（agents、commands、contexts、rules、skills）
+├── .trae/                    # Trae 配置（agents、commands、contexts、rules、skills、hooks）
+├── .agents/                  # 其他 AI 工具的 skills（如 api-design-principles）
+├── .cursor/                  # Cursor 配置（rules、skills、agents、commands 等）
+├── .cursorignore
+├── .gitignore
+├── .editorconfig
+├── .prettierrc
+└── .prettierignore
 ```
 
 后端采用 **Clean Architecture / 六边形架构**：领域层（domain）→ 用例层（use_cases）→ 适配器层（adapters）→ 基础设施（infra），依赖向内，便于测试与扩展。详见 `project/docs/项目结构说明(MVP).md`。
@@ -140,16 +151,16 @@ pnpm generate:api         # 生成 packages/api-client（user + admin 两套）
 
 ## 文档索引
 
-| 文档 | 说明 |
-|------|------|
-| [项目概况(MVP)](project/docs/项目概况(MVP).md) | 愿景、目标用户、主要交付、技术方案 |
-| [技术实现方案(MVP)](project/docs/技术实现方案(MVP).md) | 架构概览、前后端技术栈、服务划分、数据存储、Dify/Zilliz、运维 |
-| [项目结构说明(MVP)](project/docs/项目结构说明(MVP).md) | 仓库目录约定、分层说明、与功能清单对应关系 |
-| [API 设计规范(MVP)](project/docs/API设计规范(MVP).md) | REST API、OpenAPI、用户端/管理端分离、前端自动生成对接 |
-| [Web 用户端功能清单](project/docs/web/web用户端功能清单(MVP).md) | 用户端 7 大模块需求 |
-| [管理端功能清单](project/docs/admin/管理端功能清单(MVP).md) | 管理端 9 大模块需求 |
-| [小程序端功能清单](project/docs/miniapp/小程序端功能清单(MVP).md) | 小程序 7 大模块需求 |
-| [智能体概况(MVP)](project/docs/智能体概况(MVP).md) | 9 个智能体能力与验收标准 |
+| 文档                                                                | 说明                                                          |
+| ------------------------------------------------------------------- | ------------------------------------------------------------- |
+| [项目概况(MVP)](<project/docs/项目概况(MVP).md>)                    | 愿景、目标用户、主要交付、技术方案                            |
+| [技术实现方案(MVP)](<project/docs/技术实现方案(MVP).md>)            | 架构概览、前后端技术栈、服务划分、数据存储、Dify/Zilliz、运维 |
+| [项目结构说明(MVP)](<project/docs/项目结构说明(MVP).md>)            | 仓库目录约定、分层说明、与功能清单对应关系                    |
+| [API 设计规范(MVP)](<project/docs/API设计规范(MVP).md>)             | REST API、OpenAPI、用户端/管理端分离、前端自动生成对接        |
+| [Web 用户端功能清单](<project/docs/web/web用户端功能清单(MVP).md>)  | 用户端 7 大模块需求                                           |
+| [管理端功能清单](<project/docs/admin/管理端功能清单(MVP).md>)       | 管理端 9 大模块需求                                           |
+| [小程序端功能清单](<project/docs/miniapp/小程序端功能清单(MVP).md>) | 小程序 7 大模块需求                                           |
+| [智能体概况(MVP)](<project/docs/智能体概况(MVP).md>)                | 9 个智能体能力与验收标准                                      |
 
 ---
 
@@ -159,4 +170,4 @@ MVP 阶段为内部/闭源项目；许可证与贡献方式以团队约定为准
 
 ---
 
-*Medagil — 让医学科研写作更高效。*
+_Medagil — 让医学科研写作更高效。_

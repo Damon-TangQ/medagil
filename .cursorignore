@@ -1,0 +1,18 @@
+# ============================================
+# Cursor 忽略、跳过检索与读取的目录
+# 避免与其他 IDE / 工具的规范目录混淆，影响结果质量
+# 详见 .cursor/README.md
+# ============================================
+
+# ---------- 其他 IDE / 工具的规范目录 ----------
+.krio/
+.trae/
+.agents/
+.qoder/
+.codebuddy/
+.windsurf/
+
+
+# GitHub Copilot / Codacy 等 AI 指令（与 Cursor 规范可能冲突）
+.github/
+.codacy/
