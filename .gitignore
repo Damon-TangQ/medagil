@@ -1,6 +1,78 @@
+# ============================================
+# Medagil 全局 .gitignore（混合架构多语言项目）
+# 各子项目特有忽略规则见对应目录下的 .gitignore
+# ============================================
 
+# ---------- 操作系统 ----------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-#Ignore vscode AI rules
+# ---------- IDE / 编辑器 ----------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# VSCode AI / Codacy 规则（不纳入版本控制）
 .github/instructions/codacy.instructions.md
 .codacy/
-.DS_Store
+
+# ---------- 环境与密钥 ----------
+.env
+.env.*
+!.env.example
+!.env*.example
+
+# ---------- Node.js / pnpm ----------
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
+.yarnlc
+.turbo/
+
+# ---------- 日志与临时文件 ----------
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# ---------- 测试与覆盖率 ----------
+coverage/
+*.lcov
+.nyc_output/
+
+# ---------- 构建产物（通用） ----------
+dist/
+build/
+out/
+.next/
+*.tsbuildinfo
+
+# ---------- 其他 ----------
+*.pid
+*.seed
+*.pid.lock
+.npm
+.eslintcache
+.stylelintcache

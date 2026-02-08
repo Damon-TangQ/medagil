@@ -1,0 +1,28 @@
+# ============================================
+# Go (api-service) 特有忽略规则
+# ============================================
+
+# 可执行文件与构建产物
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# 测试产物
+*.test
+*.out
+coverage.out
+coverage.html
+*.prof
+
+# 依赖（若使用 go mod vendor）
+vendor/
+
+# Delve 调试器
+__debug_bin
+debug
+
+# IDE（Go 专属）
+*.iml
