@@ -1,3 +1,9 @@
+---
+name: verification-loop
+description: Comprehensive verification system for Claude Code sessions. Run after completing features or before PRs. Covers build, type check, tests, lint, and quality gates.
+descriptionZh: 功能完成或 PR 前的综合验证流程：构建、类型检查、测试、lint 等质量门禁。
+---
+
 # Verification Loop Skill
 
 A comprehensive verification system for Claude Code sessions.

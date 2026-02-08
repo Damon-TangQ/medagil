@@ -1,6 +1,7 @@
 ---
 name: strategic-compact
 description: Suggests manual context compaction at logical intervals to preserve context through task phases rather than arbitrary auto-compaction.
+descriptionZh: 在任务阶段边界建议手动压缩上下文，避免随意自动压缩导致重要信息丢失。
 ---
 
 # Strategic Compact Skill

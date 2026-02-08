@@ -1,5 +1,5 @@
 ---
-description: Enforce test-driven development workflow. Scaffold interfaces, generate tests FIRST, then implement minimal code to pass. Ensure 80%+ coverage.
+description: 强制 TDD 流程：先定义接口、写失败测试，再实现最小代码通过，确保 80%+ 覆盖率。
 ---
 
 # TDD Command

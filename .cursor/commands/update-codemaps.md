@@ -1,3 +1,7 @@
+---
+description: 分析代码库结构并更新架构文档（codemaps）。
+---
+
 # Update Codemaps
 
 Analyze the codebase structure and update architecture documentation:

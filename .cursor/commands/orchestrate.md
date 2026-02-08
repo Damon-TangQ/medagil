@@ -1,3 +1,7 @@
+---
+description: 编排多步骤智能体工作流（planner→tdd→review→security）。
+---
+
 # Orchestrate Command
 
 Sequential agent workflow for complex tasks.

@@ -1,6 +1,7 @@
 ---
 name: coding-standards
 description: Universal coding standards, best practices, and patterns for TypeScript, JavaScript, React, and Node.js development.
+descriptionZh: TypeScript、JavaScript、React、Node.js 的通用编码规范、最佳实践与常用模式。
 ---
 
 # Coding Standards & Best Practices

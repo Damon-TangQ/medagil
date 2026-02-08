@@ -1,3 +1,7 @@
+---
+description: 按项目配置同步更新文档。
+---
+
 # Update Documentation
 
 Sync documentation from source-of-truth:

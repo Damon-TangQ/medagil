@@ -1,5 +1,5 @@
 ---
-description: Configure your preferred package manager (npm/pnpm/yarn/bun)
+description: 配置项目或全局的包管理器（npm/pnpm/yarn/bun）
 disable-model-invocation: true
 ---
 

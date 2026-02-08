@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: Security vulnerability detection and remediation specialist. Use PROACTIVELY after writing code that handles user input, authentication, API endpoints, or sensitive data. Flags secrets, SSRF, injection, unsafe crypto, and OWASP Top 10 vulnerabilities.
+description: 安全漏洞检测与修复专家。处理用户输入、认证、API、敏感数据后主动使用，排查密钥泄露、SSRF、注入、OWASP Top 10。
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: opus
 ---

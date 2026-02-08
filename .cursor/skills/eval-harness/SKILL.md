@@ -1,3 +1,9 @@
+---
+name: eval-harness
+description: Formal evaluation framework for Claude Code sessions, implementing eval-driven development (EDD) principles. Define expected behavior before implementation, run evals continuously, track regressions.
+descriptionZh: 评估框架，实现 EDD 原则：先定义预期行为，持续运行评估，追踪回归。含 capability、regression、integration 等评估类型。
+---
+
 # Eval Harness Skill
 
 A formal evaluation framework for Claude Code sessions, implementing eval-driven development (EDD) principles.

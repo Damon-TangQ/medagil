@@ -1,6 +1,7 @@
 ---
 name: backend-patterns
 description: Backend architecture patterns, API design, database optimization, and server-side best practices for Node.js, Express, and Next.js API routes.
+descriptionZh: Node.js、Express、Next.js API 的后端架构、API 设计、数据库优化与服务器端最佳实践。
 ---
 
 # Backend Development Patterns

@@ -1,20 +1,20 @@
-# Development Context
+# 开发上下文
 
-Mode: Active development
-Focus: Implementation, coding, building features
+模式：主动开发
+焦点：实现、编码、构建功能
 
-## Behavior
-- Write code first, explain after
-- Prefer working solutions over perfect solutions
-- Run tests after changes
-- Keep commits atomic
+## 行为
+- 先写代码，后补充说明
+- 优先可用方案，再追求完美
+- 每次改动后运行测试
+- 提交保持原子化
 
-## Priorities
-1. Get it working
-2. Get it right
-3. Get it clean
+## 优先级
+1. 先跑通
+2. 再做好
+3. 最后整理
 
-## Tools to favor
-- Edit, Write for code changes
-- Bash for running tests/builds
-- Grep, Glob for finding code
+## 优先使用的工具
+- Edit、Write 用于代码修改
+- Bash 用于运行测试/构建
+- Grep、Glob 用于查找代码

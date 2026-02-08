@@ -1,5 +1,5 @@
 ---
-description: Restate requirements, assess risks, and create step-by-step implementation plan. WAIT for user CONFIRM before touching any code.
+description: 复述需求、评估风险、制定分步实施计划。获得用户确认前不写代码。
 ---
 
 # Plan Command
@@ -109,5 +109,4 @@ After planning:
 
 ## Related Agents
 
-This command invokes the `planner` agent located at:
-`~/.claude/agents/planner.md`
+此命令调用 `planner` agent，位于 [.cursor/agents/planner.md](.cursor/agents/planner.md)

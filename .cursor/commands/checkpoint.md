@@ -1,3 +1,7 @@
+---
+description: 在工作流中创建或验证检查点。
+---
+
 # Checkpoint Command
 
 Create or verify a checkpoint in your workflow.

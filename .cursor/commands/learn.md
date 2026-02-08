@@ -1,3 +1,7 @@
+---
+description: 从当前会话中提取可复用模式并保存为技能。
+---
+
 # /learn - Extract Reusable Patterns
 
 Analyze the current session and extract any patterns worth saving as skills.

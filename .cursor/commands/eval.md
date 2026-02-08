@@ -1,3 +1,7 @@
+---
+description: 管理 EDD 评估流程（define/check/report/list）。
+---
+
 # Eval Command
 
 Manage eval-driven development workflow.

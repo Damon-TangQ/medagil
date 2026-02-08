@@ -1,0 +1,32 @@
+---
+description: 技能使用规则：何时调用 .cursor/skills 下的技能，调用前必须先读取对应 SKILL.md
+alwaysApply: true
+---
+
+# 技能使用规则
+
+`.cursor/skills/` 下的技能在**相关任务触发时**应主动使用。**使用前必须先用 Read 工具读取对应 SKILL.md**，再按技能内容执行。
+
+## 技能列表与触发条件
+
+| 技能 | 路径 | 触发条件 |
+|------|------|----------|
+| **architecture-patterns** | [.cursor/skills/architecture-patterns/SKILL.md](mdc:.cursor/skills/architecture-patterns/SKILL.md) | 设计新后端、重构单体、拆分微服务、建立分层架构、实现 Clean Architecture / DDD |
+| **backend-patterns** | [.cursor/skills/backend-patterns/SKILL.md](mdc:.cursor/skills/backend-patterns/SKILL.md) | Node.js/Express/Next.js API 设计、数据库优化、服务端最佳实践 |
+| **clickhouse-io** | [.cursor/skills/clickhouse-io/SKILL.md](mdc:.cursor/skills/clickhouse-io/SKILL.md) | 使用 ClickHouse、OLAP 查询、分析型数据工程、查询优化 |
+| **coding-standards** | [.cursor/skills/coding-standards/SKILL.md](mdc:.cursor/skills/coding-standards/SKILL.md) | TS/JS/React 编码规范、命名、错误处理、不可变等通用约定 |
+| **continuous-learning** | [.cursor/skills/continuous-learning/SKILL.md](mdc:.cursor/skills/continuous-learning/SKILL.md) | 会话结束时提取可复用模式并保存为技能（通常由 hook 触发） |
+| **eval-harness** | [.cursor/skills/eval-harness/SKILL.md](mdc:.cursor/skills/eval-harness/SKILL.md) | 需定义评估、先写预期再实现、追踪回归、EDD 流程 |
+| **frontend-patterns** | [.cursor/skills/frontend-patterns/SKILL.md](mdc:.cursor/skills/frontend-patterns/SKILL.md) | React/Next.js 组件、状态管理、性能优化、UI 模式 |
+| **project-guidelines-example** | [.cursor/skills/project-guidelines-example/SKILL.md](mdc:.cursor/skills/project-guidelines-example/SKILL.md) | 创建项目技能模板、参考 Zenith 等项目结构 |
+| **security-review** | [.cursor/skills/security-review/SKILL.md](mdc:.cursor/skills/security-review/SKILL.md) | 认证、用户输入、密钥、API、支付等敏感功能；安全检查清单 |
+| **strategic-compact** | [.cursor/skills/strategic-compact/SKILL.md](mdc:.cursor/skills/strategic-compact/SKILL.md) | 任务阶段边界建议手动压缩上下文（由 hook 或用户触发） |
+| **tdd-workflow** | [.cursor/skills/tdd-workflow/SKILL.md](mdc:.cursor/skills/tdd-workflow/SKILL.md) | 新功能、修 bug、重构：先写测试再实现，80%+ 覆盖率 |
+| **verification-loop** | [.cursor/skills/verification-loop/SKILL.md](mdc:.cursor/skills/verification-loop/SKILL.md) | 功能完成或 PR 前：构建、类型检查、测试、lint 等质量门禁 |
+
+## 使用流程
+
+1. **判定**：当前任务是否命中上表任一触发条件。
+2. **读取**：用 Read 工具读取对应 `SKILL.md`。
+3. **执行**：按技能内的步骤、清单、模式执行，不跳过关键步骤。
+4. **不空用**：仅在相关时引用技能；不要仅为展示而提及。

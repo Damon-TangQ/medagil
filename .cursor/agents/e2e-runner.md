@@ -1,6 +1,6 @@
 ---
 name: e2e-runner
-description: End-to-end testing specialist using Playwright. Use PROACTIVELY for generating, maintaining, and running E2E tests. Manages test journeys, quarantines flaky tests, uploads artifacts (screenshots, videos, traces), and ensures critical user flows work.
+description: Playwright E2E 测试专家。生成、维护、运行 E2E 测试，管理测试旅程、隔离不稳定测试、上传截图/视频/追踪。
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: opus
 ---

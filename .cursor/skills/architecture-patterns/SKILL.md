@@ -1,6 +1,7 @@
 ---
 name: architecture-patterns
 description: Implement proven backend architecture patterns including Clean Architecture, Hexagonal Architecture, and Domain-Driven Design. Use when architecting complex backend systems or refactoring existing applications for better maintainability.
+descriptionZh: 实现 Clean Architecture、六边形架构、DDD 等后端架构模式；在设计或重构复杂后端系统时使用。
 ---
 
 # Architecture Patterns

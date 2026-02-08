@@ -1,6 +1,6 @@
 ---
 name: planner
-description: Expert planning specialist for complex features and refactoring. Use PROACTIVELY when users request feature implementation, architectural changes, or complex refactoring. Automatically activated for planning tasks.
+description: 复杂功能与重构的规划专家。在用户要求实现功能、架构变更或复杂重构时主动使用。
 tools: Read, Grep, Glob
 model: opus
 ---

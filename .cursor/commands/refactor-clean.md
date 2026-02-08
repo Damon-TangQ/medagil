@@ -1,3 +1,7 @@
+---
+description: 安全识别并移除死代码，配合测试验证。
+---
+
 # Refactor Clean
 
 Safely identify and remove dead code with test verification:

@@ -1,3 +1,9 @@
+---
+name: project-guidelines-example
+description: Example project-specific skill template. Contains architecture overview, file structure, code patterns, testing requirements, and deployment workflow.
+descriptionZh: 项目技能模板示例，包含架构概览、目录结构、代码模式、测试要求与部署流程。
+---
+
 # Project Guidelines Skill (Example)
 
 This is an example of a project-specific skill. Use this as a template for your own projects.

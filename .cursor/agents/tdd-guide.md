@@ -1,6 +1,6 @@
 ---
 name: tdd-guide
-description: Test-Driven Development specialist enforcing write-tests-first methodology. Use PROACTIVELY when writing new features, fixing bugs, or refactoring code. Ensures 80%+ test coverage.
+description: TDD 专家，强制先写测试再实现。新功能、修 bug、重构时主动使用，确保 80%+ 覆盖率。
 tools: Read, Write, Edit, Bash, Grep
 model: opus
 ---

@@ -1,3 +1,7 @@
+---
+description: 对当前代码库执行构建、类型、lint、测试等全面验证。
+---
+
 # Verification Command
 
 Run comprehensive verification on current codebase state.

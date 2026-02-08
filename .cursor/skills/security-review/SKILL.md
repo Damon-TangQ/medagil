@@ -1,6 +1,7 @@
 ---
 name: security-review
 description: Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provides comprehensive security checklist and patterns.
+descriptionZh: 认证、用户输入、密钥、API、支付等敏感功能的安全检查清单与防护模式。
 ---
 
 # Security Review Skill

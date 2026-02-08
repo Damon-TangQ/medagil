@@ -18,6 +18,7 @@ alwaysApply: true
 
 - **common/**（通用规则）：跨技术栈的规范，所有成员遵守。
   - [project-structure.mdc](mdc:.cursor/rules/common/project-structure.mdc) — 项目结构、文档与目录约定
+  - [skill-usage.mdc](mdc:.cursor/rules/common/skill-usage.mdc) — 技能使用规则（何时调用 .cursor/skills 下技能）
   - [code-style-formatting.mdc](mdc:.cursor/rules/common/code-style-formatting.mdc) — 代码风格与格式管理（EditorConfig、Prettier、go fmt、Ruff）
   - [package-management.mdc](mdc:.cursor/rules/common/package-management.mdc) — 包管理规范（pnpm、Go modules、Python）
   - [typescript.mdc](mdc:.cursor/rules/common/typescript.mdc) — TypeScript 规范（不可变、错误处理、校验）

@@ -1,3 +1,7 @@
+---
+description: 逐步修复 TypeScript 与构建错误。
+---
+
 # Build and Fix
 
 Incrementally fix TypeScript and build errors:

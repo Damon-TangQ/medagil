@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Expert code review specialist. Proactively reviews code for quality, security, and maintainability. Use immediately after writing or modifying code. MUST BE USED for all code changes.
+description: 代码审查专家，关注质量、安全与可维护性。代码修改后立即使用。
 tools: Read, Grep, Glob, Bash
 model: opus
 ---

@@ -1,6 +1,7 @@
 ---
 name: frontend-patterns
 description: Frontend development patterns for React, Next.js, state management, performance optimization, and UI best practices.
+descriptionZh: React、Next.js、状态管理、性能优化与 UI 的前端开发模式与最佳实践。
 ---
 
 # Frontend Development Patterns
