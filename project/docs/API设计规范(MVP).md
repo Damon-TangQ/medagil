@@ -38,10 +38,16 @@
 - **规范版本**：OpenAPI 3.0.x。
 - **标签（tags）**：路径按 `user`、`admin` 打标签，便于按端生成客户端。
 
-### 3.2 实现方式（Go）
+### 3.2 实现方式（Go + OpenAPI 文件）
 
-- 使用 **swaggo/swag** 等工具，在 Gin handler 上写注释生成 spec。
-- 或手写 `openapi.yaml`，由 CI 校验与 api-service 实现一致。
+- **OpenAPI 为唯一事实来源**：以 `packages/api-client/spec/openapi.yaml` 为主文件维护全部接口（用户端 + 管理端 + internal）。
+  - 已在该文件中按 tag 区分：
+    - `user`：`/api/v1/*` 用户端 API
+    - `admin`：`/api/v1/admin/*` 管理端 API
+    - `internal`：`/internal/*` 内部服务间接口（api-service ↔ ai-service 等）
+- **swaggo/swag（可选）**：
+  - 若需要 Go 代码中的 Swagger UI，可在 Gin handler 上写注释，由 swag 生成 `docs/openapi.json`。
+  - 推荐做法是：CI 中校验 swag 生成的规范与 `openapi.yaml` 一致，避免二套规范偏离。
 
 ### 3.3 与 ai-service 的关系
 
@@ -64,11 +70,20 @@ api-service 开发/变更接口
   → web / miniapp 使用 @medagil/api-client/user，admin 使用 @medagil/api-client/admin
 ```
 
-### 4.2 配置要点
+### 4.2 配置要点（已在代码中实现）
 
-- **orval.config.ts**：两个项目 `user`、`admin`，分别用 `input.filters.tags: ['user']` 与 `['admin']` 过滤。
-- **client**：`react-query` + `httpClient: 'fetch'`，配合自定义 mutator 注入 baseUrl 与 `Authorization`。
-- **mutator**：`src/mutator/use-custom-instance.ts`，各 app 通过 `setApiConfig({ baseUrl, getToken })` 注入鉴权。
+- **orval.config.ts**（位于 `packages/api-client/orval.config.ts`）：
+  - 定义了两个项目：
+    - `user`：`input.filters.tags: ['user']` → 仅生成用户端 `/api/v1/*` 客户端；
+    - `admin`：`input.filters.tags: ['admin']` → 仅生成管理端 `/api/v1/admin/*` 客户端。
+  - `output` 配置：
+    - `target`: `./src/user/endpoints.ts` / `./src/admin/endpoints.ts`
+    - `schemas`: `./src/user/model` / `./src/admin/model`
+    - `client`: `react-query`，`httpClient: 'fetch'`
+    - `override.mutator`: 使用 `./src/mutator/use-custom-instance.ts` 注入 `baseUrl` 与 `Authorization`。
+- **mutator**：`src/mutator/use-custom-instance.ts`
+  - 由各 app 在启动时通过 `setApiConfig({ baseUrl, getToken })` 注入后端地址与 Token 获取方式。
+  - `useCustomInstance` 的签名与 Orval 期望一致，可直接被生成代码调用。
 
 ### 4.3 按端使用
 
@@ -80,9 +95,15 @@ api-service 开发/变更接口
 
 ### 4.4 目录与脚本
 
-- **packages/api-client**：Orval 配置、spec、mutator、生成产物（user/admin endpoints + model）。
-- **根目录**：`pnpm generate:api` 调用 `pnpm --filter @medagil/api-client generate`。
-- **鉴权**：各 app 在 Providers 中调用 `setApiConfig({ baseUrl, getToken })`，getToken 返回当前用户/管理员 Token。
+- **packages/api-client**：
+  - `spec/openapi.yaml`：完整 OpenAPI 规范（本次已扩展，包括用户端 + 管理端 + internal 接口）。
+  - `orval.config.ts`：Orval 生成配置。
+  - `src/mutator/*`：自定义请求实例与配置注入。
+  - `src/user/*`、`src/admin/*`：由 Orval 生成的客户端与类型定义。
+- **根目录脚本**：
+  - `pnpm generate:api` → 调用 `pnpm --filter @medagil/api-client generate`，执行 Orval 生成。
+  - 推荐在修改 `openapi.yaml` 或后端接口实现后执行一次，保持前后端类型一致。
+  - 后续可在 CI 中增加「OpenAPI → Orval 生成 → TypeScript 编译」步骤，确保规范与实现不偏离。
 
 ---
 

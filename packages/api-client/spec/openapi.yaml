@@ -1,14 +1,23 @@
-# Medagil api-service OpenAPI 基线
-# 与 api-service 实现保持一致；可由 api-service 的 swag 生成后替换此文件
 openapi: 3.0.3
 info:
   title: Medagil API
-  version: 0.1.0
-  description: 用户端与管理端 REST API，路径与 tag 区分
+  version: 0.2.0
+  description: >
+    Medagil 医学科研写作平台 API 规范（MVP 阶段）。
+    - 用户端与管理端 REST API，路径与 tag 区分
+    - 内部接口（internal tag）用于 api-service 与 ai-service / 其它服务间调用
 
 servers:
   - url: ''
     description: 运行时由各 app 注入 baseUrl（如 process.env.NEXT_PUBLIC_API_URL）
+
+tags:
+  - name: user
+    description: 用户端 API（apps/web、apps/miniapp 调用）
+  - name: admin
+    description: 管理端 API（apps/admin 调用）
+  - name: internal
+    description: 内部服务间调用 API（不直接暴露给前端）
 
 paths:
   # ---------- 用户端 API (tag: user) ----------
@@ -25,42 +34,515 @@ paths:
               schema:
                 type: object
                 properties:
-                  message: { type: string }
+                  message:
+                    type: string
+
+  /api/v1/auth/wechat/login:
+    post:
+      tags: [user]
+      summary: 微信授权登录（Web/小程序）
+      operationId: loginWithWeChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthWeChatLoginRequest'
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthWeChatLoginResponse'
+        '400':
+          description: 参数错误
+        '401':
+          description: 微信 code 无效
 
   /api/v1/me:
     get:
       tags: [user]
       summary: 当前用户信息
       operationId: getMe
-      security: [{ bearerAuth: [] }]
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: OK
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/UserProfile' }
+              schema:
+                $ref: '#/components/schemas/UserProfile'
         '401':
-          description: Unauthorized
+          description: 未登录
+
+    patch:
+      tags: [user]
+      summary: 更新当前用户资料与偏好
+      operationId: updateMe
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserProfileRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: 未登录
 
   /api/v1/projects:
     get:
       tags: [user]
       summary: 项目列表
       operationId: getProjects
-      security: [{ bearerAuth: [] }]
+      security:
+        - bearerAuth: []
       parameters:
         - name: page
           in: query
-          schema: { type: integer, default: 1 }
+          schema:
+            type: integer
+            default: 1
         - name: pageSize
           in: query
-          schema: { type: integer, default: 20 }
+          schema:
+            type: integer
+            default: 20
+        - name: keyword
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, archived]
       responses:
         '200':
           description: OK
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/ProjectListResponse' }
+              schema:
+                $ref: '#/components/schemas/ProjectListResponse'
+
+    post:
+      tags: [user]
+      summary: 创建项目
+      operationId: createProject
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          description: 参数错误
+
+  /api/v1/projects/{projectId}:
+    get:
+      tags: [user]
+      summary: 项目详情
+      operationId: getProjectById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: 未找到
+
+    patch:
+      tags: [user]
+      summary: 更新项目
+      operationId: updateProject
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+
+    delete:
+      tags: [user]
+      summary: 删除或归档项目
+      operationId: deleteProject
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 删除成功
+
+  /api/v1/library:
+    get:
+      tags: [user]
+      summary: 成果库列表
+      operationId: getLibraryItems
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: keyword
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, archived]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LibraryListResponse'
+
+    post:
+      tags: [user]
+      summary: 将任务结果保存到成果库
+      operationId: createLibraryItem
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLibraryItemRequest'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LibraryItem'
+
+  /api/v1/tasks:
+    get:
+      tags: [user]
+      summary: 任务列表
+      operationId: getTasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: projectId
+          in: query
+          schema:
+            type: string
+        - name: agentKey
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, running, succeeded, failed]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+
+    post:
+      tags: [user]
+      summary: 新建任务
+      operationId: createTask
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDetail'
+
+  /api/v1/tasks/{taskId}:
+    get:
+      tags: [user]
+      summary: 任务详情
+      operationId: getTaskById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDetail'
+        '404':
+          description: 未找到
+
+  /api/v1/tasks/{taskId}/messages:
+    get:
+      tags: [user]
+      summary: 任务消息与步骤
+      operationId: getTaskMessages
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskMessage'
+
+  /api/v1/tasks/{taskId}/feedback:
+    post:
+      tags: [user]
+      summary: 提交任务结果反馈
+      operationId: submitTaskFeedback
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskFeedbackRequest'
+      responses:
+        '204':
+          description: 已记录反馈
+
+  /api/v1/tasks/{taskId}/share:
+    post:
+      tags: [user]
+      summary: 生成任务结果分享链接
+      operationId: createTaskShareLink
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+
+  /api/v1/files/upload:
+    post:
+      tags: [user]
+      summary: 上传文件（任务输入 / 成果库 / 知识库）
+      operationId: uploadFile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                kind:
+                  type: string
+                  enum: [task-input, library, knowledge]
+      responses:
+        '201':
+          description: 上传成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadResponse'
+
+  /api/v1/search:
+    get:
+      tags: [user]
+      summary: 全局搜索（任务 / 项目 / 成果库）
+      operationId: search
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: scope
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [tasks, projects, library]
+        - name: keyword
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResult'
+
+  /api/v1/plans:
+    get:
+      tags: [user]
+      summary: 订阅套餐列表
+      operationId: getPlans
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plan'
+
+  /api/v1/subscription:
+    get:
+      tags: [user]
+      summary: 当前用户订阅状态
+      operationId: getSubscription
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+
+  /api/v1/pay/wechat/jsapi:
+    post:
+      tags: [user]
+      summary: 创建微信 JSAPI/小程序支付订单
+      operationId: createWeChatJsapiOrder
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WeChatJsapiOrderRequest'
+      responses:
+        '200':
+          description: 下单成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeChatJsapiOrderResponse'
 
   # ---------- 管理端 API (tag: admin) ----------
   /api/v1/admin/ping:
@@ -76,48 +558,456 @@ paths:
               schema:
                 type: object
                 properties:
-                  message: { type: string }
+                  message:
+                    type: string
 
   /api/v1/admin/dashboard/stats:
     get:
       tags: [admin]
       summary: 数据看板统计
       operationId: getDashboardStats
-      security: [{ adminBearer: [] }]
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/DashboardStats' }
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-
-  /api/v1/admin/users:
-    get:
-      tags: [admin]
-      summary: 用户列表（管理端）
-      operationId: getAdminUsers
-      security: [{ adminBearer: [] }]
-      parameters:
-        - name: page
-          in: query
-          schema: { type: integer, default: 1 }
-        - name: pageSize
-          in: query
-          schema: { type: integer, default: 20 }
+      security:
+        - adminBearer: []
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  items: { type: array, items: { $ref: '#/components/schemas/UserProfile' } }
-                  total: { type: integer }
+                $ref: '#/components/schemas/DashboardStats'
+        '401':
+          description: 未登录
+        '403':
+          description: 无权限
+
+  /api/v1/admin/users:
+    get:
+      tags: [admin]
+      summary: 用户列表（管理端）
+      operationId: getAdminUsers
+      security:
+        - adminBearer: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: keyword
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserListResponse'
+
+  /api/v1/admin/users/{userId}:
+    get:
+      tags: [admin]
+      summary: 用户详情（管理端）
+      operationId: getAdminUserById
+      security:
+        - adminBearer: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDetail'
+        '404':
+          description: 用户不存在
+
+  /api/v1/admin/credits/accounts:
+    get:
+      tags: [admin]
+      summary: 积分账户列表
+      operationId: getCreditAccounts
+      security:
+        - adminBearer: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditAccountListResponse'
+
+  /api/v1/admin/credits/transactions:
+    get:
+      tags: [admin]
+      summary: 积分流水列表
+      operationId: getCreditTransactions
+      security:
+        - adminBearer: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: userId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditTransactionListResponse'
+
+  /api/v1/admin/credits/adjust:
+    post:
+      tags: [admin]
+      summary: 手动调整积分
+      operationId: adjustCredit
+      security:
+        - adminBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdjustCreditRequest'
+      responses:
+        '204':
+          description: 调整成功
+
+  /api/v1/admin/knowledge-bases:
+    get:
+      tags: [admin]
+      summary: 知识库列表
+      operationId: getKnowledgeBases
+      security:
+        - adminBearer: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeBaseListResponse'
+
+  /api/v1/admin/system/settings:
+    get:
+      tags: [admin]
+      summary: 系统设置列表
+      operationId: getSystemSettings
+      security:
+        - adminBearer: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemSettingListResponse'
+
+    post:
+      tags: [admin]
+      summary: 更新系统设置
+      operationId: updateSystemSetting
+      security:
+        - adminBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSystemSettingRequest'
+      responses:
+        '204':
+          description: 更新成功
+
+  /api/v1/admin/audit-logs:
+    get:
+      tags: [admin]
+      summary: 操作日志
+      operationId: getAuditLogs
+      security:
+        - adminBearer: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: actorType
+          in: query
+          schema:
+            type: string
+        - name: resourceType
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogListResponse'
+
+  /api/v1/admin/tasks:
+    get:
+      tags: [admin]
+      summary: 全平台任务列表
+      operationId: getAdminTasks
+      security:
+        - adminBearer: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: userId
+          in: query
+          schema:
+            type: string
+        - name: agentKey
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+
+  /api/v1/admin/tasks/{taskId}:
+    get:
+      tags: [admin]
+      summary: 任务详情（管理端）
+      operationId: getAdminTaskById
+      security:
+        - adminBearer: []
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDetail'
+
+  /api/v1/admin/orders:
+    get:
+      tags: [admin]
+      summary: 订单列表
+      operationId: getAdminOrders
+      security:
+        - adminBearer: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminOrderListResponse'
+
+  /api/v1/admin/orders/{orderId}:
+    get:
+      tags: [admin]
+      summary: 订单详情
+      operationId: getAdminOrderById
+      security:
+        - adminBearer: []
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminOrder'
+
+  /api/v1/admin/orders/{orderId}/refund:
+    post:
+      tags: [admin]
+      summary: 退款
+      operationId: refundOrder
+      security:
+        - adminBearer: []
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 已触发退款
+
+  /api/v1/admin/knowledge/sources:
+    get:
+      tags: [admin]
+      summary: 知识源列表
+      operationId: getKnowledgeSources
+      security:
+        - adminBearer: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeSourceListResponse'
+
+    post:
+      tags: [admin]
+      summary: 创建或上传知识源
+      operationId: createKnowledgeSource
+      security:
+        - adminBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KnowledgeSource'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeSource'
+
+  # ---------- 内部接口 (tag: internal) ----------
+  /internal/ai/workflows/{workflowKey}/invoke:
+    post:
+      tags: [internal]
+      summary: 调用 AI 工作流（封装 Dify）
+      operationId: invokeAiWorkflow
+      security: []
+      parameters:
+        - name: workflowKey
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InternalAiWorkflowInvokeRequest'
+      responses:
+        '200':
+          description: 调用成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalAiWorkflowInvokeResponse'
+
+  /internal/knowledge/query:
+    post:
+      tags: [internal]
+      summary: 知识库向量检索
+      operationId: queryKnowledge
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KnowledgeQueryRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeQueryResponse'
 
 components:
   securitySchemes:
@@ -135,26 +1025,653 @@ components:
     UserProfile:
       type: object
       properties:
-        id: { type: string }
-        email: { type: string, nullable: true }
-        nickname: { type: string, nullable: true }
-        avatar: { type: string, nullable: true }
-        plan: { type: string, enum: [free, pro, max] }
-        credits: { type: integer, nullable: true }
-    ProjectListResponse:
+        id:
+          type: string
+        email:
+          type: string
+          nullable: true
+        nickname:
+          type: string
+          nullable: true
+        avatar:
+          type: string
+          nullable: true
+        plan:
+          type: string
+          enum: [free, pro, max]
+        credits:
+          type: integer
+          nullable: true
+
+    UpdateUserProfileRequest:
       type: object
       properties:
-        items: { type: array, items: { $ref: '#/components/schemas/ProjectSummary' } }
-        total: { type: integer }
+        nickname:
+          type: string
+        avatar:
+          type: string
+        preferences:
+          type: object
+        profile:
+          type: object
+
+    AuthWeChatLoginRequest:
+      type: object
+      required: [code, platform]
+      properties:
+        code:
+          type: string
+        platform:
+          type: string
+          enum: [miniapp, web]
+
+    AuthWeChatLoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/UserProfile'
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [active, archived]
+        createdAt:
+          type: string
+          format: date-time
+
     ProjectSummary:
       type: object
       properties:
-        id: { type: string }
-        name: { type: string }
-        createdAt: { type: string, format: date-time }
+        id:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    ProjectListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSummary'
+        total:
+          type: integer
+
+    CreateProjectRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        globalInstruction:
+          type: string
+
+    UpdateProjectRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, archived]
+        globalInstruction:
+          type: string
+
+    LibraryItem:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        projectId:
+          type: string
+          nullable: true
+        isFavorited:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    LibraryListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LibraryItem'
+        total:
+          type: integer
+
+    CreateLibraryItemRequest:
+      type: object
+      required: [taskId, title]
+      properties:
+        taskId:
+          type: string
+        title:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        notes:
+          type: string
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+          nullable: true
+        agentKey:
+          type: string
+        status:
+          type: string
+          enum: [pending, running, succeeded, failed]
+        createdAt:
+          type: string
+          format: date-time
+
+    TaskListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        total:
+          type: integer
+
+    TaskDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+          nullable: true
+        agentKey:
+          type: string
+        status:
+          type: string
+        inputText:
+          type: string
+          nullable: true
+        fileIds:
+          type: array
+          items:
+            type: string
+        resultPreview:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateTaskRequest:
+      type: object
+      required: [agentKey]
+      properties:
+        projectId:
+          type: string
+        type:
+          type: string
+          enum: [text, file, advanced, speech]
+        agentKey:
+          type: string
+        inputText:
+          type: string
+        fileIds:
+          type: array
+          items:
+            type: string
+        advancedConfig:
+          type: object
+
+    TaskMessage:
+      type: object
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+          enum: [user, assistant, system, tool]
+        content:
+          type: string
+        stepType:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    TaskFeedbackRequest:
+      type: object
+      required: [rating]
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+
+    FileUploadResponse:
+      type: object
+      properties:
+        fileId:
+          type: string
+        url:
+          type: string
+          nullable: true
+        mimeType:
+          type: string
+        size:
+          type: integer
+
+    SearchResultItem:
+      type: object
+      properties:
+        id:
+          type: string
+        scope:
+          type: string
+          enum: [task, project, library]
+        title:
+          type: string
+        snippet:
+          type: string
+
+    SearchResult:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResultItem'
+        total:
+          type: integer
+
+    Plan:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        level:
+          type: string
+          enum: [free, pro, max]
+        priceCents:
+          type: integer
+        description:
+          type: string
+
+    Subscription:
+      type: object
+      properties:
+        planId:
+          type: string
+        level:
+          type: string
+          enum: [free, pro, max]
+        validUntil:
+          type: string
+          format: date-time
+
+    WeChatJsapiOrderRequest:
+      type: object
+      required: [planId, channel]
+      properties:
+        planId:
+          type: string
+        channel:
+          type: string
+          enum: [web, miniapp]
+
+    WeChatJsapiOrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: string
+        wechatParams:
+          type: object
+
     DashboardStats:
       type: object
       properties:
-        totalUsers: { type: integer }
-        totalOrders: { type: integer }
-        mrr: { type: number }
+        totalUsers:
+          type: integer
+        totalOrders:
+          type: integer
+        mrr:
+          type: number
+
+    AdminUserListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfile'
+        total:
+          type: integer
+
+    AdminOrder:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        planId:
+          type: string
+        status:
+          type: string
+        amountCents:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    AdminOrderListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminOrder'
+        total:
+          type: integer
+
+    AdminUserDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          nullable: true
+        nickname:
+          type: string
+          nullable: true
+        avatar:
+          type: string
+          nullable: true
+        plan:
+          type: string
+          enum: [free, pro, max]
+        credits:
+          type: integer
+          nullable: true
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+        createdAt:
+          type: string
+          format: date-time
+
+    CreditAccount:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        total:
+          type: integer
+        available:
+          type: integer
+        frozen:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    CreditAccountListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreditAccount'
+        total:
+          type: integer
+
+    CreditTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        type:
+          type: string
+        amount:
+          type: integer
+        balance:
+          type: integer
+        reason:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    CreditTransactionListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreditTransaction'
+        total:
+          type: integer
+
+    AdjustCreditRequest:
+      type: object
+      required: [userId, amount, reason]
+      properties:
+        userId:
+          type: string
+        amount:
+          type: integer
+        reason:
+          type: string
+
+    KnowledgeBase:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        visibility:
+          type: string
+          enum: [private, public]
+        createdAt:
+          type: string
+          format: date-time
+
+    KnowledgeBaseListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeBase'
+        total:
+          type: integer
+
+    SystemSetting:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+
+    SystemSettingListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SystemSetting'
+
+    UpdateSystemSettingRequest:
+      type: object
+      required: [key, value]
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: string
+        actorType:
+          type: string
+        actorId:
+          type: string
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+        action:
+          type: string
+        details:
+          type: string
+        ipAddress:
+          type: string
+        userAgent:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    AuditLogListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLog'
+        total:
+          type: integer
+
+    KnowledgeSource:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    KnowledgeSourceListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeSource'
+        total:
+          type: integer
+
+    InternalAiWorkflowInvokeRequest:
+      type: object
+      required: [userId, inputs]
+      properties:
+        userId:
+          type: string
+        taskId:
+          type: string
+        inputs:
+          type: object
+        knowledgeIds:
+          type: array
+          items:
+            type: string
+        options:
+          type: object
+
+    InternalAiWorkflowInvokeResponse:
+      type: object
+      properties:
+        taskId:
+          type: string
+        status:
+          type: string
+        outputPreview:
+          type: string
+          nullable: true
+
+    KnowledgeQueryRequest:
+      type: object
+      required: [query]
+      properties:
+        query:
+          type: string
+        knowledgeIds:
+          type: array
+          items:
+            type: string
+        topK:
+          type: integer
+
+    KnowledgeChunk:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        score:
+          type: number
+        sourceId:
+          type: string
+        metadata:
+          type: object
+
+    KnowledgeQueryResponse:
+      type: object
+      properties:
+        chunks:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeChunk'
