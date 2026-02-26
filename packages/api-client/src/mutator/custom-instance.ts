@@ -37,7 +37,7 @@ export const customInstance = async <T>(
       ? (options.headers as Record<string, string>)
       : {}),
   };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (token) headers['X-Admin-Token'] = token;
 
   const res = await fetch(fullUrl, { ...options, headers });
   const data = (await res.json().catch(() => ({}))) as T;

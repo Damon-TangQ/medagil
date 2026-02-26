@@ -1,0 +1,74 @@
+# ========================================
+# PostgreSQL数据库配置
+# ========================================
+database:
+  # 数据库主机地址
+  # 可通过环境变量覆盖：DB_HOST
+  host: ${DB_HOST:localhost}
+
+  # 数据库端口
+  # 可通过环境变量覆盖：DB_PORT
+  port: ${DB_PORT:5432}
+
+  # 数据库用户名
+  # 可通过环境变量覆盖：DB_USER
+  user: ${DB_USER:postgres}
+
+  # 数据库密码
+  # 从环境变量读取，默认值仅用于开发
+  # 生产环境必须通过环境变量设置
+  # 可通过环境变量覆盖：DB_PASSWORD
+  password: ${DB_PASSWORD:123456}
+
+  # 数据库名称
+  # 可通过环境变量覆盖：DB_NAME
+  dbname: ${DB_NAME:medagil}
+
+  # SSL模式
+  # 可通过环境变量覆盖：DB_SSLMODE
+  sslmode: ${DB_SSLMODE:disable}
+
+  # 最大打开连接数
+  # 可通过环境变量覆盖：DB_MAX_OPEN_CONNS
+  max_open_conns: ${DB_MAX_OPEN_CONNS:20}
+
+  # 最大空闲连接数
+  # 可通过环境变量覆盖：DB_MAX_IDLE_CONNS
+  max_idle_conns: ${DB_MAX_IDLE_CONNS:10}
+
+  # 连接最大生命周期（秒）
+  # 可通过环境变量覆盖：DB_CONN_MAX_LIFETIME
+  conn_max_lifetime: ${DB_CONN_MAX_LIFETIME:300}
+
+# ========================================
+# 服务配置
+# ========================================
+server:
+  # 服务监听端口
+  # 从配置文件读取，默认8080
+  # 可通过环境变量覆盖：SERVER_PORT
+  # 说明：修改此值可更改服务监听端口
+  port: ${SERVER_PORT:8080}
+
+  # 读取超时时间
+  # 可通过环境变量覆盖：SERVER_READ_TIMEOUT
+  read_timeout: ${SERVER_READ_TIMEOUT:15s}
+
+  # 写入超时时间
+  # 可通过环境变量覆盖：SERVER_WRITE_TIMEOUT
+  write_timeout: ${SERVER_WRITE_TIMEOUT:15s}
+
+  # 运行模式
+  # 可通过环境变量覆盖：GIN_MODE
+  # 可选值：debug, release, test
+  mode: ${GIN_MODE:debug}
+
+# ========================================
+# 管理端配置
+# ========================================
+admin:
+  # 管理员认证token
+  # 从环境变量读取，默认值仅用于开发
+  # 生产环境必须通过环境变量设置
+  # 可通过环境变量覆盖：ADMIN_TOKEN
+  token: ${ADMIN_TOKEN:admin_secure_token_2024}

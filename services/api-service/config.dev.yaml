@@ -1,0 +1,140 @@
+# ========================================
+# 开发环境配置文件
+# ========================================
+#
+# 使用说明：
+# 1. 此文件用于开发环境，包含开发环境的特定配置
+# 2. 不要将此文件提交到版本控制系统
+# 3. 可以通过环境变量覆盖任何配置项
+# 4. 启动时使用 --config flag 指定配置文件
+#
+# 启动命令：
+#   ./server --config config.dev.yaml
+#
+# 环境变量覆盖示例：
+#   export DB_PASSWORD=your_password
+#   export DB_HOST=localhost
+#   export DB_PORT=5432
+# ========================================
+
+# ========================================
+# PostgreSQL数据库配置
+# ========================================
+database:
+  # 数据库主机地址
+  # 说明：开发环境通常使用localhost
+  # 可通过环境变量覆盖：DB_HOST
+  host: ${DB_HOST:localhost}
+
+  # 数据库端口
+  # 说明：PostgreSQL默认端口为5432
+  # 可通过环境变量覆盖：DB_PORT
+  port: ${DB_PORT:5432}
+
+  # 数据库用户名
+  # 说明：开发环境数据库用户
+  # 可通过环境变量覆盖：DB_USER
+  user: ${DB_USER:postgres}
+
+  # 数据库密码
+  # 说明：从环境变量读取，默认值仅用于开发
+  # 生产环境必须通过环境变量设置
+  # 可通过环境变量覆盖：DB_PASSWORD
+  # 安全建议：不要在配置文件中硬编码密码
+  password: ${DB_PASSWORD:123456}
+
+  # 数据库名称
+  # 说明：开发环境数据库名称
+  # 可通过环境变量覆盖：DB_NAME
+  dbname: ${DB_NAME:medagil_dev}
+
+  # SSL模式
+  # 说明：开发环境通常禁用SSL
+  # 可选值：disable, allow, prefer, require, verify-ca, verify-full
+  # 可通过环境变量覆盖：DB_SSLMODE
+  sslmode: ${DB_SSLMODE:disable}
+
+  # 最大打开连接数
+  # 说明：与数据库的最大并发连接数
+  # 可通过环境变量覆盖：DB_MAX_OPEN_CONNS
+  max_open_conns: ${DB_MAX_OPEN_CONNS:10}
+
+  # 最大空闲连接数
+  # 说明：连接池中保持的最大空闲连接数
+  # 可通过环境变量覆盖：DB_MAX_IDLE_CONNS
+  max_idle_conns: ${DB_MAX_IDLE_CONNS:5}
+
+  # 连接最大生命周期（秒）
+  # 说明：连接的最大存活时间，超过后将被关闭
+  # 可通过环境变量覆盖：DB_CONN_MAX_LIFETIME
+  conn_max_lifetime: ${DB_CONN_MAX_LIFETIME:300}
+
+# ========================================
+# 服务配置
+# ========================================
+server:
+  # 服务监听端口
+  # 说明：开发环境使用8080端口
+  # 可通过环境变量覆盖：SERVER_PORT
+  port: ${SERVER_PORT:8080}
+
+  # 读取超时时间
+  # 说明：读取请求的超时时间
+  # 可通过环境变量覆盖：SERVER_READ_TIMEOUT
+  read_timeout: ${SERVER_READ_TIMEOUT:30s}
+
+  # 写入超时时间
+  # 说明：写入响应的超时时间
+  # 可通过环境变量覆盖：SERVER_WRITE_TIMEOUT
+  write_timeout: ${SERVER_WRITE_TIMEOUT:30s}
+
+  # 运行模式
+  # 说明：开发环境使用debug模式，输出详细日志
+  # 可选值：debug, release, test
+  # 可通过环境变量覆盖：GIN_MODE
+  mode: ${GIN_MODE:debug}
+
+# ========================================
+# 管理端配置
+# ========================================
+admin:
+  # 管理员认证token
+  # 说明：用于管理端接口鉴权
+  # 可通过环境变量覆盖：ADMIN_TOKEN
+  # 安全建议：生产环境必须通过环境变量设置
+  token: ${ADMIN_TOKEN:admin_dev_token_2024}
+
+# ========================================
+# 日志配置
+# ========================================
+log:
+  # 日志级别
+  # 说明：开发环境使用debug级别，输出详细日志
+  # 可选值：debug, info, warn, error
+  # 可通过环境变量覆盖：LOG_LEVEL
+  level: ${LOG_LEVEL:debug}
+
+  # 日志格式
+  # 说明：日志输出格式
+  # 可选值：json, text
+  # 可通过环境变量覆盖：LOG_FORMAT
+  format: ${LOG_FORMAT:text}
+
+  # 日志输出位置
+  # 说明：开发环境输出到标准输出
+  # 可通过环境变量覆盖：LOG_OUTPUT
+  output: ${LOG_OUTPUT:stdout}
+
+# ========================================
+# 其他配置
+# ========================================
+other:
+  # 环境标识
+  # 说明：标识当前运行环境
+  # 可通过环境变量覆盖：ENV
+  env: ${ENV:development}
+
+  # 时区设置
+  # 说明：服务使用的时区
+  # 可通过环境变量覆盖：TZ
+  timezone: ${TZ:Asia/Shanghai}

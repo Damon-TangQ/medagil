@@ -1,0 +1,44 @@
+# API Service Configuration
+server:
+  port: 8080
+  mode: release  # debug or release
+
+# Database Configuration
+database:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: postgres
+  dbname: medagil
+  sslmode: disable
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime: 5m
+
+# JWT Configuration
+jwt:
+  secret: your-secret-key-here
+  expiry: 24h
+
+# Redis Configuration
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 10
+
+# AI Service Configuration
+ai_service:
+  base_url: http://localhost:8000
+  timeout: 30s
+
+# File Storage Configuration
+storage:
+  type: local  # local or oss
+  local_path: ./uploads
+  oss:
+    endpoint: ""
+    access_key_id: ""
+    access_key_secret: ""
+    bucket: ""

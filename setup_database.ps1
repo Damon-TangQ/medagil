@@ -19,7 +19,7 @@ Run-PsqlCommand "CREATE DATABASE medagil;"
 
 # Create user and grant privileges
 Write-Host "Creating user 'medagil_user'..." -ForegroundColor Yellow
-Run-PsqlCommand "CREATE USER medagil_user WITH PASSWORD 'medagil_password';"
+Run-PsqlCommand "CREATE USER medagil_user WITH PASSWORD '123456';"
 Run-PsqlCommand "GRANT ALL PRIVILEGES ON DATABASE medagil TO medagil_user;"
 
 # Run schema
@@ -32,6 +32,6 @@ Write-Host "Connection details:" -ForegroundColor Cyan
 Write-Host "Host: localhost"
 Write-Host "Database: medagil"
 Write-Host "User: medagil_user"
-Write-Host "Password: medagil_password"
+Write-Host "Password: 123456"
 Write-Host ""
 Read-Host "Press Enter to exit"

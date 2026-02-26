@@ -1,0 +1,6 @@
+id,username,email,phone,status,created_at,updated_at
+1,zhangsan,zhangsan@example.com,13800138001,active,2024-01-26 00:00:00,2024-01-26 00:00:00
+2,lisi,lisi@example.com,13800138002,active,2024-01-31 00:00:00,2024-01-31 00:00:00
+3,wangwu,wangwu@example.com,13800138003,active,2024-02-05 00:00:00,2024-02-05 00:00:00
+4,zhaoliu,zhaoliu@example.com,13800138004,active,2024-02-10 00:00:00,2024-02-10 00:00:00
+5,qianqi,qianqi@example.com,13800138005,active,2024-02-15 00:00:00,2024-02-15 00:00:00

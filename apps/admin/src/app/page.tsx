@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { getDashboardStats } from '@medagil/api-client/admin';
-import type { DashboardStats } from '@medagil/api-client/admin/model';
+import type { getDashboardStatsResponse } from '@medagil/api-client/admin';
 
 /**
  * 管理端首页：数据看板（Dashboard）
@@ -22,15 +22,17 @@ export default function AdminDashboardPage() {
   }, []);
 
   const {
-    data: stats,
+    data: response,
     isLoading: loadingStats,
     isError: errorStats,
     refetch: refetchStats,
-  } = useQuery<DashboardStats>({
+  } = useQuery<getDashboardStatsResponse>({
     queryKey: ['admin', 'dashboard', 'stats'],
     queryFn: () => getDashboardStats(),
     enabled: hasToken,
   });
+
+  const stats = response?.data;
 
   const {
     data: users,
@@ -140,7 +142,9 @@ export default function AdminDashboardPage() {
           )}
           {hasToken && stats && (
             <p className="mt-2 text-2xl font-semibold text-gray-900">
-              ¥ {stats.mrr.toLocaleString('zh-CN', { maximumFractionDigits: 0 })}
+              ¥ {stats.mrr !== undefined && stats.mrr !== null 
+                ? stats.mrr.toLocaleString('zh-CN', { maximumFractionDigits: 0 })
+                : '—'}
             </p>
           )}
         </div>

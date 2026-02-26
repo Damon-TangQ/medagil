@@ -14,7 +14,7 @@ echo Creating database 'medagil'...
 
 REM Create user
 echo Creating user 'medagil_user'...
-%PG_BIN%\psql.exe -h localhost -U postgres -d postgres -c "CREATE USER medagil_user WITH PASSWORD 'medagil_password';"
+%PG_BIN%\psql.exe -h localhost -U postgres -d postgres -c "CREATE USER medagil_user WITH PASSWORD '123456';"
 
 REM Grant privileges
 echo Granting privileges...
@@ -30,6 +30,6 @@ echo Connection details:
 echo Host: localhost
 echo Database: medagil
 echo User: medagil_user
-echo Password: medagil_password
+echo Password: 123456
 echo.
 pause

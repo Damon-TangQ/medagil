@@ -1,0 +1,163 @@
+# ========================================
+# 生产环境配置文件
+# ========================================
+#
+# 使用说明：
+# 1. 此文件用于生产环境，包含生产环境的特定配置
+# 2. 不要将此文件提交到版本控制系统
+# 3. 敏感信息（如密码、token）必须通过环境变量设置
+# 4. 启动时使用 --config flag 指定配置文件
+#
+# 启动命令：
+#   ./server --config config.prod.yaml
+#
+# 环境变量设置示例：
+#   export DB_PASSWORD=your_secure_password
+#   export ADMIN_TOKEN=your_secure_token
+#   export LOG_LEVEL=info
+#
+# 安全建议：
+# 1. 所有敏感信息必须通过环境变量设置
+# 2. 不要在配置文件中硬编码密码和token
+# 3. 使用强密码和token
+# 4. 定期轮换敏感信息
+# 5. 限制配置文件的访问权限（chmod 600）
+# ========================================
+
+# ========================================
+# PostgreSQL数据库配置
+# ========================================
+database:
+  # 数据库主机地址
+  # 说明：生产环境数据库主机地址
+  # 必须通过环境变量设置：DB_HOST
+  host: ${DB_HOST}
+
+  # 数据库端口
+  # 说明：PostgreSQL默认端口为5432
+  # 可通过环境变量覆盖：DB_PORT
+  port: ${DB_PORT:5432}
+
+  # 数据库用户名
+  # 说明：生产环境数据库用户
+  # 必须通过环境变量设置：DB_USER
+  user: ${DB_USER}
+
+  # 数据库密码
+  # 说明：必须通过环境变量设置，不要在配置文件中硬编码
+  # 必须通过环境变量设置：DB_PASSWORD
+  # 安全要求：使用强密码，定期轮换
+  password: ${DB_PASSWORD}
+
+  # 数据库名称
+  # 说明：生产环境数据库名称
+  # 必须通过环境变量设置：DB_NAME
+  dbname: ${DB_NAME}
+
+  # SSL模式
+  # 说明：生产环境建议启用SSL
+  # 可选值：disable, allow, prefer, require, verify-ca, verify-full
+  # 推荐值：require（生产环境）
+  # 可通过环境变量覆盖：DB_SSLMODE
+  sslmode: ${DB_SSLMODE:require}
+
+  # 最大打开连接数
+  # 说明：与数据库的最大并发连接数
+  # 可通过环境变量覆盖：DB_MAX_OPEN_CONNS
+  # 生产环境建议：根据实际负载调整
+  max_open_conns: ${DB_MAX_OPEN_CONNS:50}
+
+  # 最大空闲连接数
+  # 说明：连接池中保持的最大空闲连接数
+  # 可通过环境变量覆盖：DB_MAX_IDLE_CONNS
+  # 生产环境建议：通常为MaxOpenConns的50%
+  max_idle_conns: ${DB_MAX_IDLE_CONNS:20}
+
+  # 连接最大生命周期（秒）
+  # 说明：连接的最大存活时间，超过后将被关闭
+  # 可通过环境变量覆盖：DB_CONN_MAX_LIFETIME
+  # 生产环境建议：通常设置为3600秒（1小时）
+  conn_max_lifetime: ${DB_CONN_MAX_LIFETIME:3600}
+
+# ========================================
+# 服务配置
+# ========================================
+server:
+  # 服务监听端口
+  # 说明：生产环境服务监听端口
+  # 必须通过环境变量设置：SERVER_PORT
+  port: ${SERVER_PORT:8080}
+
+  # 读取超时时间
+  # 说明：读取请求的超时时间
+  # 可通过环境变量覆盖：SERVER_READ_TIMEOUT
+  # 生产环境建议：根据实际需求调整
+  read_timeout: ${SERVER_READ_TIMEOUT:15s}
+
+  # 写入超时时间
+  # 说明：写入响应的超时时间
+  # 可通过环境变量覆盖：SERVER_WRITE_TIMEOUT
+  # 生产环境建议：根据实际需求调整
+  write_timeout: ${SERVER_WRITE_TIMEOUT:15s}
+
+  # 运行模式
+  # 说明：生产环境使用release模式，减少日志输出
+  # 可选值：debug, release, test
+  # 可通过环境变量覆盖：GIN_MODE
+  # 生产环境必须设置为：release
+  mode: ${GIN_MODE:release}
+
+# ========================================
+# 管理端配置
+# ========================================
+admin:
+  # 管理员认证token
+  # 说明：用于管理端接口鉴权
+  # 必须通过环境变量设置：ADMIN_TOKEN
+  # 安全要求：使用强token，定期轮换
+  token: ${ADMIN_TOKEN}
+
+# ========================================
+# 日志配置
+# ========================================
+log:
+  # 日志级别
+  # 说明：生产环境使用info级别，减少日志输出
+  # 可选值：debug, info, warn, error
+  # 可通过环境变量覆盖：LOG_LEVEL
+  # 生产环境必须设置为：info或warn
+  level: ${LOG_LEVEL:info}
+
+  # 日志格式
+  # 说明：日志输出格式
+  # 可选值：json, text
+  # 可通过环境变量覆盖：LOG_FORMAT
+  # 生产环境建议：使用json格式便于日志分析
+  format: ${LOG_FORMAT:json}
+
+  # 日志输出位置
+  # 说明：生产环境日志输出到文件
+  # 可通过环境变量覆盖：LOG_OUTPUT
+  # 生产环境建议：输出到日志文件
+  output: ${LOG_OUTPUT:/var/log/medagil/api-service.log}
+
+# ========================================
+# 其他配置
+# ========================================
+other:
+  # 环境标识
+  # 说明：标识当前运行环境
+  # 可通过环境变量覆盖：ENV
+  # 生产环境必须设置为：production
+  env: ${ENV:production}
+
+  # 时区设置
+  # 说明：服务使用的时区
+  # 可通过环境变量覆盖：TZ
+  timezone: ${TZ:Asia/Shanghai}
+
+  # 限流配置
+  # 说明：API请求速率限制
+  # 可通过环境变量覆盖：RATE_LIMIT
+  # 生产环境建议：启用限流保护
+  rate_limit: ${RATE_LIMIT:1000/hour}
